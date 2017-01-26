@@ -1,0 +1,3 @@
+#!/bin/bash
+chmod +x retina
+ruby LexerRtn.rb $1
