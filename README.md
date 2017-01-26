@@ -1,2 +1,2 @@
 # Traductores
-# Para hacer pruebas ejecutar: ./retina <nombre_programa.rtn>
+# Para hacer pruebas ejecutar: ./retina nombre_programa.rtn
