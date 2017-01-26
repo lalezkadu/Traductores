@@ -24,7 +24,7 @@ class Token
 
 	# Crea el token.
 	# Por defecto el token nunca fue encontrado.
-	def initialize(token = String.new, tipo = String.new, fila = -1, columna = -1)     
+	def initialize(token = "", tipo = String.new, fila = -1, columna = -1)     
     	@token = token
     	@fila = fila
     	@columna = columna
@@ -90,7 +90,7 @@ class LexerRtn
 	def lexer programa
   
 		programa = programa.split("")
-		lexema = String.new()
+		lexema = ""
   		
 		# Posiciones (fila, columna) en el programa
 		fila = 1
@@ -109,7 +109,7 @@ class LexerRtn
 					c = programa[i]
 				end
 				fila += 1
-			elsif c == "\"" 		# Caracteres escapeados
+			elsif c == "\"" 		# Comentarios
 				lexema << c
 				i += 1
 				c = programa[i]
@@ -131,14 +131,14 @@ class LexerRtn
 					self.crearToken(lexema,fila,columna)
 				end
 				columna += lexema.length+1
-				lexema = String.new()
+				lexema = ""
 			elsif c == "\n"
 				if not(lexema.empty?)
 					self.crearToken(lexema,fila,columna)
 				end
 				columna = 1
 				fila += 1
-				lexema = String.new()
+				lexema = ""
 			elsif c == ")" || c == "(" || c == "-" || c == ";"	# Caracteres especiales
 				if not(lexema.empty?)
 					self.crearToken(lexema,fila,columna)
@@ -147,7 +147,7 @@ class LexerRtn
 				lexema = c
 				self.crearToken(lexema,fila,columna)
 				columna += 1
-				lexema = String.new()
+				lexema = ""
     		else
       			lexema << c
     		end
@@ -162,12 +162,16 @@ class LexerRtn
 	# correspondiente y se guarda en la lista de tokens o en de errores. 
 	def crearToken lexema, fila, columna
 
-		tipo = String.new()
+		tipo = ""
 		tipo = $reservadas.fetch(lexema, nil)
 
 		if tipo == nil
 			if lexema =~ $string
-	        	tipo = "TkString"
+				if /[\\][^\n][^\s]+[a-zA-Z0-9_=><\+\-\*%;,\(\)]/.match(lexema)	# Caracteres que no deben estar escapados
+	        		tipo = "TkError"
+	        	else
+	        		tipo = "TkString"
+	        	end
 	        elsif lexema =~ $identificador
     	    	tipo = "TkId"
     	  	elsif lexema =~ $numero
@@ -187,7 +191,7 @@ end
 
 
 # Variables globales: Expresiones regulares y tabla de hash
-$identificador = /[a-z][a-zA-Z0-9_]*/
+$identificador = /^[a-z][a-zA-Z0-9_]*$/
 $string = /".*"/
 $numero = /^\d+$|^\d*[.]?\d*$/
 $signo = /not|and|or|==|\/=|>=|<=|>|<|\+|-|\*|\%|div|mod|\=|;|\,|->|\(|\)/
@@ -216,44 +220,3 @@ $reservadas = {
             	"," => "TkComa", "->" => "TkTipoReturn", 
             	"(" => "TkParentesisA", ")" => "TkParentesisC",
             	}
-
-# MAIN
-def main
-
-	# Verificacion de la extension del archivo y su ubicacion
-	ARGV[0] =~ /\w+\.rtn/
-  	if $&.nil? 
-  		puts "Extension desconocida." 
-  		return 
-  	end
-  	begin
-    	File::read(ARGV[0])
-  		rescue
-    	puts "Archivo no encontrado."
-    	return
-	end
-
-	# Almacenar entrada
-	programa = ""
-	File.open(ARGV[0], "r") do |f|
-	    f.each_line do |linea|
-	      programa = programa + linea
-	    end
-	end
-
-	# Tokenizar entrada
-	lex =  LexerRtn.new(programa)
-
-	# Imprimir tokens
-	if lex.error.empty?
-		for tok in lex.tk
-	    	tok.imprimir
-    	end
-	else
-		for tok in lex.error
-			tok.imprimir
-		end
-	end
-end
-
-main
