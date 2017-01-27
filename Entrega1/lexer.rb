@@ -192,7 +192,7 @@ end
 
 # Variables globales: Expresiones regulares y tabla de hash
 $identificador = /^[a-z][a-zA-Z0-9_]*$/
-$string = /".*"/
+$string = /^".*"$/
 $stringErroneo = /^".*[\\][^"n\\\s].*"$/
 $numero = /^\d+$|^\d*[.]?\d*$/
 $signo = /not|and|or|==|\/=|>=|<=|>|<|\+|-|\*|\%|div|mod|\=|;|\,|->|\(|\)/
