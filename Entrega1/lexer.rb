@@ -167,7 +167,7 @@ class LexerRtn
 
 		if tipo == nil
 			if lexema =~ $string
-				if /[\\][^\n][^\s]+[a-zA-Z0-9_=><\+\-\*%;,\(\)]/.match(lexema)	# Caracteres que no deben estar escapados
+				if lexema =~ $stringErroneo	# Caracteres que no deben estar escapados
 	        		tipo = "TkError"
 	        	else
 	        		tipo = "TkString"
@@ -193,6 +193,7 @@ end
 # Variables globales: Expresiones regulares y tabla de hash
 $identificador = /^[a-z][a-zA-Z0-9_]*$/
 $string = /".*"/
+$stringErroneo = /^".*[\\][^"n\\\s].*"$/
 $numero = /^\d+$|^\d*[.]?\d*$/
 $signo = /not|and|or|==|\/=|>=|<=|>|<|\+|-|\*|\%|div|mod|\=|;|\,|->|\(|\)/
 $reservadas = {
