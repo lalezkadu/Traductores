@@ -133,6 +133,9 @@ class LexerRtn
 						i += 1
 						c = programa[i]
 					end
+					if c == "\n"
+						puts "JAJA"
+					end
 					lexema << c
 					i += 1
 					c = programa[i]
