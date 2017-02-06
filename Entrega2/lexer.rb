@@ -134,7 +134,9 @@ class LexerRtn
 						c = programa[i]
 					end
 					if c == "\n"
+						lexemas << Tripleta.new("\"",fila,columna)
 						puts "JAJA #{fila} #{columna}"
+						break
 					end
 					lexema << c
 					i += 1
@@ -212,7 +214,7 @@ end
 # Variables globales: Expresiones regulares y tabla de hash
 $identificador = /^[a-z][a-zA-Z0-9_]*$/
 $string = /^".*"$/
-$stringErroneo = /^".*[\\][^"\n\\\s].*"$/
+$stringErroneo = /^".*[\\][^"\n\s\\].*"$/
 $numero = /^\d+$|^\d*[.]?\d*$/
 $signo = /not|and|or|==|\/=|>=|<=|>|<|\+|-|\*|\%|div|mod|\=|;|\,|->|\(|\)/
 $reservadas = {
