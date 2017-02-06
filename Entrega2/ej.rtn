@@ -1,0 +1,27 @@
+          
+program
+    with 
+        number x = -4;
+    do
+    	not
+    	and
+    	div
+    	mod
+    	or
+    	4 <= 5
+    	4 < 5
+    	a >= 5
+    	a > 5
+        j
+    	==
+      	5.9
+    	-0.99
+        "No me importa \\ \n \" "
+        repeat x times
+            
+            forward(50);
+            rotatel(90);
+        end;
+
+    end;
+end;
