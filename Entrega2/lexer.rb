@@ -134,7 +134,7 @@ class LexerRtn
 						c = programa[i]
 					end
 					if c == "\n"
-						puts "JAJA"
+						puts "JAJA #{fila} #{columna}"
 					end
 					lexema << c
 					i += 1
@@ -143,24 +143,24 @@ class LexerRtn
 				lexema << c
 			elsif c == " " || c == "\t"		# Lexema encontrado
 				if not(lexema.empty?)
-					lexemas << Tripleta(lexema,fila,columna)
+					lexemas << Tripleta.new(lexema,fila,columna)
 				end
 				columna += lexema.length+1
 				lexema = ""
 			elsif c == "\n"
 				if not(lexema.empty?)
-					lexemas << Tripleta(lexema,fila,columna)
+					lexemas << Tripleta.new(lexema,fila,columna)
 				end
 				columna = 1
 				fila += 1
 				lexema = ""
 			elsif c == ")" || c == "(" || c == "-" || c == ";"	# Caracteres especiales
 				if not(lexema.empty?)
-					lexemas << Tripleta(lexema,fila,columna)
+					lexemas << Tripleta.new(lexema,fila,columna)
 				end
 				columna += lexema.length
 				lexema = c
-				lexemas << Tripleta(lexema,fila,columna)
+				lexemas << Tripleta.new(lexema,fila,columna)
 				columna += 1
 				lexema = ""
     		else

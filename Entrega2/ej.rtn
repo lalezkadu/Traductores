@@ -16,7 +16,7 @@ program
     	==
       	5.9
     	-0.99
-        "No me importa \\ \n \" "
+        "No me importa \\ \\n " "
         repeat x times
             
             forward(50);
