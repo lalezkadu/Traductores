@@ -8,6 +8,18 @@
 #
 # Implementar el lexer del lenguaje Retina.
 
+# == Clase Tripleta
+#
+# Clase que representa a una tripleta con un string y su ubicacion
+class Tripleta
+	attr_reader :palabra, :fila, :columna
+
+	def initialize(palabra = "", fila = -1, columna = -1)
+		@palabra = palabra
+		@fila = fila
+		@columna = columna
+	end
+end
 
 # == Clase Token
 #
@@ -95,6 +107,7 @@ class LexerRtn
 		# Posiciones (fila, columna) en el programa
 		fila = 1
 		columna = 1
+		lexemas = []
 
 		i = 0;
   		
@@ -124,28 +137,27 @@ class LexerRtn
 					i += 1
 					c = programa[i]
 				end
-
 				lexema << c
 			elsif c == " " || c == "\t"		# Lexema encontrado
 				if not(lexema.empty?)
-					self.crearToken(lexema,fila,columna)
+					lexemas << Tripleta(lexema,fila,columna)
 				end
 				columna += lexema.length+1
 				lexema = ""
 			elsif c == "\n"
 				if not(lexema.empty?)
-					self.crearToken(lexema,fila,columna)
+					lexemas << Tripleta(lexema,fila,columna)
 				end
 				columna = 1
 				fila += 1
 				lexema = ""
 			elsif c == ")" || c == "(" || c == "-" || c == ";"	# Caracteres especiales
 				if not(lexema.empty?)
-					self.crearToken(lexema,fila,columna)
+					lexemas << Tripleta(lexema,fila,columna)
 				end
 				columna += lexema.length
 				lexema = c
-				self.crearToken(lexema,fila,columna)
+				lexemas << Tripleta(lexema,fila,columna)
 				columna += 1
 				lexema = ""
     		else
@@ -153,6 +165,10 @@ class LexerRtn
     		end
 
 			i += 1
+		end
+
+		for i in lexemas
+			crearToken(i.palabra,i.fila,i.columna)
 		end
 	end
 
@@ -193,7 +209,7 @@ end
 # Variables globales: Expresiones regulares y tabla de hash
 $identificador = /^[a-z][a-zA-Z0-9_]*$/
 $string = /^".*"$/
-$stringErroneo = /^".*[\\][^"n\\\s].*"$/
+$stringErroneo = /^".*[\\][^"\n\\\s].*"$/
 $numero = /^\d+$|^\d*[.]?\d*$/
 $signo = /not|and|or|==|\/=|>=|<=|>|<|\+|-|\*|\%|div|mod|\=|;|\,|->|\(|\)/
 $reservadas = {
