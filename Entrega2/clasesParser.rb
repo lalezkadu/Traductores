@@ -1,3 +1,14 @@
+#!/usr/bin/ruby
+# = clasesParser.rb
+#
+# Autor:: Lalezka Duque, 12-10613
+# Autor:: Marcos Jota, 12-10909
+#
+# == Descripcion
+#
+# Archivo que contiene todas las clases del Arbol Sintactico mediante el  
+# analizador sintactico generado por Racc.
+
 class AST
 end
 

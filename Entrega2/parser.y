@@ -1,3 +1,14 @@
+#!/usr/bin/ruby
+# = parser.y
+#
+# Autor:: Lalezka Duque, 12-10613
+# Autor:: Marcos Jota, 12-10909
+#
+# == Descripcion
+#
+# Archivo que contiene la Gramatica para el reconocimiento del lenguaje Retina
+# mediante la herramienta generadora de analizadores sintacticos en Ruby, Racc.
+
 class ParserRtn
 
 	# Declaramos los tokens.

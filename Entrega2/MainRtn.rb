@@ -1,10 +1,10 @@
 #!/usr/bin/ruby
-# = lexerRtn
+# = lexerRtn.rb
 #
 # Autor:: Lalezka Duque, 12-10613
 # Autor:: Marcos Jota, 12-10909
 #
-# == Proposito
+# == Descripcion
 #
 # Main del lexer del lenguaje Retina
 

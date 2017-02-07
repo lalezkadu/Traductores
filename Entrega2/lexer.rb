@@ -4,9 +4,9 @@
 # Autor:: Lalezka Duque, 12-10613
 # Autor:: Marcos Jota, 12-10909
 #
-# == Proposito
+# == Descripcion
 #
-# Implementar el lexer del lenguaje Retina.
+# Implementacion del lexer del lenguaje Retina.
 
 # == Clase Tripleta
 #
@@ -258,5 +258,5 @@ $reservadas = {
             	"div" => "TkDivEntera", "mod" => "TkMod", 
             	"=" => "TkAsignacion", ";" => "TkPuntoComa",
             	"," => "TkComa", "->" => "TkTipoReturn", 
-            	"(" => "TkParentesisA", ")" => "TkParentesisC",
+            	"(" => "TkParentesisA", ")" => "TkParentesisC"
             	}
