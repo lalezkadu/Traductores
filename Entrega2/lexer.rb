@@ -117,59 +117,74 @@ class LexerRtn
 			c = programa[i]
 
 			if c == "#"				# Comentario
+				
 				while c != "\n"
 					i += 1;
 					c = programa[i]
 				end
+
 				fila += 1
+
 			elsif c == "\"" 		# Comentarios
 				lexema << c
 				i += 1
 				c = programa[i]
 
 				while c != "\""
+					
 					if c == "\\"
 						lexema << c
 						i += 1
 						c = programa[i]
 					elsif c == "\n"
-						lexema = "\""
 						break
 					end
-					if c == "\n"
-						lexemas << Tripleta.new("\"",fila,columna)
-						puts "JAJA #{fila} #{columna}"
-						break
-					end
+					
 					lexema << c
 					i += 1
 					c = programa[i]
 				end
+
 				lexema << c
+				
+				if c == "\n"
+					lexema = "\""
+				end
+
 			elsif c == " " || c == "\t"		# Lexema encontrado
+
 				if not(lexema.empty?)
 					lexemas << Tripleta.new(lexema,fila,columna)
 				end
+
 				columna += lexema.length+1
 				lexema = ""
+
 			elsif c == "\n"
+
 				if not(lexema.empty?)
 					lexemas << Tripleta.new(lexema,fila,columna)
 				end
+
 				columna = 1
 				fila += 1
 				lexema = ""
+
 			elsif c == ")" || c == "(" || c == "-" || c == ";"	# Caracteres especiales
+
 				if not(lexema.empty?)
 					lexemas << Tripleta.new(lexema,fila,columna)
 				end
+
 				columna += lexema.length
 				lexema = c
 				lexemas << Tripleta.new(lexema,fila,columna)
 				columna += 1
 				lexema = ""
+
     		else
       			lexema << c
+      			
     		end
 
 			i += 1
