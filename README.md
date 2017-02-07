@@ -1,9 +1,7 @@
-## Traductores
-# Desarrollo del intérprete para el lenguaje **Retina** (documento) implementado en  en **ruby**
+# Traductores
+ Desarrollo del intérprete para el lenguaje **Retina** implementado en  en **ruby**
 
-Para hacer pruebas ejecutar: 
+Para hacer pruebas ejecutar el siguiente comando: 
 ```
  	./retina nombre_programa.rtn
 ```
-
-[documento]: <https://github.com/dvdalilue/retina/blob/master/lenguaje/especificacion.md>
