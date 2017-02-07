@@ -1,22 +1,64 @@
-class TablaSimbolos
+class AST
 end
 
 class Instruccion
 end
 
-class Condicional
+class Condicional < Instruccion
 end
 
-class Asignacion
+class Asignacion < Instruccion
 end
 
-class Declaracion
+class EntradaSalida < Instruccion
 end
 
-class RepeticionI
+class RepeticionI < Instruccion
 end
 
-class RepeticionD
+class RepeticionD < Instruccion
+end
+
+class Bloque < Instruccion
+end
+
+class ListaExpresiones < Instruccion
+end
+
+class Secuenciacion < ListaExpresiones
+end
+
+class Alcance
+end
+
+class Funcion
+end
+
+class Tipo
+end
+
+class TipoNum < Tipo
+end
+
+class TipoBoolean < Tipo
+end
+
+class Literal
+end
+
+class LiteralNumerico < Literal
+end
+
+class LiteralBooleano < Literal
+end
+
+class Variable
+end
+
+class ExpresionBinaria
+end
+
+class ExpresionUnaria
 end
 
 class Entrada
@@ -25,44 +67,5 @@ end
 class Salida
 end
 
-class Variable
-end
-
-class Tipo
-end
-
-class Literal
-end
-
-class LiteralNumerico
-end
-
-class LiteralBooleano
-end
-
-class Imagen
-end
-
-class Expresion
-end
-
-class ExpresionBin
-end
-
-class ExpresionU
-end
-
-class ListaExpresiones
-end
-
 class Identificador
-end
-
-class Bloque
-end
-
-class Alcance
-end
-
-class Funcion
 end
