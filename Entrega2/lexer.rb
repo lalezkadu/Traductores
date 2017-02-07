@@ -132,6 +132,9 @@ class LexerRtn
 						lexema << c
 						i += 1
 						c = programa[i]
+					elsif c == "\n"
+						lexema = "\""
+						break
 					end
 					if c == "\n"
 						lexemas << Tripleta.new("\"",fila,columna)
@@ -214,7 +217,7 @@ end
 # Variables globales: Expresiones regulares y tabla de hash
 $identificador = /^[a-z][a-zA-Z0-9_]*$/
 $string = /^".*"$/
-$stringErroneo = /^".*[\\][^"\n\s\\].*"$/
+$stringErroneo = /[\s\w"](([\\][\\n"])*([\\][^\\n"])+)+[\s\\]|[\s\w"](([\\][\\n"])+[\\])\s/
 $numero = /^\d+$|^\d*[.]?\d*$/
 $signo = /not|and|or|==|\/=|>=|<=|>|<|\+|-|\*|\%|div|mod|\=|;|\,|->|\(|\)/
 $reservadas = {
