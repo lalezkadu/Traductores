@@ -134,7 +134,7 @@ class LexerRtn
 						c = programa[i]
 					elsif c == "\n"
 						lexema = "\""
-
+						break
 					end
 					if c == "\n"
 						lexemas << Tripleta.new("\"",fila,columna)
