@@ -120,7 +120,7 @@ REPETICION_D
 REPETICION_I
 	: 'while' EXPRESION 'do' INSTRUCCIONES 'end'
 	;
-# Reglas para reconoces las expresiones
+# Reglas para reconocer las expresiones
 EXPRESION
 
 # Reglas de tipos de datos
