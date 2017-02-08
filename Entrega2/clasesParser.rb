@@ -52,6 +52,16 @@ class Funcion
 end
 
 class Tipo
+
+	attr_accessor :nombre
+
+	def initialize( nombre )
+		@nombre = nombre
+	end
+
+	def toString(tabs)
+		out = 
+
 end
 
 class TipoNum < Tipo
