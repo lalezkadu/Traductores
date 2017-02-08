@@ -12,7 +12,13 @@
 class AST
 end
 
+class Programa
+end
+
 class Instruccion
+end
+
+class Estructura < Instruccion
 end
 
 class Condicional < Instruccion
