@@ -31,6 +31,7 @@ class Instruccion
 end
 
 class Condicional < Instruccion
+	attr_accessor :exp, :instif, :instelse 
 end
 
 class Asignacion < Instruccion
@@ -46,12 +47,18 @@ class EntradaSalida < Instruccion
 end
 
 class RepeticionI < Instruccion
+	attr_accessor :exp, :inst
 end
 
 class RepeticionD < Instruccion
+	attr_accessor :var, :inicio, :fin, :inc, :inst 
 end
 
 class Bloque < Instruccion
+	attr_accessor :decl, :inst
+end
+
+class Declaraciones
 end
 
 class ListaExpresiones < Instruccion
@@ -67,10 +74,6 @@ class Tipo
 	def initialize( nombre )
 		@nombre = nombre
 	end
-
-	def toString(tabs)
-		out = 
-
 end
 
 class TipoNum < Tipo
@@ -86,6 +89,7 @@ class TipoBoolean < Tipo
 end
 
 class Literal
+
 end
 
 class LiteralNumerico < Literal
@@ -95,9 +99,17 @@ class LiteralBooleano < Literal
 end
 
 class Variable
+
+	attr_accessor :id
+
+	def initialize(id)
+		@id = id
+	end
 end
 
 class Entrada
+
+	attr_accessor :var
     def initialize(var)
         @var = var
     end
@@ -106,7 +118,7 @@ end
 class Salida
 
 	attr_accessor :lista
-	
+
 	def initialize(lista)
         @lista = lista
     end
@@ -122,58 +134,119 @@ class Identificador
 end
 
 class ExpresionBinaria
+	attr_accessor :op1, :op2, :oper
+	def initialize(op1, op2, oper)
+		@op1 = op1
+		@op2 = op2
+		@oper = oper
+	end
 end
 
 class OpMultiplicacion < ExpresionBinaria
+    def initialize(op1,op2)
+        super(op1, op2,"*")
+    end
 end
 
 class OpSuma < ExpresionBinaria
+    def initialize(op1,op2)
+        super(op1, op2,"+")
+    end
 end
 
 class OpResta < ExpresionBinaria
+    def initialize(op1,op2)
+        super(op1, op2,"-")
+    end
 end
 
 class OpDivision < ExpresionBinaria
+    def initialize(op1,op2)
+        super(op1, op2,"/")
+    end
 end
 
 class OpMod < ExpresionBinaria
+    def initialize(op1,op2)
+        super(op1, op2,"mod")
+    end
 end
 
 class OpDiv < ExpresionBinaria
+    def initialize(op1,op2)
+        super(op1, op2,"div")
+    end
 end
 
 class OpModE < ExpresionBinaria
+    def initialize(op1,op2)
+        super(op1, op2,"%")
+    end
 end
 
 class OpEquivalente < ExpresionBinaria
+    def initialize(op1,op2)
+        super(op1, op2,"==")
+    end
 end
 
 class OpInequivalente < ExpresionBinaria
+    def initialize(op1,op2)
+        super(op1, op2,"/=")
+    end
 end
 
 class OpMenor < ExpresionBinaria
+    def initialize(op1,op2)
+        super(op1, op2,"<")
+    end
 end
 
 class OpMenorIgual < ExpresionBinaria
+    def initialize(op1,op2)
+        super(op1, op2,"<=")
+    end
 end
 
 class OpMayor < ExpresionBinaria
+    def initialize(op1,op2)
+        super(op1, op2,">")
+    end
 end
 
 class OpMayorIgual < ExpresionBinaria
+    def initialize(op1,op2)
+        super(op1, op2,">=")
+    end
 end
 
 class OpAnd < ExpresionBinaria
+    def initialize(op1,op2)
+        super(op1, op2,"and")
+    end
 end
 
 class OpOr < ExpresionBinaria
+    def initialize(op1,op2)
+        super(op1, op2,"or")
+    end
 end
 
 class ExpresionUnaria
+	attr_accessor :op
+	def initialize(op)
+		@op = op
+	end
 end
 
 class OpUMINUS < ExpresionUnaria
+    def initialize(op)
+        super(op,"-")
+    end
 end
 
 class OpNot < ExpresionUnaria
+	def initialize(op1)
+        super(op1, op2,"-")
+    end
 end
