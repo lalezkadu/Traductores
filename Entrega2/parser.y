@@ -17,7 +17,7 @@ class ParserRtn
 			'else' 'while' 'for' 'from' 'to' 'by' 'repeat' 'times' 'func' 
 			'begin' 'return' 'number' 'boolean' 'true' 'false' 'not' 'and' 'or'
 			'==' '/=' '>=' '<=' '>' '<' '+' '-' '*' '/' '%' 'div' 'mod' '=' ';' 
-			',' '->' '(' ')' ID STRING
+			',' '->' '(' ')' ID STRING NUMBER
 
 	# Declaramos la precedencia explicita de los operadores,
 	prechigh
@@ -34,73 +34,13 @@ class ParserRtn
 	start Inicio
 	# Se definen las reglas de la gramatica que reconoce el lenguaje Retina.
 
-<<<<<<< HEAD
 rule
-=======
-SECUENCIACION
-	: INSTRUCCIONES ';' INSTRUCCION
-	;
-
-INSTRUCCION
-	: ASIGNACION
-	| ENTRADA
-	| SALIDA
-	| CONDICIONAL
-	| REPETICION_D
-	| REPETICION_I
-	| ESTRUCTURA
-	| PROGRAMA
-	| BLOQUE
-	;
-# Reglas para realizar asignaciones
-ASIGNACION
-	: ID '=' EXPRESION
-	;
-# Reglas para leer por la entrada estandar
-ENTRADA
-	: 'read' ID
-	;
-# Reglas para escribir por la salida estandar
-SALIDA
-	: 'write' ESCRIBIR
-	| 'writeln' ESCRIBIR
-	;
-# Reglas para escribir expresiones o strings por la salida estandar
-ESCRIBIR
-	: EXPRESION
-	| STRING
-	| ESCRIBIR ',' EXPRESION
-	| ESCRIBIR ',' STRING
-	;
-# Reglas de la instruccion condicional
-CONDICIONAL
-	: 'if' EXPRESION 'then' INSTRUCCION COND
-	;
-# Reglas para reconocer como termina el condicional
-COND
-	: 'end' {result = nil}
-	| 'else' INSTRUCCION 'end' {result = result = val[2]}
-	;
-# Reglas para reconocer las repeticiones determinadas
-REPETICION_D
-	: 'for' ID 'from' EXPRESION 'to' EXPRESION 'by' EXPRESION 'do' INSTRUCCIONES 'end'
-	| 'for' ID 'from' EXPRESION 'to' EXPRESION 'do' INSTRUCCIONES 'end'
-	| 'repeat' EXPRESION 'times' INSTRUCCIONES 'end'
-	;
-# Reglas para reconocer las repeticiones indeterminadas
-REPETICION_I
-	: 'while' EXPRESION 'do' INSTRUCCIONES 'end'
-	;
-# Reglas para reconocer las expresiones
-EXPRESION
->>>>>>> da5456a4a4901ceb665e5573dfc407be1448d5cc
-
-	# Reglas para la estructura de un programa
+	# Reglas para reconocer la estructura de un programa
 	ESTRUCTURA
 		: FUNCIONES PROGRAMA
 		| PROGRAMA
 		;
-	# Reglas para escribir funciones antes del codigo del programa
+	# Reglas para reconocer funciones antes del codigo del programa
 	FUNCIONES
 		: FUNCION FUNCIONES
 		| FUNCION
@@ -112,12 +52,12 @@ EXPRESION
 		| ID '(' ')' '->' TIPO 'begin' INSTRUCCION 'end' ';'
 		| ID '(' PARAMETROS ')' '->' TIPO 'begin' INSTRUCCION 'end' ';'
 		;
-	# Reglas para definir los parametros de una funcion
+	# Reglas para reconocer los parametros de una funcion
 	PARAMETROS
 		: TIPO ID ',' PARAMETROS
 		| TIPO ID
 		;
-	# Reglas para escribir codigos en programas
+	# Reglas para reconocer codigos en programas
 	PROGRAMA
 		: 'program' BLOQUE 'end' ';'
 		;
@@ -126,10 +66,12 @@ EXPRESION
 		: 'with' DECLARACION 'do' INSTRUCCIONES 'end' ';'	# Aqui se agrego ;
 		| 'do' INSTRUCCIONES 'end' ';'	# Y aqui...
 		;
+	# Reglas para reconocer una lista de declaraciones
 	LISTA_DECLARACION
 		: DECLARACION ';' LISTA_DECLARACION
 		| DECLARACION ';'
 		;
+	# Reglas para reconocer una declaracion
 	DECLARACION
 		: TIPO LISTA_ID ',' ID
 		| TIPO ID
@@ -154,11 +96,11 @@ EXPRESION
 		| REPETICION_I ';'
 		| BLOQUE
 		;
-	# Reglas para realizar asignaciones
+	# Reglas para reconocer asignaciones
 	ASIGNACION
 		: ID '=' EXPRESION
 		;
-	# Reglas para leer por la entrada estandar
+	# Reglas para reconocer la lectura por entrada estandar
 	ENTRADA
 		: 'read' ID
 		;
@@ -174,7 +116,7 @@ EXPRESION
 		| ESCRIBIR ',' EXPRESION
 		| ESCRIBIR ',' STRING
 		;
-	# Reglas de la instruccion condicional
+	# Reglas para reconocer la instruccion condicional
 	CONDICIONAL
 		: 'if' EXPRESION 'then' INSTRUCCION COND
 		;
@@ -193,7 +135,7 @@ EXPRESION
 	REPETICION_I
 		: 'while' EXPRESION 'do' INSTRUCCIONES 'end'
 		;
-	# Reglas para reconoces las expresiones
+	# Reglas para reconocer las expresiones
 	EXPRESION
 		: LITERAL
 		| VARIABLE
@@ -217,8 +159,8 @@ EXPRESION
 		;
 	# Reglas de tipos de datos
 	TIPO
-		: number {result = "number"}
-		| boolean {result = "boolean"}
+		: 'number' {result = "number"}
+		| 'boolean' {result = "boolean"}
 		;
 	# Reglas de Literales
 	LITERAL
@@ -227,7 +169,7 @@ EXPRESION
 		;
 	# Reglas de Literales Numericos
 	LITERAL_NUMBER
-		: 'number' 
+		: NUMBER
 		;
 	# Reglas de Literales Booleanos
 	LITERAL_BOOLEAN
@@ -239,3 +181,25 @@ EXPRESION
 		: ID {result = Variable.new(val[0])}
 		;
 end
+
+# Aqui terminamos la gramatica
+
+---- inner ----
+
+load 'MainRtn.rb'
+load 'clasesParser.rb'
+	
+	def initialize(tokens)
+		@tokens = tokens
+		@yydebug = true
+	end 
+
+	def parse
+		do_parse
+	end
+
+	def next_token
+		@tokens.next_token
+	end
+
+	
