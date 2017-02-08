@@ -15,16 +15,31 @@ end
 class Programa
 end
 
-class Instruccion
+class Estructura
 end
 
-class Estructura < Instruccion
+class Funcion
+end
+
+class Parametros
+end
+
+class Declaracion
+end
+
+class Instruccion
 end
 
 class Condicional < Instruccion
 end
 
 class Asignacion < Instruccion
+    attr_accessor :id, :valor
+
+    def initialize(id, val)
+        @id = id
+        @valor = valor
+    end
 end
 
 class EntradaSalida < Instruccion
@@ -45,12 +60,6 @@ end
 class Secuenciacion < ListaExpresiones
 end
 
-class Alcance
-end
-
-class Funcion
-end
-
 class Tipo
 
 	attr_accessor :nombre
@@ -65,9 +74,15 @@ class Tipo
 end
 
 class TipoNum < Tipo
+	def initialize( nombre )
+		super(nombre)
+	end
 end
 
 class TipoBoolean < Tipo
+	def initialize( nombre )
+		super(nombre)
+	end
 end
 
 class Literal
@@ -82,17 +97,83 @@ end
 class Variable
 end
 
+class Entrada
+    def initialize(var)
+        @var = var
+    end
+end
+
+class Salida
+
+	attr_accessor :lista
+	
+	def initialize(lista)
+        @lista = lista
+    end
+end
+
+class Identificador
+	
+	attr_accessor :id
+
+	def initialize( id )
+		super(id)
+	end
+end
+
 class ExpresionBinaria
+end
+
+class OpMultiplicacion < ExpresionBinaria
+end
+
+class OpSuma < ExpresionBinaria
+end
+
+class OpResta < ExpresionBinaria
+end
+
+class OpDivision < ExpresionBinaria
+end
+
+class OpMod < ExpresionBinaria
+end
+
+class OpDiv < ExpresionBinaria
+end
+
+class OpModE < ExpresionBinaria
+end
+
+class OpEquivalente < ExpresionBinaria
+end
+
+class OpInequivalente < ExpresionBinaria
+end
+
+class OpMenor < ExpresionBinaria
+end
+
+class OpMenorIgual < ExpresionBinaria
+end
+
+class OpMayor < ExpresionBinaria
+end
+
+class OpMayorIgual < ExpresionBinaria
+end
+
+class OpAnd < ExpresionBinaria
+end
+
+class OpOr < ExpresionBinaria
 end
 
 class ExpresionUnaria
 end
 
-class Entrada
+class OpUMINUS < ExpresionUnaria
 end
 
-class Salida
-end
-
-class Identificador
+class OpNot < ExpresionUnaria
 end

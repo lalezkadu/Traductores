@@ -31,7 +31,7 @@ class ParserRtn
 	preclow
 
 	# Comienzo de la gramatica.
-	start Inicio
+	start ESTRUCTURA
 	# Se definen las reglas de la gramatica que reconoce el lenguaje Retina.
 
 rule
@@ -73,9 +73,13 @@ rule
 		;
 	# Reglas para reconocer una declaracion
 	DECLARACION
-		: TIPO LISTA_ID ',' ID
-		| TIPO ID
+		: TIPO LISTA_ID ';'
+		| TIPO ID ';'
 		| TIPO ASIGNACION 
+		;
+	LISTA_ID
+		: ID
+		| LISTA_ID ',' ID
 		;
 	# Regla para reconocer una lista de instrucciones
 	INSTRUCCIONES
@@ -98,7 +102,7 @@ rule
 		;
 	# Reglas para reconocer asignaciones
 	ASIGNACION
-		: ID '=' EXPRESION
+		: EXPRESION '=' EXPRESION
 		;
 	# Reglas para reconocer la lectura por entrada estandar
 	ENTRADA
@@ -139,6 +143,7 @@ rule
 	EXPRESION
 		: LITERAL
 		| VARIABLE
+		| '(' EXPRESION ')'
 		| 'not' EXPRESION
 		| UMINUS EXPRESION
 		| EXPRESION '*' EXPRESION
