@@ -37,102 +37,106 @@ class ParserRtn
 rule
 	# Reglas para reconocer la estructura de un programa
 	ESTRUCTURA
-		: FUNCIONES PROGRAMA
-		| PROGRAMA
+		: FUNCIONES PROGRAMA 	{ result = Estructura.new(val[0], val[1]) }
+		| PROGRAMA 				{ result = Estructura.new(nil, val[0]) }
 		;
 	# Reglas para reconocer funciones antes del codigo del programa
 	FUNCIONES
-		: FUNCION FUNCIONES
-		| FUNCION
+		: FUNCION FUNCIONES 	{ result = Funcion.new(val[1]) }
+		| FUNCION 				{ result = val[0] }
 		;
 	# Reglas para escribir funciones
 	FUNCION
-		: ID '(' ')' 'begin' INSTRUCCIONES 'end' ';'
-		| ID '(' PARAMETROS ')' 'begin' INSTRUCCIONES 'end' ';'
-		| ID '(' ')' '->' TIPO 'begin' INSTRUCCIONES 'end' ';'
-		| ID '(' PARAMETROS ')' '->' TIPO 'begin' INSTRUCCIONES 'end' ';'
+		: ID '(' ')' 'begin' INSTRUCCIONES 'end' ';'						{ result = Funcion.new(val[0], nil, nil, val[4], nil, nil) }
+		| ID '(' PARAMETROS ')' 'begin' INSTRUCCIONES 'end' ';'				{ result = Funcion.new(val[0], val[2], nil, val[6]) }
+		| ID '(' ')' '->' TIPO 'begin' INSTRUCCIONES 'end' ';'				{ result = Funcion.new(val[0]) }
+		| ID '(' PARAMETROS ')' '->' TIPO 'begin' INSTRUCCIONES 'end' ';'	{ result = Funcion.new() }
 		;
 	# Reglas para reconocer los parametros de una funcion
 	PARAMETROS
-		: TIPO ID ',' PARAMETROS
-		| TIPO ID
+		: TIPO ID ',' PARAMETROS 	{ result = Parametros.new(val[0],val[1],val[3]) }
+		| TIPO ID 					{ result = Parametros.new(val[0],val[1],nil) }
 		;
 	# Reglas para reconocer codigos en programas
 	PROGRAMA
-		: 'program' BLOQUE 'end' ';'
+		: 'program' BLOQUE 'end' ';'	{ result = Programa.new(val[1]) }
 		;
 	# Reglas para escribir bloque de instrucciones
 	BLOQUE
-		: 'with' LISTA_DECLARACION 'do' INSTRUCCIONES 'end' ';'	# Aqui se agrego ;
-		| 'do' INSTRUCCIONES 'end' ';'	# Y aqui...
+		: 'with' LISTA_DECLARACION 'do' INSTRUCCIONES 'end' ';'	{ result = Bloque.new(val[1], val[3]) }
+		| 'do' INSTRUCCIONES 'end' ';'							{ result = Bloque.new(nil, val[1]) }
 		;
 	# Reglas para reconocer una lista de declaraciones
-	LISTA_DECLARACION
-		: DECLARACION ';' LISTA_DECLARACION
-		| DECLARACION ';'
+	LISTA_DECLARACION 							
+		: DECLARACION ';' LISTA_DECLARACION		{ result = ListaDeclaracion.new(val[0], val[2]) }	
+		| DECLARACION ';'						{ result = ListaDeclaracion.new(val[0], nil) }
 		;
 	# Reglas para reconocer una declaracion
 	DECLARACION
-		: TIPO LISTA_ID ';'
-		| TIPO ASIGNACION 
+		: TIPO LISTA_ID ';'		{ result = Declaracion.new(val[0], val[1], nil) }
+		| TIPO ASIGNACION  		{ result = Declaracion.new(val[0], nil, val[1]) }
 		;
 	LISTA_ID
-		: ID
-		| LISTA_ID ',' ID
+		: ID 					{ result = Identificador.new(val[0], nil) }
+		| ID ',' LISTA_ID 		{ result = Identificador.new(val[0], val[2]) }
 		;
 	# Regla para reconocer una lista de instrucciones
 	INSTRUCCIONES
-		: SECUENCIACION
-		| INSTRUCCION
+		: SECUENCIACION 		{ result = Secuenciacion.new(val[0]) }
+		| INSTRUCCION 			{ result = Instruccion.new(val[0]) }
 		;
 	# Reglas para reconocer secuencias de instrucciones
 	SECUENCIACION
-		: INSTRUCCIONES INSTRUCCION
+		: INSTRUCCION INSTRUCCIONES 	{ result = Instruccion.new(val[0], val[1]) }
 		;
 	# Reglas para reconocer una instruccion
 	INSTRUCCION
 		: ASIGNACION ';'	{ result = val[0] }
-		| ENTRADA ';'		
-		| SALIDA ';'
-		| CONDICIONAL ';'
-		| REPETICION_D ';'
-		| REPETICION_I ';'
-		| BLOQUE 			# Verificar si puede haber un bloque dentro de otro
+		| ENTRADA ';'		{ result = val[0] }
+		| SALIDA ';'		{ result = val[0] }
+		| CONDICIONAL ';'	{ result = val[0] }
+		| REPETICION_D ';'	{ result = val[0] }
+		| REPETICION_I ';'	{ result = val[0] }
+		| RETURN ';'		{ result = val[0] }
+		| BLOQUE 			{ result = val[0] }
+		;
+	RETURN
+		: 'return' EXPRESION 	{ result = Return.new(val[1]) }
 		;
 	# Reglas para reconocer asignaciones
 	ASIGNACION
-		: ID '=' EXPRESION 	# Cambio de expresion del lado izquierdo por ID
+		: ID '=' EXPRESION 		{ result = Asignacion.new(val[0], val[2]) }
 		;
 	# Reglas para reconocer la lectura por entrada estandar
 	ENTRADA
-		: 'read' ID
+		: 'read' ID 			{ result = Entrada.new(val[1]) }
 		;
 	# Reglas para escribir por la salida estandar
 	SALIDA
-		: 'write' ESCRIBIR
-		| 'writeln' ESCRIBIR
+		: 'write' ESCRIBIR 		{ result = Salida.new(val[1], nil) }
+		| 'writeln' ESCRIBIR 	{ result = Salida.new(val[1], nil) }
 		;
 	# Reglas para escribir expresiones o strings por la salida estandar
 	ESCRIBIR
-		: EXPRESION
-		| STRING
-		| ESCRIBIR ',' EXPRESION
-		| ESCRIBIR ',' STRING
+		: EXPRESION 				{ result = val[0] }
+		| STRING 					{ result = val[0] }
+		| ESCRIBIR ',' EXPRESION 	{ result = Escribir.new() }
+		| ESCRIBIR ',' STRING 		{ result = Escribir.new()}
 		;
 	# Reglas para reconocer la instruccion condicional
 	CONDICIONAL
-		: 'if' EXPRESION 'then' INSTRUCCION COND
+		: 'if' EXPRESION 'then' INSTRUCCION COND 	{ result = Condicional.new(val[1],val[3],val[4]) }
 		;
 	# Reglas para reconocer como termina el condicional
 	COND
-		: 'end' {result = nil}
-		| 'else' INSTRUCCION 'end' {result = val[2]}
+		: 'end' 					{ result = nil }
+		| 'else' INSTRUCCION 'end' 	{ result = val[2] }
 		;
 	# Reglas para reconocer las repeticiones determinadas
 	REPETICION_D
-		: 'for' ID 'from' EXPRESION 'to' EXPRESION 'by' EXPRESION 'do' INSTRUCCIONES 'end' { result = For.new(val[], val[], val[], val[])}
-		| 'for' ID 'from' EXPRESION 'to' EXPRESION 'do' INSTRUCCIONES 'end' { result = For.new(val[], val[], val[], val[]) }
-		| 'repeat' EXPRESION 'times' INSTRUCCIONES 'end'	{ result = Repeat.new(val[1],val[3]) }
+		: 'for' ID 'from' EXPRESION 'to' EXPRESION 'by' EXPRESION 'do' INSTRUCCIONES 'end' 	{ result = For.new(val[1], val[3], val[5], val[7], val[9])}
+		| 'for' ID 'from' EXPRESION 'to' EXPRESION 'do' INSTRUCCIONES 'end' 				{ result = For.new(val[1], val[3], val[5], nil, val[7]) }
+		| 'repeat' EXPRESION 'times' INSTRUCCIONES 'end'									{ result = Repeat.new(val[1],val[3]) }
 		;
 	# Reglas para reconocer las repeticiones indeterminadas
 	REPETICION_I
@@ -164,8 +168,8 @@ rule
 
 	# Reglas de tipos de datos
 	TIPO
-		: 'number' {result = TipoNumber.new() }
-		| 'boolean' {result = TipoBoolean.new() }
+		: 'number' 	{ result = TipoNumber.new() }
+		| 'boolean' { result = TipoBoolean.new() }
 		;
 	# Reglas de Literales
 	LITERAL
