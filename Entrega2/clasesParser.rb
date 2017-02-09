@@ -9,19 +9,59 @@
 # Archivo que contiene todas las clases del Arbol Sintactico mediante el  
 # analizador sintactico generado por Racc.
 
-class AST
+class Estructura
+	attr_accessor :funciones, :programa
+
+	def initialize(funciones,programa)
+		@funciones = funciones
+		@programa = programa
+	end
+
+	def to_s(tab)
+		return @funciones.to_s(tab+1) + @programa.to_s(tab+1)
+	end
 end
 
 class Programa
-end
+	attr_accessor :bloque
 
-class Estructura
+	def initialize(bloque)
+		@bloque = bloque
+	end
+
+	def to_s(tab)
+		return "Programa: \n" + (" "*tab) + "bloque: " + @bloque.to_s(tab+1)
+	end
 end
 
 class Funcion
+	attr_accessor :nombre, :parametros, :cuerpo, :tipo
+
+	def initialize(nombre, parametros, cuerpo, tipo = "")
+		@nombre = nombre
+		@parametros = parametros
+		@cuerpo = cuerpo
+		@tipo = tipo
+	end
+
+	def to_s(tab)
+		s = "Funcion: \n"
+		s = (" "*tab) + "nombre: \n" + @nombre.to_s(tab+1)
+		s = (" "*tab) + "parametros: \n" + @parametros.to_s(tab+1)
+		s = (" "*tab) + "cuerpo: \n" +@cuerpo.to_s(tab+1)
+		if @tipo != ""
+			s = (" "*tab) + "retorna: " + @tipo.to_s(tab+1)
+		end
+		return s
+	end
 end
 
 class Parametros
+	attr_accessor :param
+
+	def initialize(parametros)
+		@param = parametros
+	end
 end
 
 class Declaracion
@@ -31,7 +71,12 @@ class Instruccion
 end
 
 class Condicional < Instruccion
-	attr_accessor :exp, :instif, :instelse 
+	attr_accessor :exp, :instif, :instelse
+
+	def initialize(exp,instif,instelse)
+
+		@instelse = instelse
+	end
 end
 
 class Asignacion < Instruccion
@@ -41,21 +86,77 @@ class Asignacion < Instruccion
         @id = id
         @valor = valor
     end
-end
 
-class EntradaSalida < Instruccion
+    def to_s(tab)
+    	s = "Asignacion: \n"
+    	s = (" "*tab) + "lado derecho: \n" + @id.to_s(tab+1)
+    	s = (" "*tab) + "lado izquierdo: \n" + @valor.to_s(tab+1)
+    end
 end
 
 class RepeticionI < Instruccion
-	attr_accessor :exp, :inst
+	attr_accessor :exp, :cuerpo
+
+	def initialize(exp, cuerpo)
+		@exp = exp
+		@cuerpo = cuerpo
+	end
+
+	def to_s(tab)
+		s = "Repeticion Indeterminada: \n"
+		s = (" "*tab) + "expresion: \n" + @exp.to_s(tab+1)
+		s = (" "*tab) + "cuerpo: \n" + @cuerpo.to_s(tab+1)
+	end
 end
 
-class RepeticionD < Instruccion
-	attr_accessor :var, :inicio, :fin, :inc, :inst 
+class Repeat
+
+	attr_accessor :repeticiones, :cuerpo
+
+	def initialize(repeticiones, cuerpo)
+		@repeticiones = repeticiones
+		@cuerpo = cuerpo
+	end
+
+	def to_s(tab)
+		s = "Repeticion Determinada Repeat: \n"
+		s = (" "*tab) + "numero repeticiones: \n" + @repeticiones.to_s(tab+1)
+		s = (" "*tab) + "cuerpo: \n" + @cuerpo.to_s(tab+1)
+	end
+end
+
+class For
+	attr_accessor :var, :inicio, :fin, :paso, :cuerpo
+
+	def initialize(var, inicio, fin, paso, cuerpo)
+		@var = var
+		@inicio = inicio
+		@fin = fin
+		@paso = paso
+		@cuerpo = cuerpo
+	end
+
+	def to_s(tab)
+		s = "Repeticion Determinada For: \n"
+		s = (" "*tab) + "iterador: \n" + (" "*tab) + @var.to_s(tab+1) 
+		s = (" "*tab) + "limite inferior: 1\n" + @inicio.to_s(tab+1)
+		s = (" "*tab) + "limite superior: \n" + @fin.to_s(tab+1)
+		s = (" "*tab) + "paso: \n" + @paso.to_s(tab+1)
+		s = (" "*tab) + "cuerpo: \n" + @cuerpo.to_s(tab+1)
+	end
 end
 
 class Bloque < Instruccion
 	attr_accessor :decl, :inst
+
+	def initialize(declaraciones, instrucciones)
+		@decl = declaraciones
+		@inst = instrucciones
+	end
+
+	def to_s(tab)
+		return "Bloque: \n" + (" "*tab) + "declaraciones: \n" + (" "*tab) +@decl.to_s(tab+1) + "instrucciones: \n" + (" "*tab) + @inst.to_s(tab+1)
+	end
 end
 
 class Declaraciones
@@ -69,67 +170,96 @@ end
 
 class Tipo
 
-	attr_accessor :nombre
+	attr_accessor :tipo
 
-	def initialize( nombre )
-		@nombre = nombre
+	def initialize( tipo )
+		@tipo = tipo
+	end
+
+	def to_s(tab)
+		return "Tipo: \n" + (" "*tab) + "nombre: " + @tipo.to_s()
 	end
 end
 
 class TipoNum < Tipo
-	def initialize( nombre )
-		super(nombre)
+	def initialize()
+		super("number")
 	end
 end
 
 class TipoBoolean < Tipo
-	def initialize( nombre )
-		super(nombre)
+	def initialize()
+		super("boolean")
 	end
 end
 
 class Literal
+	attr_accessor :valor, :tipo
 
-end
+	def initialize(valor, tipo)
+		@valor = valor
+		@tipo = tipo
+	end
 
-class LiteralNumerico < Literal
-end
-
-class LiteralBooleano < Literal
-end
-
-class Variable
-
-	attr_accessor :id
-
-	def initialize(id)
-		@id = id
+	def to_s(tab)
+		return @tipo + (" "*tab) + "valor: " + @valor.to_s()
 	end
 end
 
-class Entrada
+class LiteralNumerico < Literal
+
+	def initialize(valor)
+		super(valor, "Literal numerico: \n")
+	end
+end
+
+class LiteralBooleano < Literal
+	def initialize(valor)
+		super(valor, "Literal booleano: \n")
+	end
+end
+
+class Entrada < Instruccion
 
 	attr_accessor :var
     def initialize(var)
         @var = var
     end
+
+    def to_s(tab)
+    	return "Entrada: \n" (" "*tab) + @var.to_s(tab+1)
+    end
 end
 
-class Salida
+class Salida < Instruccion
 
-	attr_accessor :lista
+	attr_accessor :tipo, :lista
 
-	def initialize(lista)
+	def initialize(tipo, lista)
+		@tipo = tipo
         @lista = lista
+    end
+
+    def to_s(tab)
+    	aux = ""
+    	if @tipo == "LN"
+    		aux = "Salida con salto de linea: \n"
+    	else
+    		aux = "Salida: \n"
+    	end 
+    	return aux + (" "*tab) + @lista.to_s(tab+1)
     end
 end
 
 class Identificador
-	
 	attr_accessor :id
 
 	def initialize( id )
 		super(id)
+	end
+
+	def to_s(tab)
+		return "Identificador: \n" + (" "*tab) + "nombre: " + @id.to_s()
 	end
 end
 
@@ -140,113 +270,122 @@ class ExpresionBinaria
 		@op2 = op2
 		@oper = oper
 	end
+
+	def to_s()
+		return @oper + ": \n" + (" " * tab) + "lado izquierdo: \n" + @op1.to_s(tab+1) + "\n" + (" " * tab) + "lado derecho: \n" + @op2.to_s(tab+1)
+	end
 end
 
 class OpMultiplicacion < ExpresionBinaria
     def initialize(op1,op2)
-        super(op1, op2,"*")
+        super(op1, op2,"Multiplicacion")
     end
 end
 
 class OpSuma < ExpresionBinaria
     def initialize(op1,op2)
-        super(op1, op2,"+")
+        super(op1, op2,"Suma")
     end
 end
 
 class OpResta < ExpresionBinaria
     def initialize(op1,op2)
-        super(op1, op2,"-")
+        super(op1, op2,"Resta")
     end
 end
 
 class OpDivision < ExpresionBinaria
     def initialize(op1,op2)
-        super(op1, op2,"/")
+        super(op1, op2,"Division")
     end
 end
 
 class OpMod < ExpresionBinaria
     def initialize(op1,op2)
-        super(op1, op2,"mod")
+        super(op1, op2,"Mod")
     end
 end
 
 class OpDiv < ExpresionBinaria
     def initialize(op1,op2)
-        super(op1, op2,"div")
+        super(op1, op2,"Div")
     end
 end
 
 class OpModE < ExpresionBinaria
     def initialize(op1,op2)
-        super(op1, op2,"%")
+        super(op1, op2,"Mod")
     end
 end
 
 class OpEquivalente < ExpresionBinaria
     def initialize(op1,op2)
-        super(op1, op2,"==")
+        super(op1, op2,"Equivalente")
     end
 end
 
 class OpInequivalente < ExpresionBinaria
     def initialize(op1,op2)
-        super(op1, op2,"/=")
+        super(op1, op2,"Desigual")
     end
 end
 
 class OpMenor < ExpresionBinaria
     def initialize(op1,op2)
-        super(op1, op2,"<")
+        super(op1, op2,"Menor que")
     end
 end
 
 class OpMenorIgual < ExpresionBinaria
     def initialize(op1,op2)
-        super(op1, op2,"<=")
+        super(op1, op2,"Menor o igual que")
     end
 end
 
 class OpMayor < ExpresionBinaria
     def initialize(op1,op2)
-        super(op1, op2,">")
+        super(op1, op2,"Mayor que")
     end
 end
 
 class OpMayorIgual < ExpresionBinaria
     def initialize(op1,op2)
-        super(op1, op2,">=")
+        super(op1, op2,"Mayor o igual que")
     end
 end
 
 class OpAnd < ExpresionBinaria
     def initialize(op1,op2)
-        super(op1, op2,"and")
+        super(op1, op2,"And")
     end
 end
 
 class OpOr < ExpresionBinaria
     def initialize(op1,op2)
-        super(op1, op2,"or")
+        super(op1, op2,"Or")
     end
 end
 
 class ExpresionUnaria
-	attr_accessor :op
-	def initialize(op)
+	attr_accessor :op, :oper
+	def initialize(op, oper)
 		@op = op
+		@oper = oper
+	end
+
+	def to_s()
+		return @oper + ": \n" + (" " * tab) + "lado derecho: \n" + @op.to_s(tab+1)
 	end
 end
 
 class OpUMINUS < ExpresionUnaria
     def initialize(op)
-        super(op,"-")
+        super(op,"UMINUS")
     end
 end
 
 class OpNot < ExpresionUnaria
-	def initialize(op1)
-        super(op1, op2,"-")
+	def initialize(op)
+        super(op,"Not")
     end
 end
