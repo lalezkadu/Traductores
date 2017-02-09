@@ -228,7 +228,7 @@ class ErrorSintactico < RuntimeError
     end
 
     def to_s
-        return "fila: " + @token.fila.to_s() + ", columna: " + @token.columna.to_s() + ", token inesperado: #{@token.token} \n"   
+        "fila: " + @token.fila.to_s() + ", columna: " + @token.columna.to_s() + ", token inesperado: #{@token.token} \n"   
     end
 end
 
@@ -249,6 +249,6 @@ end
 	end
 
 	def on_error(id, token, pila)
-	    raise SyntacticError::new(token)
+	    raise ErrorSintactico.new(token)
 	end
 	
