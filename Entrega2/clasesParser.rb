@@ -12,13 +12,60 @@
 class Estructura
 	attr_accessor :funciones, :programa
 
-	def initialize(funciones,programa)
+	def initialize(funciones, programa)
 		@funciones = funciones
 		@programa = programa
+
+	end
+
+	def to_s()
+		return "Estructura: \n" + " funciones: \n" + @funciones.to_s(2) + " programa: \n" + @programa.to_s(2)
+	end
+end
+
+class Funcion
+	attr_accessor :nombre, :parametros, :instrucciones, :tipo, :funcion
+
+	def initialize(nombre, parametros, instrucciones, tipo = "", funcion = "")
+		@nombre = nombre
+		@parametros = parametros
+		@instrucciones = instrucciones
+		@tipo = tipo
+		@funcion = funcion
 	end
 
 	def to_s(tab)
-		return @funciones.to_s(tab+1) + @programa.to_s(tab+1)
+		s = "Funcion: \n"
+		s << (" "*tab) + "nombre: " + @nombre.to_s()
+		s << (" "*tab) + "parametros: \n" + @parametros.to_s(tab+1)
+		s << (" "*tab) + "instrucciones: \n" +@instrucciones.to_s(tab+1)
+		if @tipo != ""
+			s << (" "*tab) + "retorna: " + @tipo.to_s(tab+1)
+		end
+		if @funcion != ""
+			s << @funcion.to_s(tab)
+		end
+		return s
+	end
+end
+
+class Parametros
+	attr_accessor :tipo, :id, :parametros
+
+	def initialize(tipo, id, parametros = "")
+		@tipo = tipo
+		@id = id
+		@instrucciones = instrucciones
+	end
+
+	def to_s(tab)
+		s = "Parametro:\n"
+		s << (" "*tab) + "tipo: " + @tipo.to_s(tab+1)
+		s << (" "*tab) + "id: " + @id.to_s(tab+1)
+		if @parametros != ""
+			s << @parametros.to_s(tab)
+		end
+		return s
 	end
 end
 
@@ -30,41 +77,62 @@ class Programa
 	end
 
 	def to_s(tab)
-		return "Programa: \n" + (" "*tab) + "bloque: " + @bloque.to_s(tab+1)
+		return "Programa:\n" + (" "*tab) + "bloques:\n" + @bloque.to_s(tab+1)
 	end
 end
 
-class Funcion
-	attr_accessor :nombre, :parametros, :cuerpo, :tipo
+class Bloque
+	attr_accessor :declaraciones, :instrucciones
 
-	def initialize(nombre, parametros, cuerpo, tipo = "")
-		@nombre = nombre
-		@parametros = parametros
-		@cuerpo = cuerpo
-		@tipo = tipo
+	def initialize(declaraciones, instrucciones)
+		@declaraciones = declaraciones
+		@instrucciones = instrucciones
 	end
 
 	def to_s(tab)
-		s = "Funcion: \n"
-		s = (" "*tab) + "nombre: \n" + @nombre.to_s(tab+1)
-		s = (" "*tab) + "parametros: \n" + @parametros.to_s(tab+1)
-		s = (" "*tab) + "cuerpo: \n" +@cuerpo.to_s(tab+1)
-		if @tipo != ""
-			s = (" "*tab) + "retorna: " + @tipo.to_s(tab+1)
+		return "Bloque:\n" + (" "*tab) + "declaraciones:\n" + @declaraciones.to_s(tab+1) + (" "*tab) + "instrucciones:\n" @instrucciones.to_s(tab+1)
+	end
+end
+
+
+class Declaracion
+	attr_accessor :tipo, :ids, :declaraciones
+
+	def initialize(tipo, ids, declaraciones = "")
+		@tipo = tipo
+		@ids = ids
+		@declaraciones = declaraciones
+	end
+
+	def to_s(tab)
+		s = "Declaracion: \n"
+		s << (" "*tab) + @tipo.to_s(tab+1)
+		s << (" "*tab) + @ids.to_s(tab+1)
+		if declaraciones != ""
+			s << @declaraciones.to_s(tab)
 		end
 		return s
 	end
+
 end
 
-class Parametros
-	attr_accessor :param
+class ListaID
+	attr_accessor :id, :var
 
-	def initialize(parametros)
-		@param = parametros
+	def initialize(id, var = "")
+		@id = id
+		@var = var
 	end
-end
 
-class Declaracion
+	def to_s(tab)
+		s = "Identificador: \n"
+		s << (" "*tab) + "Nombre: " + @id.to_s()
+		if var != ""
+			s << @var.to_s(tab)
+		end
+		return s
+	end
+	
 end
 
 class Instruccion
@@ -89,8 +157,8 @@ class Asignacion < Instruccion
 
     def to_s(tab)
     	s = "Asignacion: \n"
-    	s = (" "*tab) + "lado derecho: \n" + @id.to_s(tab+1)
-    	s = (" "*tab) + "lado izquierdo: \n" + @valor.to_s(tab+1)
+    	s << (" "*tab) + "lado derecho: \n" + @id.to_s(tab+1)
+    	s << (" "*tab) + "lado izquierdo: \n" + @valor.to_s(tab+1)
     end
 end
 
@@ -104,8 +172,8 @@ class RepeticionI < Instruccion
 
 	def to_s(tab)
 		s = "Repeticion Indeterminada: \n"
-		s = (" "*tab) + "expresion: \n" + @exp.to_s(tab+1)
-		s = (" "*tab) + "cuerpo: \n" + @cuerpo.to_s(tab+1)
+		s << (" "*tab) + "expresion: \n" + @exp.to_s(tab+1)
+		s << (" "*tab) + "cuerpo: \n" + @cuerpo.to_s(tab+1)
 	end
 end
 
@@ -120,8 +188,8 @@ class Repeat
 
 	def to_s(tab)
 		s = "Repeticion Determinada Repeat: \n"
-		s = (" "*tab) + "numero repeticiones: \n" + @repeticiones.to_s(tab+1)
-		s = (" "*tab) + "cuerpo: \n" + @cuerpo.to_s(tab+1)
+		s << (" "*tab) + "numero repeticiones: \n" + @repeticiones.to_s(tab+1)
+		s << (" "*tab) + "cuerpo: \n" + @cuerpo.to_s(tab+1)
 	end
 end
 
@@ -138,24 +206,11 @@ class For
 
 	def to_s(tab)
 		s = "Repeticion Determinada For: \n"
-		s = (" "*tab) + "iterador: \n" + (" "*tab) + @var.to_s(tab+1) 
-		s = (" "*tab) + "limite inferior: 1\n" + @inicio.to_s(tab+1)
-		s = (" "*tab) + "limite superior: \n" + @fin.to_s(tab+1)
-		s = (" "*tab) + "paso: \n" + @paso.to_s(tab+1)
-		s = (" "*tab) + "cuerpo: \n" + @cuerpo.to_s(tab+1)
-	end
-end
-
-class Bloque < Instruccion
-	attr_accessor :decl, :inst
-
-	def initialize(declaraciones, instrucciones)
-		@decl = declaraciones
-		@inst = instrucciones
-	end
-
-	def to_s(tab)
-		return "Bloque: \n" + (" "*tab) + "declaraciones: \n" + (" "*tab) +@decl.to_s(tab+1) + "instrucciones: \n" + (" "*tab) + @inst.to_s(tab+1)
+		s << (" "*tab) + "iterador: \n" + (" "*tab) + @var.to_s(tab+1) 
+		s << (" "*tab) + "limite inferior: 1\n" + @inicio.to_s(tab+1)
+		s << (" "*tab) + "limite superior: \n" + @fin.to_s(tab+1)
+		s << (" "*tab) + "paso: \n" + @paso.to_s(tab+1)
+		s << (" "*tab) + "cuerpo: \n" + @cuerpo.to_s(tab+1)
 	end
 end
 
