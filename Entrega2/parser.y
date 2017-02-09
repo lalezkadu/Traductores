@@ -63,7 +63,7 @@ rule
 		;
 	# Reglas para escribir bloque de instrucciones
 	BLOQUE
-		: 'with' DECLARACION 'do' INSTRUCCIONES 'end' ';'	# Aqui se agrego ;
+		: 'with' LISTA_DECLARACION 'do' INSTRUCCIONES 'end' ';'	# Aqui se agrego ;
 		| 'do' INSTRUCCIONES 'end' ';'	# Y aqui...
 		;
 	# Reglas para reconocer una lista de declaraciones
@@ -74,7 +74,6 @@ rule
 	# Reglas para reconocer una declaracion
 	DECLARACION
 		: TIPO LISTA_ID ';'
-		| TIPO ID ';'
 		| TIPO ASIGNACION 
 		;
 	LISTA_ID
@@ -131,41 +130,41 @@ rule
 		;
 	# Reglas para reconocer las repeticiones determinadas
 	REPETICION_D
-		: 'for' ID 'from' EXPRESION 'to' EXPRESION 'by' EXPRESION 'do' INSTRUCCIONES 'end'
-		| 'for' ID 'from' EXPRESION 'to' EXPRESION 'do' INSTRUCCIONES 'end'
-		| 'repeat' EXPRESION 'times' INSTRUCCIONES 'end'
+		: 'for' ID 'from' EXPRESION 'to' EXPRESION 'by' EXPRESION 'do' INSTRUCCIONES 'end' { result = For.new(val[], val[], val[], val[])}
+		| 'for' ID 'from' EXPRESION 'to' EXPRESION 'do' INSTRUCCIONES 'end' { result = For.new(val[], val[], val[], val[]) }
+		| 'repeat' EXPRESION 'times' INSTRUCCIONES 'end'	{ result = Repeat.new(val[1],val[3]) }
 		;
 	# Reglas para reconocer las repeticiones indeterminadas
 	REPETICION_I
-		: 'while' EXPRESION 'do' INSTRUCCIONES 'end'
+		: 'while' EXPRESION 'do' INSTRUCCIONES 'end'	{ result = RepeticionI.new(val[1],val[3]) }
 		;
 	# Reglas para reconocer las expresiones
 	EXPRESION
 		: LITERAL
-		| VARIABLE
-		| '(' EXPRESION ')'
-		| 'not' EXPRESION 			{ result = ExpresionUnaria.new(val[1], "NEGACION") }
-		| '-' EXPRESION =UMINUS 	{ result = ExpresionUnaria.new(val[1], "NEGATIVO") }
-		| EXPRESION '*' EXPRESION 	{ result = ExpresionBinaria.new(val[0], val[2], "MULTIPLICACION") }
-		| EXPRESION '/' EXPRESION 	{ result = ExpresionBinaria.new(val[0], val[2], "DIVISIONEX") }
-		| EXPRESION '%' EXPRESION 	{ result = ExpresionBinaria.new(val[0], val[2], "RESTOEX") }
-		| EXPRESION 'div' EXPRESION { result = ExpresionBinaria.new(val[0], val[2], "DIVISION") }
-		| EXPRESION 'mod' EXPRESION { result = ExpresionBinaria.new(val[0], val[2], "MODULO") }
-		| EXPRESION '+' EXPRESION 	{ result = ExpresionBinaria.new(val[0], val[2], "SUMA") }
-		| EXPRESION '-' EXPRESION 	{ result = ExpresionBinaria.new(val[0], val[2], "RESTA") }
-		| EXPRESION '==' EXPRESION 	{ result = ExpresionBinaria.new(val[0], val[2], "IGUALDAD") }
-		| EXPRESION '/=' EXPRESION 	{ result = ExpresionBinaria.new(val[0], val[2], "DESIGUALDAD") }
-		| EXPRESION '>=' EXPRESION 	{ result = ExpresionBinaria.new(val[0], val[2], "MAYORIGUAL") }
-		| EXPRESION '<=' EXPRESION 	{ result = ExpresionBinaria.new(val[0], val[2], "MENORIGUAL") }
-		| EXPRESION '>' EXPRESION 	{ result = ExpresionBinaria.new(val[0], val[2], "MAYOR") }
-		| EXPRESION '<' EXPRESION 	{ result = ExpresionBinaria.new(val[0], val[2], "MENOR") }
-		| EXPRESION 'and' EXPRESION { result = ExpresionBinaria.new(val[0], val[2], "CONJUNCION") }
-		| EXPRESION 'or' EXPRESION 	{ result = ExpresionBinaria.new(val[0], val[2], "DISYUNCION") }
+		| ID 						{ result = Identificador.new(val[0])}
+		| '(' EXPRESION ')'			{ result = val[1] }
+		| 'not' EXPRESION 			{ result = OpNot.new(val[1]) }
+		| '-' EXPRESION = UMINUS 	{ result = OpUMINUS.new(val[1]) }
+		| EXPRESION '*' EXPRESION 	{ result = OpMultiplicacion.new(val[0], val[2]) }
+		| EXPRESION '/' EXPRESION 	{ result = OpDivisionE.new(val[0], val[2]) }
+		| EXPRESION '%' EXPRESION 	{ result = OpModE.new(val[0], val[2]) }
+		| EXPRESION 'div' EXPRESION { result = OpDivision.new(val[0], val[2]) }
+		| EXPRESION 'mod' EXPRESION { result = OpMod.new(val[0], val[2]) }
+		| EXPRESION '+' EXPRESION 	{ result = OpSuma.new(val[0], val[2]) }
+		| EXPRESION '-' EXPRESION 	{ result = OpResta.new(val[0], val[2]) }
+		| EXPRESION '==' EXPRESION 	{ result = OpEquivalente.new(val[0], val[2]) }
+		| EXPRESION '/=' EXPRESION 	{ result = OpDesigual.new(val[0], val[2]) }
+		| EXPRESION '>=' EXPRESION 	{ result = OpMayorIgual.new(val[0], val[2]) }
+		| EXPRESION '<=' EXPRESION 	{ result = OpMenorIgual.new(val[0], val[2]) }
+		| EXPRESION '>' EXPRESION 	{ result = OpMayor.new(val[0], val[2]) }
+		| EXPRESION '<' EXPRESION 	{ result = OpMenor.new(val[0], val[2]) }
+		| EXPRESION 'and' EXPRESION { result = OpAnd.new(val[0], val[2]) }
+		| EXPRESION 'or' EXPRESION 	{ result = OpOr.new(val[0], val[2]) }
 		;
 	# Reglas de tipos de datos
 	TIPO
-		: 'number' {result = "number"}
-		| 'boolean' {result = "boolean"}
+		: 'number' {result = TipoNumber.new() }
+		| 'boolean' {result = TipoBoolean.new() }
 		;
 	# Reglas de Literales
 	LITERAL
@@ -174,16 +173,12 @@ rule
 		;
 	# Reglas de Literales Numericos
 	LITERAL_NUMBER
-		: NUMBER
+		: NUMBER 	{ result = LiteralNumerico.new(val[0]) }
 		;
 	# Reglas de Literales Booleanos
 	LITERAL_BOOLEAN
-		: 'true'
-		| 'false'
-		;
-	# Reglas para reconocer variables
-	VARIABLE 
-		: ID {result = Variable.new(val[0])}
+		: 'true'	{ result = LiteralBooleano.new("true") }
+		| 'false'	{ result = LiteralBooleano.new("false") }
 		;
 end
 
