@@ -12,7 +12,7 @@
 class Estructura
 	attr_accessor :funciones, :programa
 
-	def initialize(funciones, programa = nil)
+	def initialize(funciones, programa)
 		@funciones = funciones
 		@programa = programa
 	end
@@ -22,14 +22,15 @@ class Estructura
 		if @funciones != nil
 			s << " funciones: \n" + @funciones.to_s(2) 
 		end
-		s << " programa: \n" + @programa.to_s(2) + "\n"
+		s << " programa: \n" + @programa.to_s(2)
+		return s + "\n"
 	end
 end
 
 class Funcion
 	attr_accessor :nombre, :parametros, :instrucciones, :tipo, :funcion
 
-	def initialize( funcion = nil, nombre, parametros, instrucciones, tipo = nil)
+	def initialize(funcion, nombre, parametros, instrucciones, tipo)
 		@nombre = nombre
 		@parametros = parametros
 		@instrucciones = instrucciones
@@ -55,7 +56,7 @@ end
 class Parametros
 	attr_accessor :tipo, :id, :parametros
 
-	def initialize(tipo, id, parametros = nil)
+	def initialize(tipo, id, parametros)
 		@tipo = tipo
 		@id = id
 		@instrucciones = instrucciones
@@ -95,7 +96,7 @@ class Bloque
 	def to_s(tab)
 		s = "Bloque:\n" 
 		s << (" "*tab) + "declaraciones:\n" + @declaraciones.to_s(tab+1) 
-		s << (" "*tab) + "instrucciones:\n" @instrucciones.to_s(tab+1)
+		s << (" "*tab) + "instrucciones:\n" + @instrucciones.to_s(tab+1)
 		return s + "\n"
 	end
 end
@@ -103,7 +104,7 @@ end
 class Lista_Declaraciones
 	attr_accessor :declaracion, :declaraciones
 
-	def initialize( declaraciones = nil ,declaracion )
+	def initialize(declaraciones, declaracion)
 		@declaracion = declaracion
 		@declaraciones = declaraciones
 	end
@@ -111,6 +112,9 @@ class Lista_Declaraciones
 	def to_s(tab)
 		s = "Lista de declaraciones: \n"
 		s << (" "*tab) + @declaracion
+		return s + "\n"
+	end
+end
 
 class Declaracion
 	attr_accessor :tipo, :declaracion
@@ -132,7 +136,7 @@ end
 class Identificador
 	attr_accessor :id, :var
 
-	def initialize(id, var = nil)
+	def initialize(id, var)
 		@id = id
 		@var = var
 	end
@@ -158,13 +162,14 @@ class Secuenciacion
 	def to_s(tab)
 		s = "Secuencia de instrucciones: \n"
 		s << (" "*tab) + @secuencia.to_s(tab+1)
-		return
+		return s + "\n"
 	end
+end
 
 class Instruccion
 	attr_accessor :instruccion, :instrucciones
 
-	def initialize( instrucciones = nil, instruccion)
+	def initialize(instrucciones, instruccion)
 		@instruccion = instruccion
 		@instrucciones = instrucciones
 	end
@@ -182,7 +187,7 @@ end
 class Condicional
 	attr_accessor :condicion, :instif, :instelse
 
-	def initialize( condicion, instif, instelse = nil)
+	def initialize(condicion, instif, instelse)
 		@condicion = condicion
 		@instif	= instif
 		@instelse = instelse
@@ -201,7 +206,7 @@ end
 class RepeticionI
 	attr_accessor :condicion, :instrucciones
 
-	def initialize( condicion, instrucciones)
+	def initialize(condicion, instrucciones)
 		@condicion = condicion
 		@instrucciones = instrucciones
 	end
@@ -218,7 +223,7 @@ class Repeat
 
 	attr_accessor :repeticiones, :instrucciones
 
-	def initialize( repeticiones, instrucciones)
+	def initialize(repeticiones, instrucciones)
 		@repeticiones = repeticiones
 		@instrucciones = instrucciones
 	end
@@ -227,6 +232,7 @@ class Repeat
 		s = "Repeticion Determinada Repeat: \n"
 		s << (" "*tab) + "numero de repeticiones: \n" + @repeticiones.to_s(tab+1)
 		s << (" "*tab) + "instrucciones: \n" + @instrucciones.to_s(tab+1)
+		return s + "\n"
 	end
 end
 
@@ -275,7 +281,7 @@ class Entrada
     end
 
     def to_s(tab)
-    	return "Entrada: \n" (" "*tab) + @id.to_s(tab+1) + "\n"  
+    	return "Entrada: \n" + (" "*tab) + @id.to_s(tab+1) + "\n"  
     end
 end
 
@@ -295,7 +301,8 @@ class Salida
     	else
     		s = "Salida: \n"
     	end 
-    	return s + (" "*tab) + "impresiones: \n" + @ids.to_s(tab+1) + "\n"
+    	s << (" "*tab) + "impresiones: \n" + @ids.to_s(tab+1)
+    	return s + "\n"
     end
 end
 
@@ -319,8 +326,9 @@ class Escribir
 			s << (" "*tab) + @cadenas.to_s(tab)
 		end
 
-		return s
+		return s + "\n"
 	end
+end
 
 class ExpresionBinaria
 	attr_accessor :op1, :op2, :oper
