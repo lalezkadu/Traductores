@@ -29,7 +29,7 @@ end
 class Funcion
 	attr_accessor :nombre, :parametros, :instrucciones, :tipo, :funcion
 
-	def initialize(nombre, parametros, instrucciones, tipo = nil, funcion = nil)
+	def initialize( funcion = nil, nombre, parametros, instrucciones, tipo = nil)
 		@nombre = nombre
 		@parametros = parametros
 		@instrucciones = instrucciones
@@ -103,7 +103,14 @@ end
 class Lista_Declaraciones
 	attr_accessor :declaracion, :declaraciones
 
+	def initialize( declaraciones = nil ,declaracion )
+		@declaracion = declaracion
+		@declaraciones = declaraciones
+	end
 
+	def to_s(tab)
+		s = "Lista de declaraciones: \n"
+		s << (" "*tab) + @declaracion
 
 class Declaracion
 	attr_accessor :tipo, :declaracion
@@ -157,7 +164,7 @@ class Secuenciacion
 class Instruccion
 	attr_accessor :instruccion, :instrucciones
 
-	def initialize(instruccion, instrucciones = nil)
+	def initialize( instrucciones = nil, instruccion)
 		@instruccion = instruccion
 		@instrucciones = instrucciones
 	end
@@ -194,7 +201,7 @@ end
 class RepeticionI
 	attr_accessor :condicion, :instrucciones
 
-	def initialize(condicion, instrucciones)
+	def initialize( condicion, instrucciones)
 		@condicion = condicion
 		@instrucciones = instrucciones
 	end
@@ -211,7 +218,7 @@ class Repeat
 
 	attr_accessor :repeticiones, :instrucciones
 
-	def initialize(repeticiones, instrucciones)
+	def initialize( repeticiones, instrucciones)
 		@repeticiones = repeticiones
 		@instrucciones = instrucciones
 	end
@@ -295,7 +302,7 @@ end
 class Escribir
 	attr_accessor :expresion, :cadenas
 
-	def initialize( expresion, cadenas = nil)
+	def initialize( cadenas = nil, expresion)
 		@expresion = expresion
 		@cadenas = cadenas
 	end
