@@ -342,3 +342,15 @@ class Asignacion < ExpresionBinaria
     	s << (" "*tab) + "lado izquierdo: \n" + @valor.to_s(tab+1)
     end
 end
+
+class Identificador 	# ????????????????????????????????????
+	attr_accessor :id
+
+	def initialize( id )
+		super(id)
+	end
+
+	def to_s(tab)
+		return "Identificador: \n" + (" "*tab) + "nombre: " + @id.to_s()
+	end
+end

@@ -19,7 +19,7 @@ class Estructura
 	end
 
 	def to_s()
-		return "Estructura: \n" + " funciones: \n" + @funciones.to_s(2) + " programa: \n" + @programa.to_s(2)
+		return "Estructura: \n" + " funciones: \n" + @funciones.to_s(2) + " programa: \n" + @programa.to_s(2) + "\n"
 	end
 end
 
@@ -45,7 +45,7 @@ class Funcion
 		if @funcion != ""
 			s << @funcion.to_s(tab)
 		end
-		return s
+		return s + "\n"
 	end
 end
 
@@ -65,7 +65,7 @@ class Parametros
 		if @parametros != ""
 			s << @parametros.to_s(tab)
 		end
-		return s
+		return s + "\n"
 	end
 end
 
@@ -77,7 +77,7 @@ class Programa
 	end
 
 	def to_s(tab)
-		return "Programa:\n" + (" "*tab) + "bloques:\n" + @bloque.to_s(tab+1)
+		return "Programa:\n" + (" "*tab) + "bloques:\n" + @bloque.to_s(tab+1) + "\n"
 	end
 end
 
@@ -90,7 +90,10 @@ class Bloque
 	end
 
 	def to_s(tab)
-		return "Bloque:\n" + (" "*tab) + "declaraciones:\n" + @declaraciones.to_s(tab+1) + (" "*tab) + "instrucciones:\n" @instrucciones.to_s(tab+1)
+		s = "Bloque:\n" 
+		s << (" "*tab) + "declaraciones:\n" + @declaraciones.to_s(tab+1) 
+		s << (" "*tab) + "instrucciones:\n" @instrucciones.to_s(tab+1)
+		return s + "\n"
 	end
 end
 
@@ -111,12 +114,12 @@ class Declaracion
 		if declaraciones != ""
 			s << @declaraciones.to_s(tab)
 		end
-		return s
+		return s + "\n"
 	end
 
 end
 
-class ListaID
+class Identificador
 	attr_accessor :id, :var
 
 	def initialize(id, var = "")
@@ -130,7 +133,7 @@ class ListaID
 		if var != ""
 			s << @var.to_s(tab)
 		end
-		return s
+		return s + "\n"
 	end
 	
 end
@@ -149,113 +152,128 @@ class Instruccion
 		if instrucciones != ""
 			s << @instrucciones.to_s(tab)
 		end
-		return s
+		return s + "\n"
 	end
 end
 
-class Condicional < Instruccion
-	attr_accessor :exp, :instif, :instelse
+class Condicional
+	attr_accessor :condicion, :instif, :instelse
 
-	def initialize(exp,instif,instelse)
-
+	def initialize( condicion, instif, instelse = "")
+		@condicion = condicion
+		@instif	= instif
 		@instelse = instelse
 	end
+
+	def to_s(tab)
+		s = "Condicional:\n"
+		s << (" "*tab) + "Instrucciones TRUE:\n" + @instif.to_s(tab+1)
+		if instelse != ""
+			s << (" "*tab) + "Instrucciones FALSE:\n" + @instelse.to_s(tab+1)
+		end
+		return s + "\n"
+	end
 end
 
-class RepeticionI < Instruccion
-	attr_accessor :exp, :cuerpo
+class RepeticionI
+	attr_accessor :condicion, :instrucciones
 
-	def initialize(exp, cuerpo)
-		@exp = exp
-		@cuerpo = cuerpo
+	def initialize(condicion, instrucciones)
+		@condicion = condicion
+		@instrucciones = instrucciones
 	end
 
 	def to_s(tab)
 		s = "Repeticion Indeterminada: \n"
-		s << (" "*tab) + "expresion: \n" + @exp.to_s(tab+1)
-		s << (" "*tab) + "cuerpo: \n" + @cuerpo.to_s(tab+1)
+		s << (" "*tab) + "condicion: \n" + @exp.to_s(tab+1)
+		s << (" "*tab) + "instrucciones: \n" + @instrucciones.to_s(tab+1)
+		return s + "\n"
 	end
 end
 
 class Repeat
 
-	attr_accessor :repeticiones, :cuerpo
+	attr_accessor :repeticiones, :instrucciones
 
-	def initialize(repeticiones, cuerpo)
+	def initialize(repeticiones, instrucciones)
 		@repeticiones = repeticiones
-		@cuerpo = cuerpo
+		@instrucciones = instrucciones
 	end
 
 	def to_s(tab)
 		s = "Repeticion Determinada Repeat: \n"
-		s << (" "*tab) + "numero repeticiones: \n" + @repeticiones.to_s(tab+1)
-		s << (" "*tab) + "cuerpo: \n" + @cuerpo.to_s(tab+1)
+		s << (" "*tab) + "numero de repeticiones: \n" + @repeticiones.to_s(tab+1)
+		s << (" "*tab) + "instrucciones: \n" + @instrucciones.to_s(tab+1)
 	end
 end
 
 class For
-	attr_accessor :var, :inicio, :fin, :paso, :cuerpo
+	attr_accessor :id, :inicio, :fin, :paso, :instrucciones
 
-	def initialize(var, inicio, fin, paso, cuerpo)
-		@var = var
+	def initialize(id, inicio, fin, paso = 1, instrucciones)
+		@id = id
 		@inicio = inicio
 		@fin = fin
 		@paso = paso
-		@cuerpo = cuerpo
+		@instrucciones = instrucciones
 	end
 
 	def to_s(tab)
 		s = "Repeticion Determinada For: \n"
-		s << (" "*tab) + "iterador: \n" + (" "*tab) + @var.to_s(tab+1) 
-		s << (" "*tab) + "limite inferior: 1\n" + @inicio.to_s(tab+1)
-		s << (" "*tab) + "limite superior: \n" + @fin.to_s(tab+1)
-		s << (" "*tab) + "paso: \n" + @paso.to_s(tab+1)
-		s << (" "*tab) + "cuerpo: \n" + @cuerpo.to_s(tab+1)
+		s << (" "*tab) + "iterador: " + @id.to_s()
+
+		if @inicio.is_a? Numeric
+			s << (" "*tab) + "limite inferior: " + @inicio.to_s()
+		else
+			s << (" "*tab) + "limite inferior: \n" + @inicio.to_s(tab+1)
+		end
+
+		if @fin.is_a? Numeric
+			s << (" "*tab) + "limite superior: " + @fin.to_s()
+		else
+			s << (" "*tab) + "limite superior: \n" + @fin.to_s(tab+1)
+		end
+
+		if @paso.is_a? Numeric
+			s << (" "*tab) + "paso: " + @paso.to_s()
+		else
+			s << (" "*tab) + "paso: \n" + @paso.to_s(tab+1)
+		end
+		s << (" "*tab) + "instrucciones: \n" + @instrucciones.to_s(tab+1)
+		return s + "\n"
 	end
 end
 
-class Entrada < Instruccion
-
-	attr_accessor :var
-    def initialize(var)
-        @var = var
-    end
-
-    def to_s(tab)
-    	return "Entrada: \n" (" "*tab) + @var.to_s(tab+1)
-    end
-end
-
-class Salida < Instruccion
-
-	attr_accessor :tipo, :lista
-
-	def initialize(tipo, lista)
-		@tipo = tipo
-        @lista = lista
-    end
-
-    def to_s(tab)
-    	aux = ""
-    	if @tipo == "LN"
-    		aux = "Salida con salto de linea: \n"
-    	else
-    		aux = "Salida: \n"
-    	end 
-    	return aux + (" "*tab) + @lista.to_s(tab+1)
-    end
-end
-
-class Identificador
+class Entrada
 	attr_accessor :id
 
-	def initialize( id )
-		super(id)
-	end
+    def initialize(id)
+        @id = id
+    end
 
-	def to_s(tab)
-		return "Identificador: \n" + (" "*tab) + "nombre: " + @id.to_s()
-	end
+    def to_s(tab)
+    	return "Entrada: \n" (" "*tab) + @id.to_s(tab+1) + "\n"  
+    end
+end
+
+class Salida 
+
+	attr_accessor :tipo, :ids
+
+	def initialize(tipo, ids)
+		@tipo = tipo
+        @ids = ids
+    end
+
+    def to_s(tab)
+    	s = ""
+    	if @tipo == "LN"
+    		s = "Salida con salto de linea: \n"
+    	else
+    		s = "Salida: \n"
+    	end 
+    	return s + (" "*tab) + "impresiones: \n" + @ids.to_s(tab+1) + "\n"
+    end
 end
 
 class ExpresionBinaria
@@ -267,7 +285,10 @@ class ExpresionBinaria
 	end
 
 	def to_s()
-		return @oper + ": \n" + (" " * tab) + "lado izquierdo: \n" + @op1.to_s(tab+1) + "\n" + (" " * tab) + "lado derecho: \n" + @op2.to_s(tab+1)
+		s = @oper + ": \n" 
+		s << (" " * tab) + "lado izquierdo: \n" + @op1.to_s(tab+1)
+		s << (" " * tab) + "lado derecho: \n" + @op2.to_s(tab+1)
+		return s + "\n"
 	end
 end
 
@@ -375,7 +396,7 @@ class ExpresionUnaria
 	end
 
 	def to_s()
-		return @oper + ": \n" + (" " * tab) + "lado derecho: \n" + @op.to_s(tab+1)
+		return @oper + ": \n" + (" " * tab) + "lado derecho: \n" + @op.to_s(tab+1) + "\n"
 	end
 end
 
@@ -400,7 +421,7 @@ class Tipo
 	end
 
 	def to_s(tab)
-		return "Tipo: \n" + (" "*tab) + "nombre: " + @tipo.to_s()
+		return "Tipo: \n" + (" "*tab) + "nombre: " + @tipo.to_s() + "\n"
 	end
 end
 
@@ -425,7 +446,7 @@ class Literal
 	end
 
 	def to_s(tab)
-		return @tipo + (" "*tab) + "valor: " + @valor.to_s()
+		return @tipo + (" "*tab) + "valor: " + @valor.to_s() + "\n"
 	end
 end
 
