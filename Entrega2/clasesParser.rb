@@ -308,7 +308,12 @@ class Escribir
 			s << (" "*tab) + "objeto: \n" + @expresion.to_s(tab+1)
 		end
 
-		if cadenas 
+		if cadenas != nil
+			s << (" "*tab) + @cadenas.to_s(tab)
+		end
+
+		return s
+	end
 
 class ExpresionBinaria
 	attr_accessor :op1, :op2, :oper
