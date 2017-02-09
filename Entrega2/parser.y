@@ -144,24 +144,25 @@ rule
 		: LITERAL
 		| VARIABLE
 		| '(' EXPRESION ')'
-		| 'not' EXPRESION 			{ result = ExpresionUnaria.new(val[1], "NEGACION") }
-		| '-' EXPRESION =UMINUS 	{ result = ExpresionUnaria.new(val[1], "NEGATIVO") }
-		| EXPRESION '*' EXPRESION 	{ result = ExpresionBinaria.new(val[0], val[2], "MULTIPLICACION") }
-		| EXPRESION '/' EXPRESION 	{ result = ExpresionBinaria.new(val[0], val[2], "DIVISIONEX") }
-		| EXPRESION '%' EXPRESION 	{ result = ExpresionBinaria.new(val[0], val[2], "RESTOEX") }
-		| EXPRESION 'div' EXPRESION { result = ExpresionBinaria.new(val[0], val[2], "DIVISION") }
-		| EXPRESION 'mod' EXPRESION { result = ExpresionBinaria.new(val[0], val[2], "MODULO") }
-		| EXPRESION '+' EXPRESION 	{ result = ExpresionBinaria.new(val[0], val[2], "SUMA") }
-		| EXPRESION '-' EXPRESION 	{ result = ExpresionBinaria.new(val[0], val[2], "RESTA") }
-		| EXPRESION '==' EXPRESION 	{ result = ExpresionBinaria.new(val[0], val[2], "IGUALDAD") }
-		| EXPRESION '/=' EXPRESION 	{ result = ExpresionBinaria.new(val[0], val[2], "DESIGUALDAD") }
-		| EXPRESION '>=' EXPRESION 	{ result = ExpresionBinaria.new(val[0], val[2], "MAYORIGUAL") }
-		| EXPRESION '<=' EXPRESION 	{ result = ExpresionBinaria.new(val[0], val[2], "MENORIGUAL") }
-		| EXPRESION '>' EXPRESION 	{ result = ExpresionBinaria.new(val[0], val[2], "MAYOR") }
-		| EXPRESION '<' EXPRESION 	{ result = ExpresionBinaria.new(val[0], val[2], "MENOR") }
-		| EXPRESION 'and' EXPRESION { result = ExpresionBinaria.new(val[0], val[2], "CONJUNCION") }
-		| EXPRESION 'or' EXPRESION 	{ result = ExpresionBinaria.new(val[0], val[2], "DISYUNCION") }
+		| 'not' EXPRESION 			{ result = ExpresionUnaria.new(val[1]) }
+		| '-' EXPRESION =UMINUS 	{ result = ExpresionUnaria.new(val[1]) }
+		| EXPRESION '*' EXPRESION 	{ result = OpMultiplicacion.new(val[0],val[2]) }
+		| EXPRESION '/' EXPRESION 	{ result = OpDivision.new(val[0], val[2]) }
+		| EXPRESION '%' EXPRESION 	{ result = OpMod.new(val[0], val[2]) }
+		| EXPRESION 'div' EXPRESION { result = OpDiv.new(val[0], val[2]) }
+		| EXPRESION 'mod' EXPRESION { result = OpModE.new(val[0], val[2]) }
+		| EXPRESION '+' EXPRESION 	{ result = OpSuma.new(val[0],val[2]) }
+		| EXPRESION '-' EXPRESION 	{ result = OpResta.new(val[0], val[2]) }
+		| EXPRESION '==' EXPRESION 	{ result = OpEquivalente.new(val[0], val[2]) }
+		| EXPRESION '/=' EXPRESION 	{ result = OpInequivalente.new(val[0], val[2]) }
+		| EXPRESION '>=' EXPRESION 	{ result = OpMayorIgual.new(val[0], val[2]) }
+		| EXPRESION '<=' EXPRESION 	{ result = OpMenorIgual.new(val[0], val[2]) }
+		| EXPRESION '>' EXPRESION 	{ result = OpMayor.new(val[0], val[2]) }
+		| EXPRESION '<' EXPRESION 	{ result = OpMenor.new(val[0], val[2]) }
+		| EXPRESION 'and' EXPRESION { result = OpAnd.new(val[0], val[2]) }
+		| EXPRESION 'or' EXPRESION 	{ result = OpOr.new(val[0], val[2]) }
 		;
+
 	# Reglas de tipos de datos
 	TIPO
 		: 'number' {result = "number"}
