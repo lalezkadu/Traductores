@@ -42,7 +42,7 @@ rule
 		;
 	# Reglas para reconocer funciones antes del codigo del programa
 	FUNCIONES
-		: FUNCION FUNCIONES 	{ result = Funcion.new(val[1]) }
+		: FUNCIONES FUNCION 	{ result = Funcion.new(val[1]) }
 		| FUNCION 				{ result = val[0] }
 		;
 	# Reglas para escribir funciones
@@ -68,7 +68,7 @@ rule
 		;
 	# Reglas para reconocer una lista de declaraciones
 	LISTA_DECLARACION 							
-		: DECLARACION ';' LISTA_DECLARACION		{ result = ListaDeclaracion.new(val[0], val[2]) }	
+		: LISTA_DECLARACION ';' DECLARACION		{ result = ListaDeclaracion.new(val[0], val[2]) }	
 		| DECLARACION ';'						{ result = ListaDeclaracion.new(val[0], nil) }
 		;
 	# Reglas para reconocer una declaracion
@@ -77,8 +77,8 @@ rule
 		| TIPO ASIGNACION  		{ result = Declaracion.new(val[0], nil, val[1]) }
 		;
 	LISTA_ID
-		: ID 					{ result = Identificador.new(val[0], nil) }
-		| ID ',' LISTA_ID 		{ result = Identificador.new(val[0], val[2]) }
+		: ID  					{ result = Identificador.new(val[0], nil) }
+		| LISTA_ID ',' ID 		{ result = Identificador.new(val[0], val[2]) }
 		;
 	# Regla para reconocer una lista de instrucciones
 	INSTRUCCIONES
@@ -87,7 +87,7 @@ rule
 		;
 	# Reglas para reconocer secuencias de instrucciones
 	SECUENCIACION
-		: INSTRUCCION INSTRUCCIONES 	{ result = Instruccion.new(val[0], val[1]) }
+		: INSTRUCCIONES INSTRUCCION 	{ result = Instruccion.new(val[0], val[1]) }
 		;
 	# Reglas para reconocer una instruccion
 	INSTRUCCION
