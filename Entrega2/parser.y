@@ -165,6 +165,7 @@ rule
 		| EXPRESION 'and' EXPRESION { result = OpAnd.new(val[0], val[2]) }
 		| EXPRESION 'or' EXPRESION 	{ result = OpOr.new(val[0], val[2]) }
 		;
+
 	# Reglas de tipos de datos
 	TIPO
 		: 'number' 	{ result = TipoNumber.new() }
