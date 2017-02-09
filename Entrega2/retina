@@ -1,3 +1,4 @@
 #!/bin/bash
 chmod +x retina
+racc -v -o parser.rb parser.y
 ruby MainRtn.rb $1

@@ -9,6 +9,13 @@
 # Archivo que contiene todas las clases del Arbol Sintactico mediante el  
 # analizador sintactico generado por Racc.
 
+	# Reglas para reconocer llamadas a funciones
+	LLAMADA
+		: ID '(' ')'
+		| ID '(' EXPRESION ')'
+		| ID '(' LISTA_ID ')'
+		;
+
 class AST
 end
 

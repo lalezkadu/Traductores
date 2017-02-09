@@ -229,7 +229,7 @@ class LexerRtn
 
 	def next_token()
     	tok = @tk.shift
-    	tok == nil ? [false,false] : token.token
+    	tok == nil ? [false,false] : tok.token
   	end
 end
 

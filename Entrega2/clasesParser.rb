@@ -289,14 +289,14 @@ class Salida
 
 	attr_accessor :tipo, :ids
 
-	def initialize(tipo, ids)
+	def initialize(ids, tipo)
 		@tipo = tipo
         @ids = ids
     end
 
     def to_s(tab)
     	s = ""
-    	if @tipo == "LN"
+    	if @tipo != nil
     		s = "Salida con salto de linea: \n"
     	else
     		s = "Salida: \n"
@@ -309,7 +309,7 @@ end
 class Escribir
 	attr_accessor :expresion, :cadenas
 
-	def initialize( cadenas = nil, expresion)
+	def initialize(cadenas = nil, expresion)
 		@expresion = expresion
 		@cadenas = cadenas
 	end

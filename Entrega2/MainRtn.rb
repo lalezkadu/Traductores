@@ -9,6 +9,7 @@
 # Main del lexer del lenguaje Retina
 
 require_relative 'lexer'
+require_relative 'parser'
 
 # MAIN
 def main
@@ -34,19 +35,25 @@ def main
 	    end
 	end
 
-	# Tokenizar entrada
-	lex =  LexerRtn.new(programa)
-
-	# Imprimir tokens
-	if lex.error.empty?
-		for tok in lex.tk
-	    	tok.imprimir
-    	end
-	else
-		for tok in lex.error
-			tok.imprimir
+	begin
+		# Tokenizar entrada
+		lex =  LexerRtn.new(programa)
+		begin
+			for tok in lex.error
+				tok.imprimir
+			end
+			pars = ParserRtn.new(lex)
+	    	arbolS = pars.parse
+	    	arbol.to_s()
+	    	rescue ErrorSintactico => e
+	      		puts e
+	      		return
 		end
-	end
+
+	rescue ErrorSintactico => e
+      	puts e
+      	return
+     end
 end
 
 main
