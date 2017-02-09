@@ -17,7 +17,7 @@ class ParserRtn
 			'else' 'while' 'for' 'from' 'to' 'by' 'repeat' 'times' 'func' 
 			'begin' 'return' 'number' 'boolean' 'true' 'false' 'not' 'and' 'or'
 			'==' '/=' '>=' '<=' '>' '<' '+' '-' '*' '/' '%' 'div' 'mod' '=' ';' 
-			',' '->' '(' ')' ID STRING NUMBER
+			',' '->' '(' ')' ID STRING
 
 	# Declaramos la precedencia explicita de los operadores,
 	prechigh
@@ -31,33 +31,34 @@ class ParserRtn
 	preclow
 
 	# Comienzo de la gramatica.
-	start ESTRUCTURA
+	start Inicio
 	# Se definen las reglas de la gramatica que reconoce el lenguaje Retina.
 
 rule
-	# Reglas para reconocer la estructura de un programa
+
+	# Reglas para la estructura de un programa
 	ESTRUCTURA
 		: FUNCIONES PROGRAMA
 		| PROGRAMA
 		;
-	# Reglas para reconocer funciones antes del codigo del programa
+	# Reglas para escribir funciones antes del codigo del programa
 	FUNCIONES
 		: FUNCION FUNCIONES
 		| FUNCION
 		;
 	# Reglas para escribir funciones
 	FUNCION
-		: ID '(' ')' 'begin' INSTRUCCIONES 'end' ';'
-		| ID '(' PARAMETROS ')' 'begin' INSTRUCCIONES 'end' ';'
-		| ID '(' ')' '->' TIPO 'begin' INSTRUCCIONES 'end' ';'
-		| ID '(' PARAMETROS ')' '->' TIPO 'begin' INSTRUCCIONES 'end' ';'
+		: ID '(' ')' 'begin' INSTRUCCION 'end' ';'
+		| ID '(' PARAMETROS ')' 'begin' INSTRUCCION 'end' ';'
+		| ID '(' ')' '->' TIPO 'begin' INSTRUCCION 'end' ';'
+		| ID '(' PARAMETROS ')' '->' TIPO 'begin' INSTRUCCION 'end' ';'
 		;
-	# Reglas para reconocer los parametros de una funcion
+	# Reglas para definir los parametros de una funcion
 	PARAMETROS
 		: TIPO ID ',' PARAMETROS
 		| TIPO ID
 		;
-	# Reglas para reconocer codigos en programas
+	# Reglas para escribir codigos en programas
 	PROGRAMA
 		: 'program' BLOQUE 'end' ';'
 		;
@@ -66,20 +67,14 @@ rule
 		: 'with' DECLARACION 'do' INSTRUCCIONES 'end' ';'	# Aqui se agrego ;
 		| 'do' INSTRUCCIONES 'end' ';'	# Y aqui...
 		;
-	# Reglas para reconocer una lista de declaraciones
 	LISTA_DECLARACION
 		: DECLARACION ';' LISTA_DECLARACION
 		| DECLARACION ';'
 		;
-	# Reglas para reconocer una declaracion
 	DECLARACION
-		: TIPO LISTA_ID ';'
-		| TIPO ID ';'
+		: TIPO LISTA_ID ',' ID
+		| TIPO ID
 		| TIPO ASIGNACION 
-		;
-	LISTA_ID
-		: ID
-		| LISTA_ID ',' ID
 		;
 	# Regla para reconocer una lista de instrucciones
 	INSTRUCCIONES
@@ -100,11 +95,11 @@ rule
 		| REPETICION_I ';'
 		| BLOQUE
 		;
-	# Reglas para reconocer asignaciones
+	# Reglas para realizar asignaciones
 	ASIGNACION
-		: EXPRESION '=' EXPRESION
+		: ID '=' EXPRESION
 		;
-	# Reglas para reconocer la lectura por entrada estandar
+	# Reglas para leer por la entrada estandar
 	ENTRADA
 		: 'read' ID
 		;
@@ -120,7 +115,7 @@ rule
 		| ESCRIBIR ',' EXPRESION
 		| ESCRIBIR ',' STRING
 		;
-	# Reglas para reconocer la instruccion condicional
+	# Reglas de la instruccion condicional
 	CONDICIONAL
 		: 'if' EXPRESION 'then' INSTRUCCION COND
 		;
@@ -139,11 +134,10 @@ rule
 	REPETICION_I
 		: 'while' EXPRESION 'do' INSTRUCCIONES 'end'
 		;
-	# Reglas para reconocer las expresiones
+	# Reglas para reconoces las expresiones
 	EXPRESION
 		: LITERAL
 		| VARIABLE
-		| '(' EXPRESION ')'
 		| 'not' EXPRESION
 		| UMINUS EXPRESION
 		| EXPRESION '*' EXPRESION
@@ -164,8 +158,8 @@ rule
 		;
 	# Reglas de tipos de datos
 	TIPO
-		: 'number' {result = "number"}
-		| 'boolean' {result = "boolean"}
+		: number {result = "number"}
+		| boolean {result = "boolean"}
 		;
 	# Reglas de Literales
 	LITERAL
@@ -174,7 +168,7 @@ rule
 		;
 	# Reglas de Literales Numericos
 	LITERAL_NUMBER
-		: NUMBER
+		: 'number' 
 		;
 	# Reglas de Literales Booleanos
 	LITERAL_BOOLEAN
@@ -186,25 +180,3 @@ rule
 		: ID {result = Variable.new(val[0])}
 		;
 end
-
-# Aqui terminamos la gramatica
-
----- inner ----
-
-load 'MainRtn.rb'
-load 'clasesParser.rb'
-	
-	def initialize(tokens)
-		@tokens = tokens
-		@yydebug = true
-	end 
-
-	def parse
-		do_parse
-	end
-
-	def next_token
-		@tokens.next_token
-	end
-
-	
