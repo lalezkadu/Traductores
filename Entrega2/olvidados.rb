@@ -316,3 +316,29 @@ class Estructura
 		return @funciones.to_s(tab+1) + @programa.to_s(tab+1)
 	end
 end
+
+class Operacion		# PARA FUTURA INTEGRACION COMO PADRE DE LOS DEMAS
+	attr_accessor :operIzq, :operador, :operDer
+
+	def initialize(operIzq, operador, operDer)
+		@operIzq = operIzq
+		@operador = operador
+		@operDer = operDer
+	end
+
+end
+
+class Asignacion < ExpresionBinaria
+    attr_accessor :id, :valor
+
+    def initialize(id, val)
+        @id = id
+        @valor = valor
+    end
+
+    def to_s(tab)
+    	s = "Asignacion: \n"
+    	s << (" "*tab) + "lado derecho: \n" + @id.to_s(tab+1)
+    	s << (" "*tab) + "lado izquierdo: \n" + @valor.to_s(tab+1)
+    end
+end

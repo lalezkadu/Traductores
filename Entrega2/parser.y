@@ -98,11 +98,11 @@ rule
 		| CONDICIONAL ';'
 		| REPETICION_D ';'
 		| REPETICION_I ';'
-		| BLOQUE
+		| BLOQUE 			# Verificar si puede haber un bloque dentro de otro
 		;
 	# Reglas para reconocer asignaciones
 	ASIGNACION
-		: EXPRESION '=' EXPRESION
+		: ID '=' EXPRESION 	# Cambio de expresion del lado izquierdo por ID
 		;
 	# Reglas para reconocer la lectura por entrada estandar
 	ENTRADA
