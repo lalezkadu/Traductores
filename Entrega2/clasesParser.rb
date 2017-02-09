@@ -12,21 +12,24 @@
 class Estructura
 	attr_accessor :funciones, :programa
 
-	def initialize(funciones, programa)
+	def initialize(funciones, programa = nil)
 		@funciones = funciones
 		@programa = programa
-
 	end
 
 	def to_s()
-		return "Estructura: \n" + " funciones: \n" + @funciones.to_s(2) + " programa: \n" + @programa.to_s(2) + "\n"
+		s = "Estructura: \n" 
+		if @funciones != nil
+			s << " funciones: \n" + @funciones.to_s(2) 
+		end
+		s << " programa: \n" + @programa.to_s(2) + "\n"
 	end
 end
 
 class Funcion
 	attr_accessor :nombre, :parametros, :instrucciones, :tipo, :funcion
 
-	def initialize(nombre, parametros, instrucciones, tipo = "", funcion = "")
+	def initialize(nombre, parametros, instrucciones, tipo = nil, funcion = nil)
 		@nombre = nombre
 		@parametros = parametros
 		@instrucciones = instrucciones
@@ -39,10 +42,10 @@ class Funcion
 		s << (" "*tab) + "nombre: " + @nombre.to_s()
 		s << (" "*tab) + "parametros: \n" + @parametros.to_s(tab+1)
 		s << (" "*tab) + "instrucciones: \n" +@instrucciones.to_s(tab+1)
-		if @tipo != ""
+		if @tipo != nil
 			s << (" "*tab) + "retorna: " + @tipo.to_s(tab+1)
 		end
-		if @funcion != ""
+		if @funcion != nil
 			s << @funcion.to_s(tab)
 		end
 		return s + "\n"
@@ -52,7 +55,7 @@ end
 class Parametros
 	attr_accessor :tipo, :id, :parametros
 
-	def initialize(tipo, id, parametros = "")
+	def initialize(tipo, id, parametros = nil)
 		@tipo = tipo
 		@id = id
 		@instrucciones = instrucciones
@@ -62,7 +65,7 @@ class Parametros
 		s = "Parametro:\n"
 		s << (" "*tab) + "tipo: " + @tipo.to_s(tab+1)
 		s << (" "*tab) + "id: " + @id.to_s(tab+1)
-		if @parametros != ""
+		if @parametros != nil
 			s << @parametros.to_s(tab)
 		end
 		return s + "\n"
@@ -97,23 +100,23 @@ class Bloque
 	end
 end
 
+class Lista_Declaraciones
+	attr_accessor :declaracion, :declaraciones
+
+
 
 class Declaracion
-	attr_accessor :tipo, :ids, :declaraciones
+	attr_accessor :tipo, :declaracion
 
-	def initialize(tipo, ids, declaraciones = "")
+	def initialize(tipo, declaracion)
 		@tipo = tipo
-		@ids = ids
-		@declaraciones = declaraciones
+		@declaracion = declaracion
 	end
 
 	def to_s(tab)
 		s = "Declaracion: \n"
 		s << (" "*tab) + @tipo.to_s(tab+1)
-		s << (" "*tab) + "identificadores:\n" + @ids.to_s(tab+1)
-		if declaraciones != ""
-			s << @declaraciones.to_s(tab)
-		end
+		s << (" "*tab) + "identificadores:\n" + @declaracion.to_s(tab+1)
 		return s + "\n"
 	end
 
@@ -122,7 +125,7 @@ end
 class Identificador
 	attr_accessor :id, :var
 
-	def initialize(id, var = "")
+	def initialize(id, var = nil)
 		@id = id
 		@var = var
 	end
@@ -130,7 +133,7 @@ class Identificador
 	def to_s(tab)
 		s = "Identificador: \n"
 		s << (" "*tab) + "nombre: " + @id.to_s()
-		if var != ""
+		if var != nil
 			s << @var.to_s(tab)
 		end
 		return s + "\n"
@@ -138,10 +141,23 @@ class Identificador
 	
 end
 
+class Secuenciacion
+	attr_accessor :secuencia
+
+	def initialize(secuencia)
+		@secuencia = secuencia
+	end
+
+	def to_s(tab)
+		s = "Secuencia de instrucciones: \n"
+		s << (" "*tab) + @secuencia.to_s(tab+1)
+		return
+	end
+
 class Instruccion
 	attr_accessor :instruccion, :instrucciones
 
-	def initialize(instruccion, instrucciones = "")
+	def initialize(instruccion, instrucciones = nil)
 		@instruccion = instruccion
 		@instrucciones = instrucciones
 	end
@@ -149,7 +165,7 @@ class Instruccion
 	def to_s(tab)
 		s = "Instruccion:\n"
 		s << (" "*tab) + @instruccion.to_s(tab+1)
-		if instrucciones != ""
+		if instrucciones != nil
 			s << @instrucciones.to_s(tab)
 		end
 		return s + "\n"
@@ -159,7 +175,7 @@ end
 class Condicional
 	attr_accessor :condicion, :instif, :instelse
 
-	def initialize( condicion, instif, instelse = "")
+	def initialize( condicion, instif, instelse = nil)
 		@condicion = condicion
 		@instif	= instif
 		@instelse = instelse
@@ -168,7 +184,7 @@ class Condicional
 	def to_s(tab)
 		s = "Condicional:\n"
 		s << (" "*tab) + "Instrucciones TRUE:\n" + @instif.to_s(tab+1)
-		if instelse != ""
+		if instelse != nil
 			s << (" "*tab) + "Instrucciones FALSE:\n" + @instelse.to_s(tab+1)
 		end
 		return s + "\n"
@@ -275,6 +291,24 @@ class Salida
     	return s + (" "*tab) + "impresiones: \n" + @ids.to_s(tab+1) + "\n"
     end
 end
+
+class Escribir
+	attr_accessor :expresion, :cadenas
+
+	def initialize( expresion, cadenas = nil)
+		@expresion = expresion
+		@cadenas = cadenas
+	end
+
+	def to_s(tab)
+		s = "Impresion: "
+		if expresion.is_a? String
+			s << (" "*tab) + "objeto: " + @expresion
+		else
+			s << (" "*tab) + "objeto: \n" + @expresion.to_s(tab+1)
+		end
+
+		if cadenas 
 
 class ExpresionBinaria
 	attr_accessor :op1, :op2, :oper
