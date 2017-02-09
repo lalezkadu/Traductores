@@ -92,8 +92,8 @@ rule
 		;
 	# Reglas para reconocer una instruccion
 	INSTRUCCION
-		: ASIGNACION ';'
-		| ENTRADA ';'
+		: ASIGNACION ';'	{ result = val[0] }
+		| ENTRADA ';'		
 		| SALIDA ';'
 		| CONDICIONAL ';'
 		| REPETICION_D ';'
@@ -127,7 +127,7 @@ rule
 	# Reglas para reconocer como termina el condicional
 	COND
 		: 'end' {result = nil}
-		| 'else' INSTRUCCION 'end' {result = result = val[2]}
+		| 'else' INSTRUCCION 'end' {result = val[2]}
 		;
 	# Reglas para reconocer las repeticiones determinadas
 	REPETICION_D
@@ -144,23 +144,23 @@ rule
 		: LITERAL
 		| VARIABLE
 		| '(' EXPRESION ')'
-		| 'not' EXPRESION
-		| UMINUS EXPRESION
-		| EXPRESION '*' EXPRESION
-		| EXPRESION '/' EXPRESION
-		| EXPRESION '%' EXPRESION
-		| EXPRESION 'div' EXPRESION
-		| EXPRESION 'mod' EXPRESION
-		| EXPRESION '+' EXPRESION
-		| EXPRESION '-' EXPRESION
-		| EXPRESION '==' EXPRESION
-		| EXPRESION '/=' EXPRESION
-		| EXPRESION '>=' EXPRESION
-		| EXPRESION '<=' EXPRESION
-		| EXPRESION '>' EXPRESION
-		| EXPRESION '<' EXPRESION
-		| EXPRESION 'and' EXPRESION
-		| EXPRESION 'or' EXPRESION
+		| 'not' EXPRESION 			{ result = ExpresionUnaria.new(val[1], "NEGACION") }
+		| '-' EXPRESION =UMINUS 	{ result = ExpresionUnaria.new(val[1], "NEGATIVO") }
+		| EXPRESION '*' EXPRESION 	{ result = ExpresionBinaria.new(val[0], val[2], "MULTIPLICACION") }
+		| EXPRESION '/' EXPRESION 	{ result = ExpresionBinaria.new(val[0], val[2], "DIVISIONEX") }
+		| EXPRESION '%' EXPRESION 	{ result = ExpresionBinaria.new(val[0], val[2], "RESTOEX") }
+		| EXPRESION 'div' EXPRESION { result = ExpresionBinaria.new(val[0], val[2], "DIVISION") }
+		| EXPRESION 'mod' EXPRESION { result = ExpresionBinaria.new(val[0], val[2], "MODULO") }
+		| EXPRESION '+' EXPRESION 	{ result = ExpresionBinaria.new(val[0], val[2], "SUMA") }
+		| EXPRESION '-' EXPRESION 	{ result = ExpresionBinaria.new(val[0], val[2], "RESTA") }
+		| EXPRESION '==' EXPRESION 	{ result = ExpresionBinaria.new(val[0], val[2], "IGUALDAD") }
+		| EXPRESION '/=' EXPRESION 	{ result = ExpresionBinaria.new(val[0], val[2], "DESIGUALDAD") }
+		| EXPRESION '>=' EXPRESION 	{ result = ExpresionBinaria.new(val[0], val[2], "MAYORIGUAL") }
+		| EXPRESION '<=' EXPRESION 	{ result = ExpresionBinaria.new(val[0], val[2], "MENORIGUAL") }
+		| EXPRESION '>' EXPRESION 	{ result = ExpresionBinaria.new(val[0], val[2], "MAYOR") }
+		| EXPRESION '<' EXPRESION 	{ result = ExpresionBinaria.new(val[0], val[2], "MENOR") }
+		| EXPRESION 'and' EXPRESION { result = ExpresionBinaria.new(val[0], val[2], "CONJUNCION") }
+		| EXPRESION 'or' EXPRESION 	{ result = ExpresionBinaria.new(val[0], val[2], "DISYUNCION") }
 		;
 	# Reglas de tipos de datos
 	TIPO
