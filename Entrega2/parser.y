@@ -101,7 +101,7 @@ class ParserRtn
 	INSTRUCCION
 		: ASIGNACION ';'		{ result = val[0] }
 		| ENTRADA ';'			{ result = val[0] }
-		| SALIDENTIFICADORA ';'			{ result = val[0] }
+		| SALIDA ';'			{ result = val[0] }
 		| CONDICIONAL ';'		{ result = val[0] }
 		| REPETICION_D ';'		{ result = val[0] }
 		| REPETICION_I ';'		{ result = val[0] }
@@ -127,19 +127,22 @@ class ParserRtn
 		;
 
 	# Reglas para escribir por la salida estandar
-	SALIDENTIFICADORA
+	SALIDA
 		: 'write' ESCRIBIR 		{ result = Salida.new(val[1], nil) }
 		| 'writeln' ESCRIBIR 	{ result = Salida.new(val[1], "SALTO") }
 		;
 
 	# Reglas para escribir expresiones o strings por la salida estandar
 	ESCRIBIR
-		: EXPRESION 				{ result = val[0] }
-		| 'TkString' 					{ result = val[0] }
-		| ESCRIBIR ',' EXPRESION 	{ result = Escribir.new() }
-		| ESCRIBIR ',' 'TkString' 		{ result = Escribir.new()}
+		: EXPRESION 				{ result = Escribir.new(nil, val[0]) }
+		| STRING 					{ result = Escribir.new(nil, val[0]) }
+		| ESCRIBIR ',' EXPRESION 	{ result = Escribir.new(val[0], val[2]) }
+		| ESCRIBIR ',' STRING 		{ result = Escribir.new(val[0], val[2]) }
 		;
 
+	STRING 
+		: 'TkString'				{ result = Str.new(val[0]) }
+		;
 	# Reglas para reconocer la instruccion condicional
 	CONDICIONAL
 		: 'if' EXPRESION 'then' INSTRUCCION COND 	{ result = Condicional.new(val[1],val[3],val[4]) }

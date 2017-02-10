@@ -16,5 +16,8 @@ program
 			forward(50);
 			rotatel(90);
 		end;
+		for x from 1.5 to 4.5 do
+            read x;
+        end;
 	end;
 end;

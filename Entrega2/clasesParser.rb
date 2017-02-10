@@ -23,7 +23,7 @@ class Estructura
 			s << "  funciones: \n" + @funciones.to_s(4) 
 		end
 		s << "  programa: \n" + @programa.to_s(4)
-		return s + "\n"
+		return s
 	end
 end
 
@@ -112,7 +112,7 @@ class Programa
 	end
 
 	def to_s(tab)
-		return (" "*tab) + "Programa:\n" + (" "*(tab+2)) + "bloques:\n" + @bloque.to_s(tab+4) + "\n"
+		return (" "*tab) + "Programa:\n" + (" "*(tab+2)) + "bloques:\n" + @bloque.to_s(tab+4)
 	end
 end
 
@@ -128,7 +128,7 @@ class Bloque
 		s = (" "*tab) + "Bloque:\n" 
 		s << (" "*(tab+2)) + "declaraciones:\n" + @declaraciones.to_s(tab+4) 
 		s << (" "*(tab+2)) + "instrucciones:\n" + @instrucciones.to_s(tab+4)
-		return s + "\n"
+		return s
 	end
 end
 
@@ -142,11 +142,11 @@ class ListaDeclaracion
 
 	def to_s(tab)
 		s = ""
-		s << @declaracion.to_s(tab) + "\n"
+		s << @declaracion.to_s(tab)
 		if @declaraciones != nil
 			s << @declaraciones.to_s(tab)
 		end
-		return s + "\n"
+		return s
 	end
 end
 
@@ -162,7 +162,7 @@ class Declaracion
 		s = (" "*tab) + "Declaracion: \n"
 		s << (" "*(tab+2)) + "tipo: \n" + @tipo.to_s(tab+4) 
 		s << (" "*(tab+2)) + "identificadores:\n" + @declaracion.to_s(tab+4)
-		return s + "\n"
+		return s
 	end
 
 end
@@ -179,9 +179,9 @@ class ListaId
 		s = (" "*tab) + "Identificadores: \n"
 		s << @id.to_s(tab+2)
 		if ids != nil
-			s << @ids.to_s(tab+2)
+			s << @ids.to_s(tab)
 		end
-		return s + "\n"
+		return s
 	end
 end
 
@@ -261,7 +261,7 @@ class Condicional
 		if instelse != nil
 			s << (" "*(tab+2)) + "Instrucciones Else:\n" + @instelse.to_s(tab+4)
 		end
-		return s + "\n"
+		return s
 	end
 end
 
@@ -277,7 +277,7 @@ class RepeticionI
 		s = (" "*tab) + "Repeticion Indeterminada: \n"
 		s << (" "*(tab+2)) + "condicion: \n" + @exp.to_s(tab+4)
 		s << (" "*(tab+2)) + "instrucciones: \n" + @instrucciones.to_s(tab+4)
-		return s + "\n"
+		return s
 	end
 end
 
@@ -294,29 +294,33 @@ class Repeat
 		s = (" "*tab) + "Repeticion Determinada Repeat: \n"
 		s << (" "*(tab+2)) + "numero de repeticiones: \n" + @repeticiones.to_s(tab+4)
 		s << (" "*(tab+2)) + "instrucciones: \n" + @instrucciones.to_s(tab+4)
-		return s + "\n"
+		return s
 	end
 end
 
 class For
 	attr_accessor :id, :inicio, :fin, :paso, :instrucciones
 
-	def initialize(id, inicio, fin, paso = 1, instrucciones)
+	def initialize(id, inicio, fin, paso, instrucciones)
 		@id = id
 		@inicio = inicio
 		@fin = fin
-		@paso = paso
+		if paso == nil
+			@paso = LiteralNumerico.new(1)
+		else
+			@paso = paso
+		end
 		@instrucciones = instrucciones
 	end
 
 	def to_s(tab)
 		s = (" "*tab) + "Repeticion Determinada For: \n"
-		s << (" "*(tab+2)) + "iterador: " + @id.to_s() + "\n"
+		s << (" "*(tab+2)) + "iterador: \n" + @id.to_s(tab+4)
 		s << (" "*(tab+2)) + "limite inferior: \n" + @inicio.to_s(tab+4)
 		s << (" "*(tab+2)) + "limite superior: \n" + @fin.to_s(tab+4)
 		s << (" "*(tab+2)) + "paso: \n" + @paso.to_s(tab+4)
 		s << (" "*(tab+2)) + "instrucciones: \n" + @instrucciones.to_s(tab+4)
-		return s + "\n"
+		return s
 	end
 end
 
@@ -332,6 +336,7 @@ class Entrada
     end
 end
 
+# NO SIRVEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
 class Salida 
 
 	attr_accessor :tipo, :ids
@@ -353,6 +358,7 @@ class Salida
     end
 end
 
+# NOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
 class Escribir
 	attr_accessor :expresion, :cadenas
 
@@ -362,18 +368,31 @@ class Escribir
 	end
 
 	def to_s(tab)
-		s = (" "*tab) + "Impresion: "
-		if expresion.is_a? String
-			s << (" "*(tab+2)) + "objeto: " + @expresion
-		else
-			s << (" "*(tab+2)) + "objeto: \n" + @expresion.to_s(tab+4)
-		end
+		s = (" "*tab) + "Impresion: \n"
+		#if expresion.is_a? String
+		#s << (" "*(tab+2)) + "objeto: " + @expresion
+		#else
+		#	s << (" "*(tab+2)) + "objeto: \n" + @expresion.to_s(tab+4)
+		#end
 
 		if cadenas != nil
-			s << (" "*tab) + @cadenas.to_s(tab)
+			s << (" "*(tab+2)) + @cadenas.to_s(tab)
 		end
 
 		return s + "\n"
+	end
+end
+
+# NOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+class Str
+	attr_accessor :str
+
+	def initialize(str)
+		@str = str
+	end
+
+	def to_s(tab)
+		s = (" "*tab) + "string: " + @str.to_s()
 	end
 end
 
