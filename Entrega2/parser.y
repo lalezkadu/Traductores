@@ -39,7 +39,7 @@ class ParserRtn
 
 	# Reglas para reconocer funciones antes del codigo del programa
 	FUNCIONES
-		: FUNCIONES FUNCION 	{ result = ListaFunciones.new(val[0], val[1]) }
+		: FUNCION FUNCIONES 	{ result = ListaFunciones.new(val[1], val[0]) }
 		| FUNCION 				{ result = val[0] }
 		;
 

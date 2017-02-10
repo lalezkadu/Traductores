@@ -30,7 +30,7 @@ end
 class ListaFunciones
 	attr_accessor :funciones, :funcion
 
-	def initialize( funciones, funcion)
+	def initialize(funciones, funcion)
 		@funciones = funciones
 		@funcion = funcion
 	end
@@ -50,7 +50,7 @@ end
 class Funcion
 	attr_accessor :nombre, :parametros, :instrucciones, :tipo
 
-	def initialize( nombre, parametros, tipo, instrucciones)
+	def initialize(nombre, parametros, tipo, instrucciones)
 		@nombre = nombre
 		@parametros = parametros
 		@instrucciones = instrucciones
@@ -60,7 +60,9 @@ class Funcion
 	def to_s(tab)
 		s =  (" "*tab) + "Funcion: \n"
 		s << (" "*(tab+2)) + "nombre: \n" + @nombre.to_s(tab+4)
-		s << (" "*(tab+2)) + "parametros: \n" + @parametros.to_s(tab+4)
+		if parametros != nil
+			s << (" "*(tab+2)) + "parametros: \n" + @parametros.to_s(tab+4)
+		end
 		if @tipo != nil
 			s << (" "*(tab+2)) + "retorna: \n" + @tipo.to_s(tab+4)
 		end

@@ -4,7 +4,7 @@
 
 rule 1 ESTRUCTURA: FUNCIONES PROGRAMA
 rule 2 ESTRUCTURA: PROGRAMA
-rule 3 FUNCIONES: FUNCIONES FUNCION
+rule 3 FUNCIONES: FUNCION FUNCIONES
 rule 4 FUNCIONES: FUNCION
 rule 5 FUNCION: "func" IDENTIFICADOR "(" ")" "begin" INSTRUCCIONES "end" ";"
 rule 6 FUNCION: "func" IDENTIFICADOR "(" PARAMETROS ")" "begin" INSTRUCCIONES "end" ";"
@@ -256,13 +256,10 @@ state 1
 state 2
 
    1) ESTRUCTURA : FUNCIONES _ PROGRAMA
-   3) FUNCIONES : FUNCIONES _ FUNCION
 
-  "func"        shift, and go to state 5
   "program"     shift, and go to state 6
 
   PROGRAMA      go to state 8
-  FUNCION       go to state 9
 
 state 3
 
@@ -273,10 +270,14 @@ state 3
 
 state 4
 
+   3) FUNCIONES : FUNCION _ FUNCIONES
    4) FUNCIONES : FUNCION _
 
+  "func"        shift, and go to state 5
   $default      reduce using rule 4 (FUNCIONES)
 
+  FUNCION       go to state 4
+  FUNCIONES     go to state 9
 
 state 5
 
@@ -313,7 +314,7 @@ state 8
 
 state 9
 
-   3) FUNCIONES : FUNCIONES FUNCION _
+   3) FUNCIONES : FUNCION FUNCIONES _
 
   $default      reduce using rule 3 (FUNCIONES)
 

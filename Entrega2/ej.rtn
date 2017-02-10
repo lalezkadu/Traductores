@@ -1,4 +1,4 @@
-func circle(number radio)
+func circle()
 begin
 	arc(360, radio);
 end;
@@ -19,7 +19,7 @@ program
 		m = 9 and 0;
 		l = i or 9;
 		w = not(n);
-		
+
         with
             number j = 1;
         do
