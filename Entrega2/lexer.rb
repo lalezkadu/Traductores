@@ -80,7 +80,7 @@ class LexerRtn
 	#
 	# tk: Lista de tokens
 	# error: Lista de errores
-	attr_accessor :tk, :error
+	attr_accessor :tk, :error, :parserTk
 
 	# Crea el lexer.
 	#
@@ -90,6 +90,7 @@ class LexerRtn
 	def initialize programa
 		@tk = []
 		@error = []
+		@parserTk = []
 		lexer(programa)
 	end
 
@@ -193,6 +194,17 @@ class LexerRtn
 		for i in lexemas
 			crearToken(i.palabra,i.fila,i.columna)
 		end
+
+		for i in tk
+			if i.tipo == "TkNum" || i.tipo == "TkId"
+				@parserTk << [i.token,i.tipo]
+			else
+				@parserTk << [i.tipo,i.tipo]
+			end
+		end
+
+		puts @parserTk
+
 	end
 
 	# Crea el token y lo almacena en la lista de tokens o errores.
@@ -228,8 +240,12 @@ class LexerRtn
 	end
 
 	def next_token()
-    	tok = @tk.shift
-    	tok == nil ? [false,false] : tok.token
+		if not (parserTk.empty?)
+    		tok = @parserTk.shift
+    	else
+    		tok = [false,false]
+    	end
+    	return tok
   	end
 end
 

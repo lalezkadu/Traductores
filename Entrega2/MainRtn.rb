@@ -38,12 +38,17 @@ def main
 	begin
 		# Tokenizar entrada
 		lex =  LexerRtn.new(programa)
+		puts "Hello"
 		begin
 			for tok in lex.error
 				tok.imprimir
 			end
-			pars = ParserRtn.new(lex)
+			puts "Aqui"
+			pars = ParserRtn.new(lex.parserTk)
+			puts "Segurisimo..."
 	    	arbolS = pars.parse
+	    	puts "WTF? "
+	    	puts type(arbol)
 	    	arbol.to_s()
 	    	rescue ErrorSintactico => e
 	      		puts e

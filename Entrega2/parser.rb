@@ -36,7 +36,7 @@ module_eval(<<'...end parser.y/module_eval...', 'parser.y', 249)
 	end
 
 	def next_token
-		@tokens.next_token
+		@tokens.shift
 	end
 
 	def on_error(id, token, pila)

@@ -241,7 +241,7 @@ class ErrorSintactico < RuntimeError
 	end
 
 	def to_s
-		"fila: " + @token.fila.to_s() + ", columna: " + @token.columna.to_s() + ", token inesperado: #{@token.token} \n"   
+		"fila: " + @token.fila.to_s() + ", columna: " + @token.columna.to_s() + ", token inesperado: #{@token.token} \n"   # EL PROBLEMA ES ACA
 	end
 end
 
@@ -258,7 +258,7 @@ end
 	end
 
 	def next_token
-		@tokens.next_token
+		@tokens.shift
 	end
 
 	def on_error(id, token, pila)
