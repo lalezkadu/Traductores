@@ -224,7 +224,7 @@ class Instruccion
 
 	def to_s(tab)
 		s = (" "*tab) + "Instruccion:\n"
-		s << + @instruccion.to_s(tab+2)
+		s << @instruccion.to_s(tab+2)
 		if instrucciones != nil
 			s << @instrucciones.to_s(tab)
 		end
@@ -275,7 +275,7 @@ class RepeticionI
 
 	def to_s(tab)
 		s = (" "*tab) + "Repeticion Indeterminada: \n"
-		s << (" "*(tab+2)) + "condicion: \n" + @exp.to_s(tab+4)
+		s << (" "*(tab+2)) + "condicion: \n" + @condicion.to_s(tab+4)
 		s << (" "*(tab+2)) + "instrucciones: \n" + @instrucciones.to_s(tab+4)
 		return s
 	end
