@@ -12,12 +12,7 @@
 class ParserRtn
 
 	# Declaramos los tokens.
-	token
-			'program' 'end' 'read' 'write' 'writeln' 'with' 'do' 'if' 'then' 
-			'else' 'while' 'for' 'from' 'to' 'by' 'repeat' 'times' 'func' 
-			'begin' 'return' 'number' 'boolean' 'true' 'false' 'not' 'and' 'or'
-			'==' '/=' '>=' '<=' '>' '<' '+' '-' '*' '/' '%' 'div' 'mod' '=' ';' 
-			',' '->' '(' ')' ID STRING NUMBER
+	token 'TkString' 'TkNum' 'TkId'
 
 	# Declaramos la precedencia explicita de los operadores,
 	prechigh
@@ -38,28 +33,28 @@ class ParserRtn
 
 	# Reglas para reconocer la estructura de un programa
 	ESTRUCTURA
-		: FUNCIONES PROGRAMA 	{ result = Estructura.new(val[0], val[1]) }
-		| PROGRAMA 				{ result = Estructura.new(nil, val[0]) }
+		: FUNCIONES PROGRAMA 	{ return Estructura.new(val[0], val[1]) }
+		| PROGRAMA 				{ return Estructura.new(nil, val[0]) }
 		;
 
 	# Reglas para reconocer funciones antes del codigo del programa
 	FUNCIONES
-		: FUNCIONES FUNCION 	{ result = Funcion.new(val[1]) }
+		: FUNCIONES FUNCION 	{ result = ListaFunciones.new(val[0], val[1]) }
 		| FUNCION 				{ result = val[0] }
 		;
 
 	# Reglas para escribir funciones
 	FUNCION
-		: ID '(' ')' 'begin' INSTRUCCIONES 'end' ';'						{ result = Funcion.new(val[0], nil, nil, val[4], nil, nil) }
-		| ID '(' PARAMETROS ')' 'begin' INSTRUCCIONES 'end' ';'				{ result = Funcion.new(val[0], val[2], nil, val[6]) }
-		| ID '(' ')' '->' TIPO 'begin' INSTRUCCIONES 'end' ';'				{ result = Funcion.new(val[0]) }
-		| ID '(' PARAMETROS ')' '->' TIPO 'begin' INSTRUCCIONES 'end' ';'	{ result = Funcion.new() }
+		: 'func' IDENTIFICADOR '(' ')' 'begin' INSTRUCCIONES 'end' ';'						{ result = Funcion.new(val[1], nil, nil, val[5]) }
+		| 'func' IDENTIFICADOR '(' PARAMETROS ')' 'begin' INSTRUCCIONES 'end' ';'				{ result = Funcion.new(val[1], val[3], nil, val[6]) }
+		| 'func' IDENTIFICADOR '(' ')' '->' TIPO 'begin' INSTRUCCIONES 'end' ';'				{ result = Funcion.new(val[1], nil, val[5], val[7]) }
+		| 'func' IDENTIFICADOR '(' PARAMETROS ')' '->' TIPO 'begin' INSTRUCCIONES 'end' ';'	{ result = Funcion.new(val[1], val[3], val[6], val[8]) }
 		;
 
 	# Reglas para reconocer los parametros de una funcion
 	PARAMETROS
-		: TIPO ID ',' PARAMETROS 	{ result = Parametros.new(val[0],val[1],val[3]) }
-		| TIPO ID 					{ result = Parametros.new(val[0],val[1],nil) }
+		: TIPO IDENTIFICADOR ',' PARAMETROS 	{ result = Parametros.new(val[0],val[1],val[3]) }
+		| TIPO IDENTIFICADOR 					{ result = Parametros.new(val[0],val[1],nil) }
 		;
 
 	# Reglas para reconocer codigos en programas
@@ -81,20 +76,20 @@ class ParserRtn
 
 	# Reglas para reconocer una declaracion
 	DECLARACION
-		: TIPO LISTA_ID ';'		{ result = Declaracion.new(val[0], val[1], nil) }
-		| TIPO ASIGNACION  		{ result = Declaracion.new(val[0], nil, val[1]) }
+		: TIPO LISTA_IDENTIFICADOR ';'		{ result = Declaracion.new(val[0], val[1]) }
+		| TIPO ASIGNACION  		{ result = Declaracion.new(val[0], val[1]) }
 		;
 
 	# Reglas para reconocer una lista de identificadores
-	LISTA_ID
-		: ID  					{ result = Identificador.new(val[0], nil) }
-		| LISTA_ID ',' ID 		{ result = Identificador.new(val[0], val[2]) }
+	LISTA_IDENTIFICADOR
+		: IDENTIFICADOR  					{ result = ListaId.new(val[0], nil) }
+		| LISTA_IDENTIFICADOR ',' IDENTIFICADOR 		{ result = ListaId.new(val[0], val[2]) }
 		;
 
 	# Regla para reconocer una lista de instrucciones
 	INSTRUCCIONES
 		: SECUENCIACION 		{ result = Secuenciacion.new(val[0]) }
-		| INSTRUCCION 			{ result = Instruccion.new(val[0]) }
+		| INSTRUCCION 			{ result = Instruccion.new(nil, val[0]) }
 		;
 
 	# Reglas para reconocer secuencias de instrucciones
@@ -104,15 +99,16 @@ class ParserRtn
 
 	# Reglas para reconocer una instruccion
 	INSTRUCCION
-		: ASIGNACION ';'	{ result = val[0] }
-		| ENTRADA ';'		{ result = val[0] }
-		| SALIDA ';'		{ result = val[0] }
-		| CONDICIONAL ';'	{ result = val[0] }
-		| REPETICION_D ';'	{ result = val[0] }
-		| REPETICION_I ';'	{ result = val[0] }
-		| RETURN ';'		{ result = val[0] }
-		| BLOQUE 			{ result = val[0] }
-		| LLAMADA_FUNCION
+		: ASIGNACION ';'		{ result = val[0] }
+		| ENTRADA ';'			{ result = val[0] }
+		| SALIDENTIFICADORA ';'			{ result = val[0] }
+		| CONDICIONAL ';'		{ result = val[0] }
+		| REPETICION_D ';'		{ result = val[0] }
+		| REPETICION_I ';'		{ result = val[0] }
+		| RETURN ';'			{ result = val[0] }
+		| BLOQUE 				{ result = val[0] }
+		| LLAMADA_FUNCION ';' 	{ result = val[0] }
+		| ';'					{ result = val[0] }
 		;
 
 	# Reglas para reconocer retorno de valores en las funciones
@@ -122,16 +118,16 @@ class ParserRtn
 
 	# Reglas para reconocer asignaciones
 	ASIGNACION
-		: ID '=' EXPRESION 		{ result = Asignacion.new(val[0], val[2]) }
+		: IDENTIFICADOR '=' EXPRESION 		{ result = Asignacion.new(val[0], val[2]) }
 		;
 
 	# Reglas para reconocer la lectura por entrada estandar
 	ENTRADA
-		: 'read' ID 			{ result = Entrada.new(val[1]) }
+		: 'read' IDENTIFICADOR 			{ result = Entrada.new(val[1]) }
 		;
 
 	# Reglas para escribir por la salida estandar
-	SALIDA
+	SALIDENTIFICADORA
 		: 'write' ESCRIBIR 		{ result = Salida.new(val[1], nil) }
 		| 'writeln' ESCRIBIR 	{ result = Salida.new(val[1], "SALTO") }
 		;
@@ -139,9 +135,9 @@ class ParserRtn
 	# Reglas para escribir expresiones o strings por la salida estandar
 	ESCRIBIR
 		: EXPRESION 				{ result = val[0] }
-		| STRING 					{ result = val[0] }
+		| 'TkString' 					{ result = val[0] }
 		| ESCRIBIR ',' EXPRESION 	{ result = Escribir.new() }
-		| ESCRIBIR ',' STRING 		{ result = Escribir.new()}
+		| ESCRIBIR ',' 'TkString' 		{ result = Escribir.new()}
 		;
 
 	# Reglas para reconocer la instruccion condicional
@@ -157,9 +153,9 @@ class ParserRtn
 
 	# Reglas para reconocer las repeticiones determinadas
 	REPETICION_D
-		: 'for' ID 'from' EXPRESION 'to' EXPRESION 'by' EXPRESION 'do' INSTRUCCIONES 'end' 	{ result = For.new(val[1], val[3], val[5], val[7], val[9])}
-		| 'for' ID 'from' EXPRESION 'to' EXPRESION 'do' INSTRUCCIONES 'end' 				{ result = For.new(val[1], val[3], val[5], nil, val[7]) }
-		| 'repeat' EXPRESION 'times' INSTRUCCIONES 'end'									{ result = Repeat.new(val[1],val[3]) }
+		: 'for' IDENTIFICADOR 'from' EXPRESION 'to' EXPRESION 'by' EXPRESION 'do' INSTRUCCIONES 'end' 	{ result = For.new(val[1], val[3], val[5], val[7], val[9])}
+		| 'for' IDENTIFICADOR 'from' EXPRESION 'to' EXPRESION 'do' INSTRUCCIONES 'end' 				{ result = For.new(val[1], val[3], val[5], nil, val[7]) }
+		| 'repeat' EXPRESION 'times' INSTRUCCIONES 'end'										{ result = Repeat.new(val[1],val[3]) }
 		;
 
 	# Reglas para reconocer las repeticiones indeterminadas
@@ -169,9 +165,9 @@ class ParserRtn
 
 	# Reglas para reconocer las expresiones
 	EXPRESION
-		: LITERAL
-		| LLAMADA_FUNCION
-		| ID 						{ result = Identificador.new(val[0])}
+		: LITERAL 					{ result = val[0] }
+		| LLAMADA_FUNCION			{ result = val[0] }
+		| IDENTIFICADOR 						{ result = val[0] }
 		| '(' EXPRESION ')'			{ result = val[1] }
 		| 'not' EXPRESION 			{ result = OpNot.new(val[1]) }
 		| '-' EXPRESION = UMINUS 	{ result = OpUMINUS.new(val[1]) }
@@ -194,8 +190,8 @@ class ParserRtn
 
 	# Reglas para reconocer llamadas a funciones
 	LLAMADA_FUNCION
-		: ID '(' ')'						{ result = LlamadaFuncion.new(val[0], nil) }
-		| ID '(' LISTA_PASE_PARAMETROS ')'	{ result = LlamadaFuncion.new(val[0], val[2]) }
+		: IDENTIFICADOR '(' ')'						{ result = LlamadaFuncion.new(val[0], nil) }
+		| IDENTIFICADOR '(' LISTA_PASE_PARAMETROS ')'	{ result = LlamadaFuncion.new(val[0], val[2]) }
 		;
 
 	LISTA_PASE_PARAMETROS
@@ -205,7 +201,7 @@ class ParserRtn
 
 	# Reglas de tipos de datos
 	TIPO
-		: 'number' 	{ result = TipoNumber.new() }
+		: 'number' 	{ result = TipoNum.new() }
 		| 'boolean' { result = TipoBoolean.new() }
 		;
 
@@ -217,13 +213,16 @@ class ParserRtn
 
 	# Reglas de Literales Numericos
 	LITERAL_NUMBER
-		: NUMBER 	{ result = LiteralNumerico.new(val[0]) }
+		: 'TkNum' 	{ result = LiteralNumerico.new(val[0]) }
 		;
 
 	# Reglas de Literales Booleanos
 	LITERAL_BOOLEAN
 		: 'true'	{ result = LiteralBooleano.new("true") }
 		| 'false'	{ result = LiteralBooleano.new("false") }
+		;
+	IDENTIFICADOR
+		: 'TkId' 	{ result =  Identificador.new(val[0]) }
 		;
 end
 
@@ -258,6 +257,7 @@ end
 	end
 
 	def next_token
+		#puts @tokens
 		@tokens.shift
 	end
 

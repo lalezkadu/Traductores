@@ -68,6 +68,10 @@ class Token
 
     	puts "linea " + @fila.to_s + ", columna " + @columna.to_s + ": " + aux.to_s + " '#{@token}'"
   	end
+
+  	def to_s()
+  		return "#{@token}"
+  	end
 end
 
 
@@ -171,10 +175,15 @@ class LexerRtn
 				fila += 1
 				lexema = ""
 
-			elsif c == ")" || c == "(" || c == "-" || c == ";"	# Caracteres especiales
+			elsif c == ")" || c == "(" || c == "-" || c == ";" || c == ","	# Caracteres especiales
 
 				if not(lexema.empty?)
 					lexemas << Tripleta.new(lexema,fila,columna)
+				end
+
+				if c == "-" && programa[i+1] == ">"
+					c = "->"
+					i += 1
 				end
 
 				columna += lexema.length
@@ -197,13 +206,11 @@ class LexerRtn
 
 		for i in tk
 			if i.tipo == "TkNum" || i.tipo == "TkId"
-				@parserTk << [i.token,i.tipo]
+				@parserTk << [i.tipo,i]
 			else
-				@parserTk << [i.tipo,i.tipo]
+				@parserTk << [i.token,i]
 			end
 		end
-
-		puts @parserTk
 
 	end
 

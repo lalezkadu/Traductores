@@ -1,7 +1,16 @@
+func circle(number radio)
+begin
+    arc(360, radio);
+end;
+func plus(number op1, number op2) -> number
+begin
+    return op1 + op2;
+end;
 program
     with
         number x = 4;
     do
+    	x = 9 + 10;
         repeat x times
             forward(50);
             rotatel(90);
