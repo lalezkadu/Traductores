@@ -200,9 +200,7 @@ class ParserRtn
 
 	LISTA_PASE_PARAMETROS
 		: LISTA_PASE_PARAMETROS ',' EXPRESION 	{ result = ListaPaseParametros.new(val[0],val[2]) }
-		| LISTA_PASE_PARAMETROS ',' ID 			{ result = ListaPaseParametros.new(val[0],val[2]) }
 		| EXPRESION 							{ result = ListaPaseParametros.new(nil,val[0]) }
-		| ID 									{ result = ListaPaseParametros.new(nil,val[0]) }
 		;
 
 	# Reglas de tipos de datos
