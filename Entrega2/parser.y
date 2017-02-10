@@ -64,25 +64,25 @@ class ParserRtn
 
 	# Reglas para escribir bloque de instrucciones
 	BLOQUE
-		: 'with' LISTA_DECLARACION 'do' INSTRUCCIONES 'end' ';'	{ result = Bloque.new(val[1], val[3]) }
+		: 'with' LISTA_DECLARACION ';' 'do' INSTRUCCIONES 'end' ';'	{ result = Bloque.new(val[1], val[4]) }
 		| 'do' INSTRUCCIONES 'end' ';'							{ result = Bloque.new(nil, val[1]) }
 		;
 
 	# Reglas para reconocer una lista de declaraciones
 	LISTA_DECLARACION 							
-		: LISTA_DECLARACION ';' DECLARACION		{ result = ListaDeclaracion.new(val[0], val[2]) }	
-		| DECLARACION ';'						{ result = ListaDeclaracion.new(val[0], nil) }
+		: DECLARACION							{ result = ListaDeclaracion.new(nil, val[0]) }
+		| LISTA_DECLARACION ';' DECLARACION		{ result = ListaDeclaracion.new(val[0], val[2]) }	
 		;
 
 	# Reglas para reconocer una declaracion
 	DECLARACION
-		: TIPO LISTA_IDENTIFICADOR ';'		{ result = Declaracion.new(val[0], val[1]) }
+		: TIPO LISTA_IDENTIFICADOR		{ result = Declaracion.new(val[0], val[1]) }
 		| TIPO ASIGNACION  		{ result = Declaracion.new(val[0], val[1]) }
 		;
 
 	# Reglas para reconocer una lista de identificadores
 	LISTA_IDENTIFICADOR
-		: IDENTIFICADOR  					{ result = ListaId.new(val[0], nil) }
+		: IDENTIFICADOR									{ result = ListaId.new(nil, val[0]) }
 		| LISTA_IDENTIFICADOR ',' IDENTIFICADOR 		{ result = ListaId.new(val[0], val[2]) }
 		;
 
@@ -190,8 +190,8 @@ class ParserRtn
 
 	# Reglas para reconocer llamadas a funciones
 	LLAMADA_FUNCION
-		: IDENTIFICADOR '(' ')'						{ result = LlamadaFuncion.new(val[0], nil) }
-		| IDENTIFICADOR '(' LISTA_PASE_PARAMETROS ')'	{ result = LlamadaFuncion.new(val[0], val[2]) }
+		: IDENTIFICADOR '(' ')'						{ result = LlamadaFuncion.new(nil, val[0]) }
+		| IDENTIFICADOR '(' LISTA_PASE_PARAMETROS ')'	{ result = LlamadaFuncion.new(val[2], val[0]) }
 		;
 
 	LISTA_PASE_PARAMETROS
