@@ -19,6 +19,26 @@
 class AST
 end
 
+	# Reglas para reconocer secuencias de instrucciones
+	SECUENCIACION
+		: INSTRUCCIONES INSTRUCCION 	{ result = Instruccion.new(val[1], val[0]) }
+		;
+
+
+class Secuenciacion
+	attr_accessor :secuencia
+
+	def initialize(secuencia)
+		@secuencia = secuencia
+	end
+
+	def to_s(tab)
+		s = (" "*tab) + "Secuenciacion: \n"
+		s << @secuencia.to_s(tab+2)
+		return s
+	end
+end
+
 class Estructura
 	attr_accessor :funciones, :programa
 

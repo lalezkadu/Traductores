@@ -200,7 +200,7 @@ class Identificador
 	
 end
 
-class Secuenciacion
+class Instruccion
 	attr_accessor :secuencia
 
 	def initialize(secuencia)
@@ -208,13 +208,13 @@ class Secuenciacion
 	end
 
 	def to_s(tab)
-		s = (" "*tab) + "Secuenciacion: \n"
+		s = (" "*tab) + "Instruccion: \n" #"Secuenciacion: \n"
 		s << @secuencia.to_s(tab+2)
 		return s
 	end
 end
 
-class Instruccion
+class Instrucciones
 	attr_accessor :instruccion, :instrucciones
 
 	def initialize(instrucciones, instruccion)
@@ -223,7 +223,7 @@ class Instruccion
 	end
 
 	def to_s(tab)
-		s = (" "*tab) + "Instruccion:\n"
+		s = (" "*tab) + "Secuenciacion: \n"  #"Instruccion:\n"
 		s << @instruccion.to_s(tab+2)
 		if instrucciones != nil
 			s << @instrucciones.to_s(tab)
@@ -448,15 +448,15 @@ class OpMod < ExpresionBinaria
     end
 end
 
-class OpDiv < ExpresionBinaria
+class OpDivisionE < ExpresionBinaria
     def initialize(op1,op2)
-        super(op1, op2,"Div")
+        super(op1, op2,"Division Exacta")
     end
 end
 
 class OpModE < ExpresionBinaria
     def initialize(op1,op2)
-        super(op1, op2,"Mod")
+        super(op1, op2,"Mod Exacto")
     end
 end
 
@@ -466,7 +466,7 @@ class OpEquivalente < ExpresionBinaria
     end
 end
 
-class OpInequivalente < ExpresionBinaria
+class OpDesigual < ExpresionBinaria
     def initialize(op1,op2)
         super(op1, op2,"Desigual")
     end
@@ -535,7 +535,7 @@ end
 class LlamadaFuncion
 	attr_accessor :id, :parametros
 
-	def initialize( parametros, id )
+	def initialize(id, parametros)
 		@id = id
 		@parametros = parametros
 	end
