@@ -1,8 +1,4 @@
-state 117 contains 2 reduce/reduce conflicts
-state 162 contains 2 reduce/reduce conflicts
 
-rule 72 (LISTA_PASE_PARAMETROS) never reduced
-rule 74 (LISTA_PASE_PARAMETROS) never reduced
 
 -------- Grammar --------
 
@@ -77,16 +73,14 @@ rule 68 EXPRESION: EXPRESION "or" EXPRESION
 rule 69 LLAMADA_FUNCION: ID "(" ")"
 rule 70 LLAMADA_FUNCION: ID "(" LISTA_PASE_PARAMETROS ")"
 rule 71 LISTA_PASE_PARAMETROS: LISTA_PASE_PARAMETROS "," EXPRESION
-rule 72 LISTA_PASE_PARAMETROS: LISTA_PASE_PARAMETROS "," ID
-rule 73 LISTA_PASE_PARAMETROS: EXPRESION
-rule 74 LISTA_PASE_PARAMETROS: ID
-rule 75 TIPO: "number"
-rule 76 TIPO: "boolean"
-rule 77 LITERAL: LITERAL_NUMBER
-rule 78 LITERAL: LITERAL_BOOLEAN
-rule 79 LITERAL_NUMBER: NUMBER
-rule 80 LITERAL_BOOLEAN: "true"
-rule 81 LITERAL_BOOLEAN: "false"
+rule 72 LISTA_PASE_PARAMETROS: EXPRESION
+rule 73 TIPO: "number"
+rule 74 TIPO: "boolean"
+rule 75 LITERAL: LITERAL_NUMBER
+rule 76 LITERAL: LITERAL_BOOLEAN
+rule 77 LITERAL_NUMBER: NUMBER
+rule 78 LITERAL_BOOLEAN: "true"
+rule 79 LITERAL_BOOLEAN: "false"
 
 ------- Symbols -------
 
@@ -115,7 +109,7 @@ rule 81 LITERAL_BOOLEAN: "false"
     on left : 9 10
   TIPO (59)
     on right: 7 8 9 10 16 17
-    on left : 75 76
+    on left : 73 74
   BLOQUE (60)
     on right: 11 30
     on left : 12 13
@@ -159,7 +153,7 @@ rule 81 LITERAL_BOOLEAN: "false"
     on right: 31 49
     on left : 69 70
   EXPRESION (74)
-    on right: 32 33 37 39 41 44 45 46 47 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 71 73
+    on right: 32 33 37 39 41 44 45 46 47 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 71 72
     on left : 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68
   ESCRIBIR (75)
     on right: 35 36 39 40
@@ -169,16 +163,16 @@ rule 81 LITERAL_BOOLEAN: "false"
     on left : 42 43
   LITERAL (77)
     on right: 48
-    on left : 77 78
+    on left : 75 76
   LISTA_PASE_PARAMETROS (78)
-    on right: 70 71 72
-    on left : 71 72 73 74
+    on right: 70 71
+    on left : 71 72
   LITERAL_NUMBER (79)
-    on right: 77
-    on left : 79
+    on right: 75
+    on left : 77
   LITERAL_BOOLEAN (80)
-    on right: 78
-    on left : 80 81
+    on right: 76
+    on left : 78 79
 
 **Terminals, with rules where they appear
 
@@ -204,10 +198,10 @@ rule 81 LITERAL_BOOLEAN: "false"
   "func" (19) 
   "begin" (20) 5 6 7 8
   "return" (21) 32
-  "number" (22) 75
-  "boolean" (23) 76
-  "true" (24) 80
-  "false" (25) 81
+  "number" (22) 73
+  "boolean" (23) 74
+  "true" (24) 78
+  "false" (25) 79
   "not" (26) 52
   "and" (27) 67
   "or" (28) 68
@@ -226,13 +220,13 @@ rule 81 LITERAL_BOOLEAN: "false"
   "mod" (41) 58
   "=" (42) 33
   ";" (43) 5 6 7 8 11 12 13 14 15 16 23 24 25 26 27 28 29
-  "," (44) 9 19 39 40 71 72
+  "," (44) 9 19 39 40 71
   "->" (45) 7 8
   "(" (46) 5 6 7 8 51 69 70
   ")" (47) 5 6 7 8 51 69 70
-  ID (48) 5 6 7 8 9 10 18 19 33 34 44 45 50 69 70 72 74
+  ID (48) 5 6 7 8 9 10 18 19 33 34 44 45 50 69 70
   STRING (49) 38 40
-  NUMBER (50) 79
+  NUMBER (50) 77
   UMINUS (51) 
 
 --------- State ---------
@@ -412,16 +406,16 @@ state 17
 
 state 18
 
-  75) TIPO : "number" _
+  73) TIPO : "number" _
 
-  $default      reduce using rule 75 (TIPO)
+  $default      reduce using rule 73 (TIPO)
 
 
 state 19
 
-  76) TIPO : "boolean" _
+  74) TIPO : "boolean" _
 
-  $default      reduce using rule 76 (TIPO)
+  $default      reduce using rule 74 (TIPO)
 
 
 state 20
@@ -1014,37 +1008,37 @@ state 71
 
 state 72
 
-  77) LITERAL : LITERAL_NUMBER _
+  75) LITERAL : LITERAL_NUMBER _
 
-  $default      reduce using rule 77 (LITERAL)
+  $default      reduce using rule 75 (LITERAL)
 
 
 state 73
 
-  78) LITERAL : LITERAL_BOOLEAN _
+  76) LITERAL : LITERAL_BOOLEAN _
 
-  $default      reduce using rule 78 (LITERAL)
+  $default      reduce using rule 76 (LITERAL)
 
 
 state 74
 
-  79) LITERAL_NUMBER : NUMBER _
+  77) LITERAL_NUMBER : NUMBER _
 
-  $default      reduce using rule 79 (LITERAL_NUMBER)
+  $default      reduce using rule 77 (LITERAL_NUMBER)
 
 
 state 75
 
-  80) LITERAL_BOOLEAN : "true" _
+  78) LITERAL_BOOLEAN : "true" _
 
-  $default      reduce using rule 80 (LITERAL_BOOLEAN)
+  $default      reduce using rule 78 (LITERAL_BOOLEAN)
 
 
 state 76
 
-  81) LITERAL_BOOLEAN : "false" _
+  79) LITERAL_BOOLEAN : "false" _
 
-  $default      reduce using rule 81 (LITERAL_BOOLEAN)
+  $default      reduce using rule 79 (LITERAL_BOOLEAN)
 
 
 state 77
@@ -1075,14 +1069,14 @@ state 78
   "not"         shift, and go to state 70
   "-"           shift, and go to state 71
   "("           shift, and go to state 69
-  ")"           shift, and go to state 119
-  ID            shift, and go to state 117
+  ")"           shift, and go to state 118
+  ID            shift, and go to state 68
   NUMBER        shift, and go to state 74
 
   LITERAL       go to state 66
   LLAMADA_FUNCION  go to state 67
-  EXPRESION     go to state 118
-  LISTA_PASE_PARAMETROS  go to state 120
+  EXPRESION     go to state 117
+  LISTA_PASE_PARAMETROS  go to state 119
   LITERAL_NUMBER  go to state 72
   LITERAL_BOOLEAN  go to state 73
 
@@ -1099,7 +1093,7 @@ state 80
   39) ESCRIBIR : ESCRIBIR _ "," EXPRESION
   40) ESCRIBIR : ESCRIBIR _ "," STRING
 
-  ","           shift, and go to state 121
+  ","           shift, and go to state 120
   $default      reduce using rule 35 (SALIDA)
 
 
@@ -1153,7 +1147,7 @@ state 83
   39) ESCRIBIR : ESCRIBIR _ "," EXPRESION
   40) ESCRIBIR : ESCRIBIR _ "," STRING
 
-  ","           shift, and go to state 121
+  ","           shift, and go to state 120
   $default      reduce using rule 36 (SALIDA)
 
 
@@ -1176,7 +1170,7 @@ state 84
   67) EXPRESION : EXPRESION _ "and" EXPRESION
   68) EXPRESION : EXPRESION _ "or" EXPRESION
 
-  "then"        shift, and go to state 122
+  "then"        shift, and go to state 121
   "and"         shift, and go to state 111
   "or"          shift, and go to state 112
   "=="          shift, and go to state 105
@@ -1199,7 +1193,7 @@ state 85
   44) REPETICION_D : "for" ID _ "from" EXPRESION "to" EXPRESION "by" EXPRESION "do" INSTRUCCIONES "end"
   45) REPETICION_D : "for" ID _ "from" EXPRESION "to" EXPRESION "do" INSTRUCCIONES "end"
 
-  "from"        shift, and go to state 123
+  "from"        shift, and go to state 122
 
 
 state 86
@@ -1221,7 +1215,7 @@ state 86
   67) EXPRESION : EXPRESION _ "and" EXPRESION
   68) EXPRESION : EXPRESION _ "or" EXPRESION
 
-  "times"       shift, and go to state 124
+  "times"       shift, and go to state 123
   "and"         shift, and go to state 111
   "or"          shift, and go to state 112
   "=="          shift, and go to state 105
@@ -1258,7 +1252,7 @@ state 87
   67) EXPRESION : EXPRESION _ "and" EXPRESION
   68) EXPRESION : EXPRESION _ "or" EXPRESION
 
-  "do"          shift, and go to state 125
+  "do"          shift, and go to state 124
   "and"         shift, and go to state 111
   "or"          shift, and go to state 112
   "=="          shift, and go to state 105
@@ -1281,7 +1275,7 @@ state 88
    5) FUNCION : ID "(" ")" "begin" INSTRUCCIONES _ "end" ";"
   22) SECUENCIACION : INSTRUCCIONES _ INSTRUCCION
 
-  "end"         shift, and go to state 126
+  "end"         shift, and go to state 125
   "read"        shift, and go to state 38
   "write"       shift, and go to state 39
   "writeln"     shift, and go to state 40
@@ -1309,7 +1303,7 @@ state 89
 
    7) FUNCION : ID "(" ")" "->" TIPO _ "begin" INSTRUCCIONES "end" ";"
 
-  "begin"       shift, and go to state 127
+  "begin"       shift, and go to state 126
 
 
 state 90
@@ -1328,7 +1322,7 @@ state 90
   "return"      shift, and go to state 36
   ID            shift, and go to state 37
 
-  INSTRUCCIONES  go to state 128
+  INSTRUCCIONES  go to state 127
   SECUENCIACION  go to state 25
   INSTRUCCION   go to state 26
   ASIGNACION    go to state 27
@@ -1348,7 +1342,7 @@ state 91
   "number"      shift, and go to state 18
   "boolean"     shift, and go to state 19
 
-  TIPO          go to state 129
+  TIPO          go to state 128
 
 state 92
 
@@ -1358,14 +1352,14 @@ state 92
   "boolean"     shift, and go to state 19
 
   TIPO          go to state 17
-  PARAMETROS    go to state 130
+  PARAMETROS    go to state 129
 
 state 93
 
   12) BLOQUE : "with" LISTA_DECLARACION "do" INSTRUCCIONES _ "end" ";"
   22) SECUENCIACION : INSTRUCCIONES _ INSTRUCCION
 
-  "end"         shift, and go to state 131
+  "end"         shift, and go to state 130
   "read"        shift, and go to state 38
   "write"       shift, and go to state 39
   "writeln"     shift, and go to state 40
@@ -1407,7 +1401,7 @@ state 96
 
   19) LISTA_ID : LISTA_ID "," _ ID
 
-  ID            shift, and go to state 132
+  ID            shift, and go to state 131
 
 
 state 97
@@ -1431,7 +1425,7 @@ state 98
 
   LITERAL       go to state 66
   LLAMADA_FUNCION  go to state 67
-  EXPRESION     go to state 133
+  EXPRESION     go to state 132
   LITERAL_NUMBER  go to state 72
   LITERAL_BOOLEAN  go to state 73
 
@@ -1449,7 +1443,7 @@ state 99
 
   LITERAL       go to state 66
   LLAMADA_FUNCION  go to state 67
-  EXPRESION     go to state 134
+  EXPRESION     go to state 133
   LITERAL_NUMBER  go to state 72
   LITERAL_BOOLEAN  go to state 73
 
@@ -1467,7 +1461,7 @@ state 100
 
   LITERAL       go to state 66
   LLAMADA_FUNCION  go to state 67
-  EXPRESION     go to state 135
+  EXPRESION     go to state 134
   LITERAL_NUMBER  go to state 72
   LITERAL_BOOLEAN  go to state 73
 
@@ -1485,7 +1479,7 @@ state 101
 
   LITERAL       go to state 66
   LLAMADA_FUNCION  go to state 67
-  EXPRESION     go to state 136
+  EXPRESION     go to state 135
   LITERAL_NUMBER  go to state 72
   LITERAL_BOOLEAN  go to state 73
 
@@ -1503,7 +1497,7 @@ state 102
 
   LITERAL       go to state 66
   LLAMADA_FUNCION  go to state 67
-  EXPRESION     go to state 137
+  EXPRESION     go to state 136
   LITERAL_NUMBER  go to state 72
   LITERAL_BOOLEAN  go to state 73
 
@@ -1521,7 +1515,7 @@ state 103
 
   LITERAL       go to state 66
   LLAMADA_FUNCION  go to state 67
-  EXPRESION     go to state 138
+  EXPRESION     go to state 137
   LITERAL_NUMBER  go to state 72
   LITERAL_BOOLEAN  go to state 73
 
@@ -1539,7 +1533,7 @@ state 104
 
   LITERAL       go to state 66
   LLAMADA_FUNCION  go to state 67
-  EXPRESION     go to state 139
+  EXPRESION     go to state 138
   LITERAL_NUMBER  go to state 72
   LITERAL_BOOLEAN  go to state 73
 
@@ -1557,7 +1551,7 @@ state 105
 
   LITERAL       go to state 66
   LLAMADA_FUNCION  go to state 67
-  EXPRESION     go to state 140
+  EXPRESION     go to state 139
   LITERAL_NUMBER  go to state 72
   LITERAL_BOOLEAN  go to state 73
 
@@ -1575,7 +1569,7 @@ state 106
 
   LITERAL       go to state 66
   LLAMADA_FUNCION  go to state 67
-  EXPRESION     go to state 141
+  EXPRESION     go to state 140
   LITERAL_NUMBER  go to state 72
   LITERAL_BOOLEAN  go to state 73
 
@@ -1593,7 +1587,7 @@ state 107
 
   LITERAL       go to state 66
   LLAMADA_FUNCION  go to state 67
-  EXPRESION     go to state 142
+  EXPRESION     go to state 141
   LITERAL_NUMBER  go to state 72
   LITERAL_BOOLEAN  go to state 73
 
@@ -1611,7 +1605,7 @@ state 108
 
   LITERAL       go to state 66
   LLAMADA_FUNCION  go to state 67
-  EXPRESION     go to state 143
+  EXPRESION     go to state 142
   LITERAL_NUMBER  go to state 72
   LITERAL_BOOLEAN  go to state 73
 
@@ -1629,7 +1623,7 @@ state 109
 
   LITERAL       go to state 66
   LLAMADA_FUNCION  go to state 67
-  EXPRESION     go to state 144
+  EXPRESION     go to state 143
   LITERAL_NUMBER  go to state 72
   LITERAL_BOOLEAN  go to state 73
 
@@ -1647,7 +1641,7 @@ state 110
 
   LITERAL       go to state 66
   LLAMADA_FUNCION  go to state 67
-  EXPRESION     go to state 145
+  EXPRESION     go to state 144
   LITERAL_NUMBER  go to state 72
   LITERAL_BOOLEAN  go to state 73
 
@@ -1665,7 +1659,7 @@ state 111
 
   LITERAL       go to state 66
   LLAMADA_FUNCION  go to state 67
-  EXPRESION     go to state 146
+  EXPRESION     go to state 145
   LITERAL_NUMBER  go to state 72
   LITERAL_BOOLEAN  go to state 73
 
@@ -1683,7 +1677,7 @@ state 112
 
   LITERAL       go to state 66
   LLAMADA_FUNCION  go to state 67
-  EXPRESION     go to state 147
+  EXPRESION     go to state 146
   LITERAL_NUMBER  go to state 72
   LITERAL_BOOLEAN  go to state 73
 
@@ -1721,7 +1715,7 @@ state 113
   "%"           shift, and go to state 100
   "div"         shift, and go to state 101
   "mod"         shift, and go to state 102
-  ")"           shift, and go to state 148
+  ")"           shift, and go to state 147
 
 
 state 114
@@ -1807,19 +1801,6 @@ state 116
 
 state 117
 
-  50) EXPRESION : ID _
-  69) LLAMADA_FUNCION : ID _ "(" ")"
-  70) LLAMADA_FUNCION : ID _ "(" LISTA_PASE_PARAMETROS ")"
-  74) LISTA_PASE_PARAMETROS : ID _
-
-  "("           shift, and go to state 78
-  ","           [reduce using rule 74 (LISTA_PASE_PARAMETROS)]
-  ")"           [reduce using rule 74 (LISTA_PASE_PARAMETROS)]
-  $default      reduce using rule 50 (EXPRESION)
-
-
-state 118
-
   54) EXPRESION : EXPRESION _ "*" EXPRESION
   55) EXPRESION : EXPRESION _ "/" EXPRESION
   56) EXPRESION : EXPRESION _ "%" EXPRESION
@@ -1835,7 +1816,7 @@ state 118
   66) EXPRESION : EXPRESION _ "<" EXPRESION
   67) EXPRESION : EXPRESION _ "and" EXPRESION
   68) EXPRESION : EXPRESION _ "or" EXPRESION
-  73) LISTA_PASE_PARAMETROS : EXPRESION _
+  72) LISTA_PASE_PARAMETROS : EXPRESION _
 
   "and"         shift, and go to state 111
   "or"          shift, and go to state 112
@@ -1852,27 +1833,26 @@ state 118
   "%"           shift, and go to state 100
   "div"         shift, and go to state 101
   "mod"         shift, and go to state 102
-  $default      reduce using rule 73 (LISTA_PASE_PARAMETROS)
+  $default      reduce using rule 72 (LISTA_PASE_PARAMETROS)
 
 
-state 119
+state 118
 
   69) LLAMADA_FUNCION : ID "(" ")" _
 
   $default      reduce using rule 69 (LLAMADA_FUNCION)
 
 
-state 120
+state 119
 
   70) LLAMADA_FUNCION : ID "(" LISTA_PASE_PARAMETROS _ ")"
   71) LISTA_PASE_PARAMETROS : LISTA_PASE_PARAMETROS _ "," EXPRESION
-  72) LISTA_PASE_PARAMETROS : LISTA_PASE_PARAMETROS _ "," ID
 
-  ","           shift, and go to state 150
-  ")"           shift, and go to state 149
+  ","           shift, and go to state 149
+  ")"           shift, and go to state 148
 
 
-state 121
+state 120
 
   39) ESCRIBIR : ESCRIBIR "," _ EXPRESION
   40) ESCRIBIR : ESCRIBIR "," _ STRING
@@ -1883,16 +1863,16 @@ state 121
   "-"           shift, and go to state 71
   "("           shift, and go to state 69
   ID            shift, and go to state 68
-  STRING        shift, and go to state 152
+  STRING        shift, and go to state 151
   NUMBER        shift, and go to state 74
 
-  EXPRESION     go to state 151
+  EXPRESION     go to state 150
   LITERAL       go to state 66
   LLAMADA_FUNCION  go to state 67
   LITERAL_NUMBER  go to state 72
   LITERAL_BOOLEAN  go to state 73
 
-state 122
+state 121
 
   41) CONDICIONAL : "if" EXPRESION "then" _ INSTRUCCION COND
 
@@ -1917,9 +1897,9 @@ state 122
   RETURN        go to state 33
   BLOQUE        go to state 34
   LLAMADA_FUNCION  go to state 35
-  INSTRUCCION   go to state 153
+  INSTRUCCION   go to state 152
 
-state 123
+state 122
 
   44) REPETICION_D : "for" ID "from" _ EXPRESION "to" EXPRESION "by" EXPRESION "do" INSTRUCCIONES "end"
   45) REPETICION_D : "for" ID "from" _ EXPRESION "to" EXPRESION "do" INSTRUCCIONES "end"
@@ -1932,15 +1912,44 @@ state 123
   ID            shift, and go to state 68
   NUMBER        shift, and go to state 74
 
-  EXPRESION     go to state 154
+  EXPRESION     go to state 153
   LITERAL       go to state 66
   LLAMADA_FUNCION  go to state 67
   LITERAL_NUMBER  go to state 72
   LITERAL_BOOLEAN  go to state 73
 
-state 124
+state 123
 
   46) REPETICION_D : "repeat" EXPRESION "times" _ INSTRUCCIONES "end"
+
+  "read"        shift, and go to state 38
+  "write"       shift, and go to state 39
+  "writeln"     shift, and go to state 40
+  "with"        shift, and go to state 12
+  "do"          shift, and go to state 13
+  "if"          shift, and go to state 41
+  "while"       shift, and go to state 44
+  "for"         shift, and go to state 42
+  "repeat"      shift, and go to state 43
+  "return"      shift, and go to state 36
+  ID            shift, and go to state 37
+
+  SECUENCIACION  go to state 25
+  INSTRUCCION   go to state 26
+  INSTRUCCIONES  go to state 154
+  ASIGNACION    go to state 27
+  ENTRADA       go to state 28
+  SALIDA        go to state 29
+  CONDICIONAL   go to state 30
+  REPETICION_D  go to state 31
+  REPETICION_I  go to state 32
+  RETURN        go to state 33
+  BLOQUE        go to state 34
+  LLAMADA_FUNCION  go to state 35
+
+state 124
+
+  47) REPETICION_I : "while" EXPRESION "do" _ INSTRUCCIONES "end"
 
   "read"        shift, and go to state 38
   "write"       shift, and go to state 39
@@ -1969,41 +1978,12 @@ state 124
 
 state 125
 
-  47) REPETICION_I : "while" EXPRESION "do" _ INSTRUCCIONES "end"
-
-  "read"        shift, and go to state 38
-  "write"       shift, and go to state 39
-  "writeln"     shift, and go to state 40
-  "with"        shift, and go to state 12
-  "do"          shift, and go to state 13
-  "if"          shift, and go to state 41
-  "while"       shift, and go to state 44
-  "for"         shift, and go to state 42
-  "repeat"      shift, and go to state 43
-  "return"      shift, and go to state 36
-  ID            shift, and go to state 37
-
-  SECUENCIACION  go to state 25
-  INSTRUCCION   go to state 26
-  INSTRUCCIONES  go to state 156
-  ASIGNACION    go to state 27
-  ENTRADA       go to state 28
-  SALIDA        go to state 29
-  CONDICIONAL   go to state 30
-  REPETICION_D  go to state 31
-  REPETICION_I  go to state 32
-  RETURN        go to state 33
-  BLOQUE        go to state 34
-  LLAMADA_FUNCION  go to state 35
-
-state 126
-
    5) FUNCION : ID "(" ")" "begin" INSTRUCCIONES "end" _ ";"
 
-  ";"           shift, and go to state 157
+  ";"           shift, and go to state 156
 
 
-state 127
+state 126
 
    7) FUNCION : ID "(" ")" "->" TIPO "begin" _ INSTRUCCIONES "end" ";"
 
@@ -2019,7 +1999,7 @@ state 127
   "return"      shift, and go to state 36
   ID            shift, and go to state 37
 
-  INSTRUCCIONES  go to state 158
+  INSTRUCCIONES  go to state 157
   SECUENCIACION  go to state 25
   INSTRUCCION   go to state 26
   ASIGNACION    go to state 27
@@ -2032,12 +2012,12 @@ state 127
   BLOQUE        go to state 34
   LLAMADA_FUNCION  go to state 35
 
-state 128
+state 127
 
    6) FUNCION : ID "(" PARAMETROS ")" "begin" INSTRUCCIONES _ "end" ";"
   22) SECUENCIACION : INSTRUCCIONES _ INSTRUCCION
 
-  "end"         shift, and go to state 159
+  "end"         shift, and go to state 158
   "read"        shift, and go to state 38
   "write"       shift, and go to state 39
   "writeln"     shift, and go to state 40
@@ -2061,35 +2041,35 @@ state 128
   BLOQUE        go to state 34
   LLAMADA_FUNCION  go to state 35
 
-state 129
+state 128
 
    8) FUNCION : ID "(" PARAMETROS ")" "->" TIPO _ "begin" INSTRUCCIONES "end" ";"
 
-  "begin"       shift, and go to state 160
+  "begin"       shift, and go to state 159
 
 
-state 130
+state 129
 
    9) PARAMETROS : TIPO ID "," PARAMETROS _
 
   $default      reduce using rule 9 (PARAMETROS)
 
 
-state 131
+state 130
 
   12) BLOQUE : "with" LISTA_DECLARACION "do" INSTRUCCIONES "end" _ ";"
 
-  ";"           shift, and go to state 161
+  ";"           shift, and go to state 160
 
 
-state 132
+state 131
 
   19) LISTA_ID : LISTA_ID "," ID _
 
   $default      reduce using rule 19 (LISTA_ID)
 
 
-state 133
+state 132
 
   54) EXPRESION : EXPRESION _ "*" EXPRESION
   54) EXPRESION : EXPRESION "*" EXPRESION _
@@ -2111,7 +2091,7 @@ state 133
   $default      reduce using rule 54 (EXPRESION)
 
 
-state 134
+state 133
 
   54) EXPRESION : EXPRESION _ "*" EXPRESION
   55) EXPRESION : EXPRESION _ "/" EXPRESION
@@ -2133,7 +2113,7 @@ state 134
   $default      reduce using rule 55 (EXPRESION)
 
 
-state 135
+state 134
 
   54) EXPRESION : EXPRESION _ "*" EXPRESION
   55) EXPRESION : EXPRESION _ "/" EXPRESION
@@ -2155,7 +2135,7 @@ state 135
   $default      reduce using rule 56 (EXPRESION)
 
 
-state 136
+state 135
 
   54) EXPRESION : EXPRESION _ "*" EXPRESION
   55) EXPRESION : EXPRESION _ "/" EXPRESION
@@ -2177,7 +2157,7 @@ state 136
   $default      reduce using rule 57 (EXPRESION)
 
 
-state 137
+state 136
 
   54) EXPRESION : EXPRESION _ "*" EXPRESION
   55) EXPRESION : EXPRESION _ "/" EXPRESION
@@ -2199,7 +2179,7 @@ state 137
   $default      reduce using rule 58 (EXPRESION)
 
 
-state 138
+state 137
 
   54) EXPRESION : EXPRESION _ "*" EXPRESION
   55) EXPRESION : EXPRESION _ "/" EXPRESION
@@ -2226,7 +2206,7 @@ state 138
   $default      reduce using rule 59 (EXPRESION)
 
 
-state 139
+state 138
 
   54) EXPRESION : EXPRESION _ "*" EXPRESION
   55) EXPRESION : EXPRESION _ "/" EXPRESION
@@ -2253,7 +2233,7 @@ state 139
   $default      reduce using rule 60 (EXPRESION)
 
 
-state 140
+state 139
 
   54) EXPRESION : EXPRESION _ "*" EXPRESION
   55) EXPRESION : EXPRESION _ "/" EXPRESION
@@ -2288,7 +2268,7 @@ state 140
   $default      reduce using rule 61 (EXPRESION)
 
 
-state 141
+state 140
 
   54) EXPRESION : EXPRESION _ "*" EXPRESION
   55) EXPRESION : EXPRESION _ "/" EXPRESION
@@ -2323,7 +2303,7 @@ state 141
   $default      reduce using rule 62 (EXPRESION)
 
 
-state 142
+state 141
 
   54) EXPRESION : EXPRESION _ "*" EXPRESION
   55) EXPRESION : EXPRESION _ "/" EXPRESION
@@ -2358,7 +2338,7 @@ state 142
   $default      reduce using rule 63 (EXPRESION)
 
 
-state 143
+state 142
 
   54) EXPRESION : EXPRESION _ "*" EXPRESION
   55) EXPRESION : EXPRESION _ "/" EXPRESION
@@ -2393,7 +2373,7 @@ state 143
   $default      reduce using rule 64 (EXPRESION)
 
 
-state 144
+state 143
 
   54) EXPRESION : EXPRESION _ "*" EXPRESION
   55) EXPRESION : EXPRESION _ "/" EXPRESION
@@ -2428,7 +2408,7 @@ state 144
   $default      reduce using rule 65 (EXPRESION)
 
 
-state 145
+state 144
 
   54) EXPRESION : EXPRESION _ "*" EXPRESION
   55) EXPRESION : EXPRESION _ "/" EXPRESION
@@ -2463,7 +2443,7 @@ state 145
   $default      reduce using rule 66 (EXPRESION)
 
 
-state 146
+state 145
 
   54) EXPRESION : EXPRESION _ "*" EXPRESION
   55) EXPRESION : EXPRESION _ "/" EXPRESION
@@ -2498,7 +2478,7 @@ state 146
   $default      reduce using rule 67 (EXPRESION)
 
 
-state 147
+state 146
 
   54) EXPRESION : EXPRESION _ "*" EXPRESION
   55) EXPRESION : EXPRESION _ "/" EXPRESION
@@ -2534,40 +2514,39 @@ state 147
   $default      reduce using rule 68 (EXPRESION)
 
 
-state 148
+state 147
 
   51) EXPRESION : "(" EXPRESION ")" _
 
   $default      reduce using rule 51 (EXPRESION)
 
 
-state 149
+state 148
 
   70) LLAMADA_FUNCION : ID "(" LISTA_PASE_PARAMETROS ")" _
 
   $default      reduce using rule 70 (LLAMADA_FUNCION)
 
 
-state 150
+state 149
 
   71) LISTA_PASE_PARAMETROS : LISTA_PASE_PARAMETROS "," _ EXPRESION
-  72) LISTA_PASE_PARAMETROS : LISTA_PASE_PARAMETROS "," _ ID
 
   "true"        shift, and go to state 75
   "false"       shift, and go to state 76
   "not"         shift, and go to state 70
   "-"           shift, and go to state 71
   "("           shift, and go to state 69
-  ID            shift, and go to state 162
+  ID            shift, and go to state 68
   NUMBER        shift, and go to state 74
 
   LITERAL       go to state 66
   LLAMADA_FUNCION  go to state 67
-  EXPRESION     go to state 163
+  EXPRESION     go to state 161
   LITERAL_NUMBER  go to state 72
   LITERAL_BOOLEAN  go to state 73
 
-state 151
+state 150
 
   39) ESCRIBIR : ESCRIBIR "," EXPRESION _
   54) EXPRESION : EXPRESION _ "*" EXPRESION
@@ -2604,23 +2583,23 @@ state 151
   $default      reduce using rule 39 (ESCRIBIR)
 
 
-state 152
+state 151
 
   40) ESCRIBIR : ESCRIBIR "," STRING _
 
   $default      reduce using rule 40 (ESCRIBIR)
 
 
-state 153
+state 152
 
   41) CONDICIONAL : "if" EXPRESION "then" INSTRUCCION _ COND
 
-  "end"         shift, and go to state 165
-  "else"        shift, and go to state 166
+  "end"         shift, and go to state 163
+  "else"        shift, and go to state 164
 
-  COND          go to state 164
+  COND          go to state 162
 
-state 154
+state 153
 
   44) REPETICION_D : "for" ID "from" EXPRESION _ "to" EXPRESION "by" EXPRESION "do" INSTRUCCIONES "end"
   45) REPETICION_D : "for" ID "from" EXPRESION _ "to" EXPRESION "do" INSTRUCCIONES "end"
@@ -2640,7 +2619,7 @@ state 154
   67) EXPRESION : EXPRESION _ "and" EXPRESION
   68) EXPRESION : EXPRESION _ "or" EXPRESION
 
-  "to"          shift, and go to state 167
+  "to"          shift, and go to state 165
   "and"         shift, and go to state 111
   "or"          shift, and go to state 112
   "=="          shift, and go to state 105
@@ -2658,12 +2637,41 @@ state 154
   "mod"         shift, and go to state 102
 
 
-state 155
+state 154
 
   22) SECUENCIACION : INSTRUCCIONES _ INSTRUCCION
   46) REPETICION_D : "repeat" EXPRESION "times" INSTRUCCIONES _ "end"
 
-  "end"         shift, and go to state 168
+  "end"         shift, and go to state 166
+  "read"        shift, and go to state 38
+  "write"       shift, and go to state 39
+  "writeln"     shift, and go to state 40
+  "with"        shift, and go to state 12
+  "do"          shift, and go to state 13
+  "if"          shift, and go to state 41
+  "while"       shift, and go to state 44
+  "for"         shift, and go to state 42
+  "repeat"      shift, and go to state 43
+  "return"      shift, and go to state 36
+  ID            shift, and go to state 37
+
+  INSTRUCCION   go to state 57
+  ASIGNACION    go to state 27
+  ENTRADA       go to state 28
+  SALIDA        go to state 29
+  CONDICIONAL   go to state 30
+  REPETICION_D  go to state 31
+  REPETICION_I  go to state 32
+  RETURN        go to state 33
+  BLOQUE        go to state 34
+  LLAMADA_FUNCION  go to state 35
+
+state 155
+
+  22) SECUENCIACION : INSTRUCCIONES _ INSTRUCCION
+  47) REPETICION_I : "while" EXPRESION "do" INSTRUCCIONES _ "end"
+
+  "end"         shift, and go to state 167
   "read"        shift, and go to state 38
   "write"       shift, and go to state 39
   "writeln"     shift, and go to state 40
@@ -2689,46 +2697,17 @@ state 155
 
 state 156
 
-  22) SECUENCIACION : INSTRUCCIONES _ INSTRUCCION
-  47) REPETICION_I : "while" EXPRESION "do" INSTRUCCIONES _ "end"
-
-  "end"         shift, and go to state 169
-  "read"        shift, and go to state 38
-  "write"       shift, and go to state 39
-  "writeln"     shift, and go to state 40
-  "with"        shift, and go to state 12
-  "do"          shift, and go to state 13
-  "if"          shift, and go to state 41
-  "while"       shift, and go to state 44
-  "for"         shift, and go to state 42
-  "repeat"      shift, and go to state 43
-  "return"      shift, and go to state 36
-  ID            shift, and go to state 37
-
-  INSTRUCCION   go to state 57
-  ASIGNACION    go to state 27
-  ENTRADA       go to state 28
-  SALIDA        go to state 29
-  CONDICIONAL   go to state 30
-  REPETICION_D  go to state 31
-  REPETICION_I  go to state 32
-  RETURN        go to state 33
-  BLOQUE        go to state 34
-  LLAMADA_FUNCION  go to state 35
-
-state 157
-
    5) FUNCION : ID "(" ")" "begin" INSTRUCCIONES "end" ";" _
 
   $default      reduce using rule 5 (FUNCION)
 
 
-state 158
+state 157
 
    7) FUNCION : ID "(" ")" "->" TIPO "begin" INSTRUCCIONES _ "end" ";"
   22) SECUENCIACION : INSTRUCCIONES _ INSTRUCCION
 
-  "end"         shift, and go to state 170
+  "end"         shift, and go to state 168
   "read"        shift, and go to state 38
   "write"       shift, and go to state 39
   "writeln"     shift, and go to state 40
@@ -2752,14 +2731,14 @@ state 158
   BLOQUE        go to state 34
   LLAMADA_FUNCION  go to state 35
 
-state 159
+state 158
 
    6) FUNCION : ID "(" PARAMETROS ")" "begin" INSTRUCCIONES "end" _ ";"
 
-  ";"           shift, and go to state 171
+  ";"           shift, and go to state 169
 
 
-state 160
+state 159
 
    8) FUNCION : ID "(" PARAMETROS ")" "->" TIPO "begin" _ INSTRUCCIONES "end" ";"
 
@@ -2775,7 +2754,7 @@ state 160
   "return"      shift, and go to state 36
   ID            shift, and go to state 37
 
-  INSTRUCCIONES  go to state 172
+  INSTRUCCIONES  go to state 170
   SECUENCIACION  go to state 25
   INSTRUCCION   go to state 26
   ASIGNACION    go to state 27
@@ -2788,27 +2767,14 @@ state 160
   BLOQUE        go to state 34
   LLAMADA_FUNCION  go to state 35
 
-state 161
+state 160
 
   12) BLOQUE : "with" LISTA_DECLARACION "do" INSTRUCCIONES "end" ";" _
 
   $default      reduce using rule 12 (BLOQUE)
 
 
-state 162
-
-  50) EXPRESION : ID _
-  69) LLAMADA_FUNCION : ID _ "(" ")"
-  70) LLAMADA_FUNCION : ID _ "(" LISTA_PASE_PARAMETROS ")"
-  72) LISTA_PASE_PARAMETROS : LISTA_PASE_PARAMETROS "," ID _
-
-  "("           shift, and go to state 78
-  ","           [reduce using rule 72 (LISTA_PASE_PARAMETROS)]
-  ")"           [reduce using rule 72 (LISTA_PASE_PARAMETROS)]
-  $default      reduce using rule 50 (EXPRESION)
-
-
-state 163
+state 161
 
   54) EXPRESION : EXPRESION _ "*" EXPRESION
   55) EXPRESION : EXPRESION _ "/" EXPRESION
@@ -2845,21 +2811,21 @@ state 163
   $default      reduce using rule 71 (LISTA_PASE_PARAMETROS)
 
 
-state 164
+state 162
 
   41) CONDICIONAL : "if" EXPRESION "then" INSTRUCCION COND _
 
   $default      reduce using rule 41 (CONDICIONAL)
 
 
-state 165
+state 163
 
   42) COND : "end" _
 
   $default      reduce using rule 42 (COND)
 
 
-state 166
+state 164
 
   43) COND : "else" _ INSTRUCCION "end"
 
@@ -2884,9 +2850,9 @@ state 166
   RETURN        go to state 33
   BLOQUE        go to state 34
   LLAMADA_FUNCION  go to state 35
-  INSTRUCCION   go to state 173
+  INSTRUCCION   go to state 171
 
-state 167
+state 165
 
   44) REPETICION_D : "for" ID "from" EXPRESION "to" _ EXPRESION "by" EXPRESION "do" INSTRUCCIONES "end"
   45) REPETICION_D : "for" ID "from" EXPRESION "to" _ EXPRESION "do" INSTRUCCIONES "end"
@@ -2899,46 +2865,46 @@ state 167
   ID            shift, and go to state 68
   NUMBER        shift, and go to state 74
 
-  EXPRESION     go to state 174
+  EXPRESION     go to state 172
   LITERAL       go to state 66
   LLAMADA_FUNCION  go to state 67
   LITERAL_NUMBER  go to state 72
   LITERAL_BOOLEAN  go to state 73
 
-state 168
+state 166
 
   46) REPETICION_D : "repeat" EXPRESION "times" INSTRUCCIONES "end" _
 
   $default      reduce using rule 46 (REPETICION_D)
 
 
-state 169
+state 167
 
   47) REPETICION_I : "while" EXPRESION "do" INSTRUCCIONES "end" _
 
   $default      reduce using rule 47 (REPETICION_I)
 
 
-state 170
+state 168
 
    7) FUNCION : ID "(" ")" "->" TIPO "begin" INSTRUCCIONES "end" _ ";"
 
-  ";"           shift, and go to state 175
+  ";"           shift, and go to state 173
 
 
-state 171
+state 169
 
    6) FUNCION : ID "(" PARAMETROS ")" "begin" INSTRUCCIONES "end" ";" _
 
   $default      reduce using rule 6 (FUNCION)
 
 
-state 172
+state 170
 
    8) FUNCION : ID "(" PARAMETROS ")" "->" TIPO "begin" INSTRUCCIONES _ "end" ";"
   22) SECUENCIACION : INSTRUCCIONES _ INSTRUCCION
 
-  "end"         shift, and go to state 176
+  "end"         shift, and go to state 174
   "read"        shift, and go to state 38
   "write"       shift, and go to state 39
   "writeln"     shift, and go to state 40
@@ -2962,14 +2928,14 @@ state 172
   BLOQUE        go to state 34
   LLAMADA_FUNCION  go to state 35
 
-state 173
+state 171
 
   43) COND : "else" INSTRUCCION _ "end"
 
-  "end"         shift, and go to state 177
+  "end"         shift, and go to state 175
 
 
-state 174
+state 172
 
   44) REPETICION_D : "for" ID "from" EXPRESION "to" EXPRESION _ "by" EXPRESION "do" INSTRUCCIONES "end"
   45) REPETICION_D : "for" ID "from" EXPRESION "to" EXPRESION _ "do" INSTRUCCIONES "end"
@@ -2989,8 +2955,8 @@ state 174
   67) EXPRESION : EXPRESION _ "and" EXPRESION
   68) EXPRESION : EXPRESION _ "or" EXPRESION
 
-  "do"          shift, and go to state 179
-  "by"          shift, and go to state 178
+  "do"          shift, and go to state 177
+  "by"          shift, and go to state 176
   "and"         shift, and go to state 111
   "or"          shift, and go to state 112
   "=="          shift, and go to state 105
@@ -3008,28 +2974,28 @@ state 174
   "mod"         shift, and go to state 102
 
 
-state 175
+state 173
 
    7) FUNCION : ID "(" ")" "->" TIPO "begin" INSTRUCCIONES "end" ";" _
 
   $default      reduce using rule 7 (FUNCION)
 
 
-state 176
+state 174
 
    8) FUNCION : ID "(" PARAMETROS ")" "->" TIPO "begin" INSTRUCCIONES "end" _ ";"
 
-  ";"           shift, and go to state 180
+  ";"           shift, and go to state 178
 
 
-state 177
+state 175
 
   43) COND : "else" INSTRUCCION "end" _
 
   $default      reduce using rule 43 (COND)
 
 
-state 178
+state 176
 
   44) REPETICION_D : "for" ID "from" EXPRESION "to" EXPRESION "by" _ EXPRESION "do" INSTRUCCIONES "end"
 
@@ -3041,13 +3007,13 @@ state 178
   ID            shift, and go to state 68
   NUMBER        shift, and go to state 74
 
-  EXPRESION     go to state 181
+  EXPRESION     go to state 179
   LITERAL       go to state 66
   LLAMADA_FUNCION  go to state 67
   LITERAL_NUMBER  go to state 72
   LITERAL_BOOLEAN  go to state 73
 
-state 179
+state 177
 
   45) REPETICION_D : "for" ID "from" EXPRESION "to" EXPRESION "do" _ INSTRUCCIONES "end"
 
@@ -3065,7 +3031,7 @@ state 179
 
   SECUENCIACION  go to state 25
   INSTRUCCION   go to state 26
-  INSTRUCCIONES  go to state 182
+  INSTRUCCIONES  go to state 180
   ASIGNACION    go to state 27
   ENTRADA       go to state 28
   SALIDA        go to state 29
@@ -3076,14 +3042,14 @@ state 179
   BLOQUE        go to state 34
   LLAMADA_FUNCION  go to state 35
 
-state 180
+state 178
 
    8) FUNCION : ID "(" PARAMETROS ")" "->" TIPO "begin" INSTRUCCIONES "end" ";" _
 
   $default      reduce using rule 8 (FUNCION)
 
 
-state 181
+state 179
 
   44) REPETICION_D : "for" ID "from" EXPRESION "to" EXPRESION "by" EXPRESION _ "do" INSTRUCCIONES "end"
   54) EXPRESION : EXPRESION _ "*" EXPRESION
@@ -3102,7 +3068,7 @@ state 181
   67) EXPRESION : EXPRESION _ "and" EXPRESION
   68) EXPRESION : EXPRESION _ "or" EXPRESION
 
-  "do"          shift, and go to state 183
+  "do"          shift, and go to state 181
   "and"         shift, and go to state 111
   "or"          shift, and go to state 112
   "=="          shift, and go to state 105
@@ -3120,10 +3086,75 @@ state 181
   "mod"         shift, and go to state 102
 
 
-state 182
+state 180
 
   22) SECUENCIACION : INSTRUCCIONES _ INSTRUCCION
   45) REPETICION_D : "for" ID "from" EXPRESION "to" EXPRESION "do" INSTRUCCIONES _ "end"
+
+  "end"         shift, and go to state 182
+  "read"        shift, and go to state 38
+  "write"       shift, and go to state 39
+  "writeln"     shift, and go to state 40
+  "with"        shift, and go to state 12
+  "do"          shift, and go to state 13
+  "if"          shift, and go to state 41
+  "while"       shift, and go to state 44
+  "for"         shift, and go to state 42
+  "repeat"      shift, and go to state 43
+  "return"      shift, and go to state 36
+  ID            shift, and go to state 37
+
+  INSTRUCCION   go to state 57
+  ASIGNACION    go to state 27
+  ENTRADA       go to state 28
+  SALIDA        go to state 29
+  CONDICIONAL   go to state 30
+  REPETICION_D  go to state 31
+  REPETICION_I  go to state 32
+  RETURN        go to state 33
+  BLOQUE        go to state 34
+  LLAMADA_FUNCION  go to state 35
+
+state 181
+
+  44) REPETICION_D : "for" ID "from" EXPRESION "to" EXPRESION "by" EXPRESION "do" _ INSTRUCCIONES "end"
+
+  "read"        shift, and go to state 38
+  "write"       shift, and go to state 39
+  "writeln"     shift, and go to state 40
+  "with"        shift, and go to state 12
+  "do"          shift, and go to state 13
+  "if"          shift, and go to state 41
+  "while"       shift, and go to state 44
+  "for"         shift, and go to state 42
+  "repeat"      shift, and go to state 43
+  "return"      shift, and go to state 36
+  ID            shift, and go to state 37
+
+  SECUENCIACION  go to state 25
+  INSTRUCCION   go to state 26
+  INSTRUCCIONES  go to state 183
+  ASIGNACION    go to state 27
+  ENTRADA       go to state 28
+  SALIDA        go to state 29
+  CONDICIONAL   go to state 30
+  REPETICION_D  go to state 31
+  REPETICION_I  go to state 32
+  RETURN        go to state 33
+  BLOQUE        go to state 34
+  LLAMADA_FUNCION  go to state 35
+
+state 182
+
+  45) REPETICION_D : "for" ID "from" EXPRESION "to" EXPRESION "do" INSTRUCCIONES "end" _
+
+  $default      reduce using rule 45 (REPETICION_D)
+
+
+state 183
+
+  22) SECUENCIACION : INSTRUCCIONES _ INSTRUCCION
+  44) REPETICION_D : "for" ID "from" EXPRESION "to" EXPRESION "by" EXPRESION "do" INSTRUCCIONES _ "end"
 
   "end"         shift, and go to state 184
   "read"        shift, and go to state 38
@@ -3149,72 +3180,7 @@ state 182
   BLOQUE        go to state 34
   LLAMADA_FUNCION  go to state 35
 
-state 183
-
-  44) REPETICION_D : "for" ID "from" EXPRESION "to" EXPRESION "by" EXPRESION "do" _ INSTRUCCIONES "end"
-
-  "read"        shift, and go to state 38
-  "write"       shift, and go to state 39
-  "writeln"     shift, and go to state 40
-  "with"        shift, and go to state 12
-  "do"          shift, and go to state 13
-  "if"          shift, and go to state 41
-  "while"       shift, and go to state 44
-  "for"         shift, and go to state 42
-  "repeat"      shift, and go to state 43
-  "return"      shift, and go to state 36
-  ID            shift, and go to state 37
-
-  SECUENCIACION  go to state 25
-  INSTRUCCION   go to state 26
-  INSTRUCCIONES  go to state 185
-  ASIGNACION    go to state 27
-  ENTRADA       go to state 28
-  SALIDA        go to state 29
-  CONDICIONAL   go to state 30
-  REPETICION_D  go to state 31
-  REPETICION_I  go to state 32
-  RETURN        go to state 33
-  BLOQUE        go to state 34
-  LLAMADA_FUNCION  go to state 35
-
 state 184
-
-  45) REPETICION_D : "for" ID "from" EXPRESION "to" EXPRESION "do" INSTRUCCIONES "end" _
-
-  $default      reduce using rule 45 (REPETICION_D)
-
-
-state 185
-
-  22) SECUENCIACION : INSTRUCCIONES _ INSTRUCCION
-  44) REPETICION_D : "for" ID "from" EXPRESION "to" EXPRESION "by" EXPRESION "do" INSTRUCCIONES _ "end"
-
-  "end"         shift, and go to state 186
-  "read"        shift, and go to state 38
-  "write"       shift, and go to state 39
-  "writeln"     shift, and go to state 40
-  "with"        shift, and go to state 12
-  "do"          shift, and go to state 13
-  "if"          shift, and go to state 41
-  "while"       shift, and go to state 44
-  "for"         shift, and go to state 42
-  "repeat"      shift, and go to state 43
-  "return"      shift, and go to state 36
-  ID            shift, and go to state 37
-
-  INSTRUCCION   go to state 57
-  ASIGNACION    go to state 27
-  ENTRADA       go to state 28
-  SALIDA        go to state 29
-  CONDICIONAL   go to state 30
-  REPETICION_D  go to state 31
-  REPETICION_I  go to state 32
-  RETURN        go to state 33
-  BLOQUE        go to state 34
-  LLAMADA_FUNCION  go to state 35
-
-state 186
 
   44) REPETICION_D : "for" ID "from" EXPRESION "to" EXPRESION "by" EXPRESION "do" INSTRUCCIONES "end" _
 
