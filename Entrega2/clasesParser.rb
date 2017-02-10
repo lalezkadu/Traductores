@@ -466,6 +466,45 @@ class OpNot < ExpresionUnaria
     end
 end
 
+class LlamadaFuncion
+	attr_accessor :id, :parametros
+
+	def initialize( id, parametros = nil )
+		@id = id
+		@parametros = parametros
+	end
+
+	def to_s(tab)
+		
+		s = "Llamada a funcion: \n"
+		s << (" "*tab) + "id: \n" + @id.to_s(tab+1)
+		if @parametros != nil
+			s << (" "*tab) + "parametros: \n" + @parametros.to_s(tab+1)
+		end
+		
+		return s
+	end
+end
+
+class ListaPaseParametros
+	attr_accessor :lista, :parametro
+
+	def initialize( lista = nil, parametro)
+		@lista = lista
+		@parametro = parametro
+	end
+
+	def to_s(tab)
+		s = "Parametro: "
+		s << (" "*tab) + @parametro.to_s(tab+1)
+		if lista != nil
+			s << @lista.to_s(tab)
+		end
+		return s
+	end
+
+end
+
 class Tipo
 
 	attr_accessor :tipo

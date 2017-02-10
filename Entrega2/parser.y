@@ -112,6 +112,7 @@ class ParserRtn
 		| REPETICION_I ';'	{ result = val[0] }
 		| RETURN ';'		{ result = val[0] }
 		| BLOQUE 			{ result = val[0] }
+		| LLAMADA_FUNCION
 		;
 
 	# Reglas para reconocer retorno de valores en las funciones
@@ -169,6 +170,7 @@ class ParserRtn
 	# Reglas para reconocer las expresiones
 	EXPRESION
 		: LITERAL
+		| LLAMADA_FUNCION
 		| ID 						{ result = Identificador.new(val[0])}
 		| '(' EXPRESION ')'			{ result = val[1] }
 		| 'not' EXPRESION 			{ result = OpNot.new(val[1]) }
@@ -188,6 +190,19 @@ class ParserRtn
 		| EXPRESION '<' EXPRESION 	{ result = OpMenor.new(val[0], val[2]) }
 		| EXPRESION 'and' EXPRESION { result = OpAnd.new(val[0], val[2]) }
 		| EXPRESION 'or' EXPRESION 	{ result = OpOr.new(val[0], val[2]) }
+		;
+
+	# Reglas para reconocer llamadas a funciones
+	LLAMADA_FUNCION
+		: ID '(' ')'						{ result = LlamadaFuncion.new(val[0], nil) }
+		| ID '(' LISTA_PASE_PARAMETROS ')'	{ result = LlamadaFuncion.new(val[0], val[2]) }
+		;
+
+	LISTA_PASE_PARAMETROS
+		: LISTA_PASE_PARAMETROS ',' EXPRESION 	{ result = ListaPaseParametros.new(val[0],val[2]) }
+		| LISTA_PASE_PARAMETROS ',' ID 			{ result = ListaPaseParametros.new(val[0],val[2]) }
+		| EXPRESION 							{ result = ListaPaseParametros.new(nil,val[0]) }
+		| ID 									{ result = ListaPaseParametros.new(nil,val[0]) }
 		;
 
 	# Reglas de tipos de datos
@@ -223,13 +238,13 @@ require_relative 'clasesParser'
 
 class ErrorSintactico < RuntimeError
 
-    def initialize(token)
-        @token = token
-    end
+	def initialize(token)
+		@token = token
+	end
 
-    def to_s
-        "fila: " + @token.fila.to_s() + ", columna: " + @token.columna.to_s() + ", token inesperado: #{@token.token} \n"   
-    end
+	def to_s
+		"fila: " + @token.fila.to_s() + ", columna: " + @token.columna.to_s() + ", token inesperado: #{@token.token} \n"   
+	end
 end
 
 ---- inner ----
@@ -249,6 +264,6 @@ end
 	end
 
 	def on_error(id, token, pila)
-	    raise ErrorSintactico.new(token)
+		raise ErrorSintactico.new(token)
 	end
 	
