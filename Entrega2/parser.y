@@ -33,8 +33,10 @@ class ParserRtn
 
 	# Reglas para reconocer la estructura de un programa
 	ESTRUCTURA
-		: FUNCIONES PROGRAMA 	{ return Estructura.new(val[0], val[1]) }
-		| PROGRAMA 				{ return Estructura.new(nil, val[0]) }
+		: FUNCIONES PROGRAMA 	{ result = Estructura.new(val[0], val[1]) }
+		| FUNCIONES 			{ result = Estructura.new(val[0], nil) }
+		| PROGRAMA 				{ result = Estructura.new(nil, val[0]) }
+		| 						{ result = Estructura.new(nil, nil) }
 		;
 
 	# Reglas para reconocer funciones antes del codigo del programa
@@ -60,6 +62,7 @@ class ParserRtn
 	# Reglas para reconocer codigos en programas
 	PROGRAMA
 		: 'program' BLOQUE 'end' ';'	{ result = Programa.new(val[1]) }
+		| 'program' 'end' ';'			{ result = Programa.new(nil) }
 		;
 
 	# Reglas para escribir bloque de instrucciones
@@ -103,7 +106,7 @@ class ParserRtn
 		| RETURN ';'			{ result = val[0] }
 		| BLOQUE 				{ result = val[0] }
 		| LLAMADA_FUNCION ';' 	{ result = val[0] }
-		| ';'					{ result = val[0] }
+		| ';'					{ result = nil }
 		;
 
 	# Reglas para reconocer retorno de valores en las funciones
@@ -135,9 +138,11 @@ class ParserRtn
 		| ESCRIBIR ',' STRING 		{ result = Escribir.new(val[0], val[2]) }
 		;
 
+	# Regla para reconocer un string en la salida
 	STRING 
 		: 'TkString'	{ result = Str.new(val[0]) }
 		;
+
 	# Reglas para reconocer la instruccion condicional
 	CONDICIONAL
 		: 'if' EXPRESION 'then' INSTRUCCIONES COND 	{ result = Condicional.new(val[1],val[3],val[4]) }
@@ -192,6 +197,7 @@ class ParserRtn
 		| IDENTIFICADOR '(' LISTA_PASE_PARAMETROS ')'	{ result = LlamadaFuncion.new(val[0], val[2]) }
 		;
 
+	# Reglas para reconocer los parametros de una llamada a funcion
 	LISTA_PASE_PARAMETROS
 		: EXPRESION 							{ result = ListaPaseParametros.new(nil,val[0]) }
 		| LISTA_PASE_PARAMETROS ',' EXPRESION 	{ result = ListaPaseParametros.new(val[0],val[2]) }
@@ -219,6 +225,8 @@ class ParserRtn
 		: 'true'	{ result = LiteralBooleano.new("true") }
 		| 'false'	{ result = LiteralBooleano.new("false") }
 		;
+
+	# Regla para reconocer un identificador
 	IDENTIFICADOR
 		: 'TkId' 	{ result =  Identificador.new(val[0]) }
 		;
@@ -231,6 +239,7 @@ end
 require_relative 'lexer'
 require_relative 'clasesParser'
 
+# Errores sintacticos
 class ErrorSintactico < RuntimeError
 
 	def initialize(token)
@@ -255,7 +264,6 @@ end
 	end
 
 	def next_token
-		#puts @tokens
 		@tokens.shift
 	end
 

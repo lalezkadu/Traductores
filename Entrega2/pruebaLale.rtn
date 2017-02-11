@@ -1,0 +1,13 @@
+func algo(number bla)
+begin
+    ;
+end;
+program
+	with
+	do
+            while j <= 4 do
+                write "jaja", 0 + 1, true, x;
+            end;    
+        b = arc();
+	end;
+end;
