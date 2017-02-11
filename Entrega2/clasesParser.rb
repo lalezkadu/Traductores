@@ -469,7 +469,8 @@ class Salida
 
 	# == Atributos
 	#
-	#
+	# expresion : 	Expresion o string que se debe imprimir.
+	# cadenas 	: 	Expresiones y/o strings que falta por imprimir.
 	attr_accessor :expresion, :cadenas
 
 	def initialize(cadenas, expresion)
@@ -497,8 +498,8 @@ class Escribir
 
 	# == Atributos
 	#
-	# 
-	#
+	# expresion : 	Expresion o string que se debe imprimir.
+	# cadenas 	: 	Expresiones y/o strings que falta por imprimir.
 	attr_accessor :expresion, :cadenas
 
 	def initialize(cadenas = nil, expresion)
@@ -538,12 +539,14 @@ end
 
 # == Clase ExpresionBinaria
 #
-#
+# Clase que representa el nodo de expresiones binarias. Contiene el método para transformar a string la expresión
 class ExpresionBinaria
 
 	# == Atributos
 	#
-	#
+	# op1 	: 	Operador izquierdo de la expresión
+	# op2 	: 	Operador derecho de la expresión
+	# oper 	: 	Operación correspondiente a la expresión
 	attr_accessor :op1, :op2, :oper
 
 	def initialize(op1, op2, oper)
@@ -562,7 +565,7 @@ end
 
 # == Clase Asignacion
 #
-#
+# Clase que representa el nodo de la operación '='. Hereda de ExpresionBinaria.
 class Asignacion < ExpresionBinaria
 
     def initialize(id, expresion)
@@ -572,7 +575,7 @@ end
 
 # == Clase OpMultiplicacion
 #
-#
+# Clase que representa el nodo de la operación '*'. Hereda de ExpresionBinaria.
 class OpMultiplicacion < ExpresionBinaria
 
     def initialize(op1,op2)
@@ -582,7 +585,7 @@ end
 
 # == Clase OpSuma
 #
-#
+# Clase que representa el nodo de la operación '+'. Hereda de ExpresionBinaria.
 class OpSuma < ExpresionBinaria
 
     def initialize(op1,op2)
@@ -592,7 +595,7 @@ end
 
 # == Clase OpResta
 #
-#
+# Clase que representa el nodo de la operación '-'. Hereda de ExpresionBinaria.
 class OpResta < ExpresionBinaria
 
     def initialize(op1,op2)
@@ -602,7 +605,7 @@ end
 
 # == Clase OpDivision
 #
-#
+# Clase que representa el nodo de la operación 'div'. Hereda de ExpresionBinaria.
 class OpDivision < ExpresionBinaria
 
     def initialize(op1,op2)
@@ -612,7 +615,7 @@ end
 
 # == Clase OpMod
 #
-#
+# Clase que representa el nodo de la operación 'mod'. Hereda de ExpresionBinaria.
 class OpMod < ExpresionBinaria
 
     def initialize(op1,op2)
@@ -622,7 +625,7 @@ end
 
 # == Clase OpDivisionE
 #
-#
+# Clase que representa el nodo de la operación '/'. Hereda de ExpresionBinaria.
 class OpDivisionE < ExpresionBinaria
 
     def initialize(op1,op2)
@@ -632,7 +635,7 @@ end
 
 # == Clase OpModE
 #
-#
+# Clase que representa el nodo de la operación '%'. Hereda de ExpresionBinaria.
 class OpModE < ExpresionBinaria
 
     def initialize(op1,op2)
@@ -642,7 +645,7 @@ end
 
 # == Clase OpEquivalente
 #
-#
+# Clase que representa el nodo de la operación '=='. Hereda de ExpresionBinaria.
 class OpEquivalente < ExpresionBinaria
 
     def initialize(op1,op2)
@@ -652,7 +655,7 @@ end
 
 # == Clase OpDesigual
 #
-#
+# Clase que representa el nodo de la operación '/='. Hereda de ExpresionBinaria.
 class OpDesigual < ExpresionBinaria
 
     def initialize(op1,op2)
@@ -662,7 +665,7 @@ end
 
 # == Clase OpMenor
 #
-#
+# Clase que representa el nodo de la operación '<'. Hereda de ExpresionBinaria.
 class OpMenor < ExpresionBinaria
 
     def initialize(op1,op2)
@@ -672,7 +675,7 @@ end
 
 # == Clase OpMenorIgual
 #
-#
+# Clase que representa el nodo de la operación '<='. Hereda de ExpresionBinaria.
 class OpMenorIgual < ExpresionBinaria
 
     def initialize(op1,op2)
@@ -682,7 +685,7 @@ end
 
 # == Clase OpMayor
 #
-#
+# Clase que representa el nodo de la operación '>'. Hereda de ExpresionBinaria.
 class OpMayor < ExpresionBinaria
 
     def initialize(op1,op2)
@@ -692,7 +695,7 @@ end
 
 # == Clase OpMayoIgual
 #
-#
+# Clase que representa el nodo de la operación '>='. Hereda de ExpresionBinaria.
 class OpMayorIgual < ExpresionBinaria
 
     def initialize(op1,op2)
@@ -702,7 +705,7 @@ end
 
 # == Clase OpAnd
 #
-#
+# Clase que representa el nodo de la operación 'and'. Hereda de ExpresionBinaria.
 class OpAnd < ExpresionBinaria
 
     def initialize(op1,op2)
@@ -712,7 +715,7 @@ end
 
 # == Clase OpOr
 #
-#
+# Clase que representa el nodo de la operación 'or'. Hereda de ExpresionBinaria.
 class OpOr < ExpresionBinaria
 
     def initialize(op1,op2)
@@ -722,12 +725,13 @@ end
 
 # == Clase ExpresionUnaria
 #
-#
+# Clase que representa el nodo de expresion unarias. Contiene el método que transforma a string la expresion.
 class ExpresionUnaria
 
 	# == Atributos
 	#
-	#
+	# op 	: 	Recibe el operador que afecta la expresión.
+	# oper 	: 	Recibe el operando que es afectado por el operador unario.
 	attr_accessor :op, :oper
 
 	def initialize(op, oper)
@@ -740,9 +744,9 @@ class ExpresionUnaria
 	end
 end
 
-# == Clase OpMinus
+# == Clase OpUNMINUS
 #
-#
+# Clase que representa el nodo del operador unario '-'. Hereda de ExpresionUnaria.
 class OpUMINUS < ExpresionUnaria
 
     def initialize(op)
@@ -750,6 +754,9 @@ class OpUMINUS < ExpresionUnaria
     end
 end
 
+# == Clase OpNot
+#
+# Clase que representa el nodo del operador unario 'not'. Hereda de ExpresionUnaria.
 class OpNot < ExpresionUnaria
 
 	def initialize(op)
@@ -759,12 +766,13 @@ end
 
 # == Clase LlamadaFuncion
 #
-#
+# Clase que representa el nodo de llamada a funciones. Posee el método para convertir a string sus distintos componentes.
 class LlamadaFuncion
 
 	# == Atributos
 	#
-	#
+	# id 	: 	Recibe el nodo identificador de la función.
+	# parametros 	: 	Recibe el nodo lista de parametros que recibe la función
 	attr_accessor :id, :parametros
 
 	def initialize(id, parametros)
@@ -787,12 +795,13 @@ end
 
 # == Clase ListaParametros
 #
-#
+# Clase que representa una lista de nodos parametros que recibe una función. Posee el método para transformar a string la lista
 class ListaPaseParametros
 
 	# == Atributos
 	#
-	#
+	# lista : 	Recibe la lista de nodos parametros restantes por procesar.
+	# parametro : Recibe el nodo parámetro sobre el cual se está.
 	attr_accessor :lista, :parametro
 
 	def initialize(lista = nil, parametro)
@@ -813,12 +822,12 @@ end
 
 # == Clase Tipo
 #
-#
+# Clase que representa el nodo de un tipo. Posee el método para transformar a string cualquier tipo.
 class Tipo
 
 	# == Atributos
 	#
-	#
+	# tipo 	: 	Tipo de dato (number o boolean)
 	attr_accessor :tipo
 
 	def initialize( tipo )
@@ -832,7 +841,7 @@ end
 
 # == Clase TipoNum
 #
-#
+# Clase que representa el nodo de un tipo numérico. Hereda de Tipo.
 class TipoNum < Tipo
 
 	def initialize()
@@ -842,7 +851,7 @@ end
 
 # == Clase TipoBoolean
 #
-#
+# Clase que representa el nodo de un tipo booleano. Hereda de Tipo.
 class TipoBoolean < Tipo
 
 	def initialize()
@@ -852,7 +861,7 @@ end
 
 # == Clase Literal
 #
-#
+# Clase que representa el nodo de un literal genérico. Posee el metodo de conversion a string para todos los literales.
 class Literal
 
 	# == Atributos
@@ -872,7 +881,7 @@ end
 
 # == Clase LiteralNumerico
 #
-#
+# Clase que representa el nodo de un literal numerico. Hereda de la clase literal
 class LiteralNumerico < Literal
 
 	def initialize(valor)
@@ -882,7 +891,7 @@ end
 
 # == Clase LiteralBooleano
 #
-#
+# Clase que representa el nodo de un literal booleano. Hereda de la clase literal
 class LiteralBooleano < Literal
 
 	def initialize(valor)
