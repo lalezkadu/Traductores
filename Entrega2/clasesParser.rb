@@ -63,7 +63,7 @@ class Funcion
 		if parametros != nil
 			s << (" "*(tab+2)) + "parametros: \n" + @parametros.to_s(tab+4)
 		else
-			s = (" "*(tab+2)) + "parametros: \n"
+			s << (" "*(tab+2)) + "parametros: \n"
 		end
 		if @tipo != nil
 			s << (" "*(tab+2)) + "retorna: \n" + @tipo.to_s(tab+4)
@@ -150,10 +150,10 @@ class ListaDeclaracion
 
 	def to_s(tab)
 		s = ""
-		s << @declaracion.to_s(tab)
 		if @declaraciones != nil
 			s << @declaraciones.to_s(tab)
 		end
+		s << @declaracion.to_s(tab)
 		return s
 	end
 end
@@ -184,11 +184,11 @@ class ListaId
 	end
 
 	def to_s(tab)
-		s = (" "*tab) + "Identificadores: \n"
-		s << @id.to_s(tab+2)
+		s = ""
 		if ids != nil
 			s << @ids.to_s(tab)
 		end
+		s << @id.to_s(tab+2)
 		return s
 	end
 end
@@ -231,11 +231,12 @@ class Instrucciones
 	end
 
 	def to_s(tab)
-		s = (" "*tab) + "Instrucciones: \n"  #"Instruccion:\n"
-		s << @instruccion.to_s(tab+2)
+		s = ""
 		if instrucciones != nil
 			s << @instrucciones.to_s(tab)
 		end
+		s << (" "*tab) + "Instrucciones: \n"  #"Instruccion:\n"
+		s << @instruccion.to_s(tab+2)
 		return s
 	end
 end
