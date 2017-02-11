@@ -1,0 +1,20 @@
+program
+	with
+		number b, a, z, r;
+		boolean hi, lol;
+		number ask = -8;
+		boolean lose = true;
+	do
+		b = 9;
+		b = b + 7 * 8 * (a + z);
+
+		if lose then
+			crearFuncionNueva( 9, hola, probando, 10);
+			read x;
+			writeln "Probando el write \\\" ", 9 + 8, -7;
+		else
+			b = operacionAbsurda();
+		end;
+
+	end;
+end;

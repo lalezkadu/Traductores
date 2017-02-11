@@ -363,7 +363,7 @@ class Salida
     		s = (" "*tab) + "Salida: \n"
     	end 
     	s << (" "*(tab+2)) + "impresiones: \n" + @cadenas.to_s(tab+4)
-    	return s + "\n"
+    	return s
     end
 end
  
@@ -546,13 +546,13 @@ class LlamadaFuncion
 	end
 
 	def to_s(tab)
-		
+		puts @id.to_s(0)
 		s = (" "*tab) + "Llamada a funcion: \n"
 		s << (" "*(tab+2)) + "nombre: \n" + @id.to_s(tab+4)
 		if @parametros != nil
 			s << (" "*(tab+2)) + "parametros: \n" + @parametros.to_s(tab+4)
 		else
-			s = (" "*(tab+2)) + "parametros: \n"
+			s << (" "*(tab+2)) + "parametros: \n"
 		end
 		
 		return s
@@ -568,11 +568,12 @@ class ListaPaseParametros
 	end
 
 	def to_s(tab)
-		s = (" "*tab) + "Parametro: \n"
-		s << @parametro.to_s(tab+2)
+		s = ""
 		if lista != nil
 			s << @lista.to_s(tab)
 		end
+		s << (" "*tab) + "Parametro: \n"
+		s << @parametro.to_s(tab+2)
 		return s
 	end
 
