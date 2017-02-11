@@ -345,29 +345,29 @@ class Entrada
     end
 end
 
-# NO SIRVEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+# NO SIRVEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE <- Ahora si....
 class Salida 
 
-	attr_accessor :tipo, :ids
+	attr_accessor :expresion, :cadenas
 
-	def initialize(ids, tipo)
-		@tipo = tipo
-        @ids = ids
+	def initialize(cadenas, expresion)
+		@expresion = expresion
+        @cadenas = cadenas
     end
 
     def to_s(tab)
     	s = ""
-    	if @tipo != nil
+    	if @expresion != nil
     		s = (" "*tab) + "Salida con salto de linea: \n"
     	else
     		s = (" "*tab) + "Salida: \n"
     	end 
-    	s << (" "*(tab+2)) + "impresiones: \n" + @ids.to_s(tab+4)
+    	s << (" "*(tab+2)) + "impresiones: \n" + @cadenas.to_s(tab+4)
     	return s + "\n"
     end
 end
-
-# NOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+ 
+# NOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO <- Tambien... 
 class Escribir
 	attr_accessor :expresion, :cadenas
 
@@ -377,12 +377,12 @@ class Escribir
 	end
 
 	def to_s(tab)
-		s = (" "*tab) + "Impresion: \n"
-		s << (" "*(tab+2)) + "objeto: \n" + @expresion.to_s(tab+4)
-
+		s = ""
 		if cadenas != nil
-			s << (" "*(tab+2)) + @cadenas.to_s(tab)
+			s << @cadenas.to_s(tab)
 		end
+		s << (" "*tab) + "Impresion: \n"
+		s << (" "*(tab+2)) + "objeto: \n" + @expresion.to_s(tab+4)
 
 		return s + "\n"
 	end
