@@ -231,7 +231,7 @@ class Instrucciones
 	end
 
 	def to_s(tab)
-		s = (" "*tab) + "Secuenciacion: \n"  #"Instruccion:\n"
+		s = (" "*tab) + "Instrucciones: \n"  #"Instruccion:\n"
 		s << @instruccion.to_s(tab+2)
 		if instrucciones != nil
 			s << @instrucciones.to_s(tab)

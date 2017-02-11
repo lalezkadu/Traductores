@@ -88,7 +88,7 @@ class ParserRtn
 
 	# Regla para reconocer una secuencia de instrucciones
 	INSTRUCCIONES
-		: INSTRUCCIONES INSTRUCCION 	{ result = Instrucciones.new(val[1], val[0]) }
+		: INSTRUCCIONES INSTRUCCION 	{ result = Instrucciones.new(val[0], val[1]) }
 		| INSTRUCCION 					{ result = Instrucciones.new(nil, val[0]) }
 		;
 

@@ -772,7 +772,7 @@ module_eval(<<'.,.,', 'parser.y', 85)
 
 module_eval(<<'.,.,', 'parser.y', 90)
   def _reduce_20(val, _values, result)
-     result = Instrucciones.new(val[1], val[0]) 
+     result = Instrucciones.new(val[0], val[1]) 
     result
   end
 .,.,
