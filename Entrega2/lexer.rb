@@ -197,7 +197,6 @@ class LexerRtn
       			
     		end
 
-    		#puts lexema
 			i += 1
 		end
 
