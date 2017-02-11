@@ -36,5 +36,7 @@ program
         if 9 == 6 then
 	        arc();
 	    end;
+
+	    write "Hola", "Yo nose \n";
 	end;
 end;

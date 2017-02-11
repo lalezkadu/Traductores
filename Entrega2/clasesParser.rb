@@ -235,7 +235,7 @@ class Instrucciones
 		if instrucciones != nil
 			s << @instrucciones.to_s(tab)
 		end
-		s << (" "*tab) + "Instrucciones: \n"  #"Instruccion:\n"
+		s << (" "*tab) + "Instruccion: \n"  #"Instruccion:\n"
 		s << @instruccion.to_s(tab+2)
 		return s
 	end
@@ -266,9 +266,9 @@ class Condicional
 
 	def to_s(tab)
 		s = (" "*tab) + "Condicional:\n"
-		s << (" "*(tab+2)) + "Instrucciones If:\n" + @instif.to_s(tab+4)
+		s << (" "*(tab+2)) + "instrucciones If:\n" + @instif.to_s(tab+4)
 		if instelse != nil
-			s << (" "*(tab+2)) + "Instrucciones Else:\n" + @instelse.to_s(tab+4)
+			s << (" "*(tab+2)) + "instrucciones Else:\n" + @instelse.to_s(tab+4)
 		end
 		return s
 	end
@@ -378,11 +378,7 @@ class Escribir
 
 	def to_s(tab)
 		s = (" "*tab) + "Impresion: \n"
-		#if expresion.is_a? String
-		#s << (" "*(tab+2)) + "objeto: " + @expresion
-		#else
-		#	s << (" "*(tab+2)) + "objeto: \n" + @expresion.to_s(tab+4)
-		#end
+		s << (" "*(tab+2)) + "objeto: \n" + @expresion.to_s(tab+4)
 
 		if cadenas != nil
 			s << (" "*(tab+2)) + @cadenas.to_s(tab)

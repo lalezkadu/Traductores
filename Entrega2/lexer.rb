@@ -206,7 +206,7 @@ class LexerRtn
 		end
 
 		for i in tk
-			if i.tipo == "TkNum" || i.tipo == "TkId"
+			if i.tipo == "TkNum" || i.tipo == "TkId" || i.tipo == "TkString"
 				@parserTk << [i.tipo,i]
 			else
 				@parserTk << [i.token,i]
