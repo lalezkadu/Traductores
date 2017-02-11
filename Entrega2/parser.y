@@ -65,7 +65,7 @@ class ParserRtn
 	# Reglas para escribir bloque de instrucciones
 	BLOQUE
 		: 'with' LISTA_DECLARACION ';' 'do' INSTRUCCIONES 'end' ';'	{ result = Bloque.new(val[1], val[4]) }
-		| 'do' INSTRUCCIONES 'end' ';'								{ result = Bloque.new(nil, val[1]) }
+		| 'with' 'do' INSTRUCCIONES 'end' ';'								{ result = Bloque.new(nil, val[2]) }
 		;
 
 	# Reglas para reconocer una lista de declaraciones
@@ -188,7 +188,7 @@ class ParserRtn
 
 	# Reglas para reconocer llamadas a funciones
 	LLAMADA_FUNCION
-		: IDENTIFICADOR '(' ')'							{ result = LlamadaFuncion.new(nil, val[0]) }
+		: IDENTIFICADOR '(' ')'							{ result = LlamadaFuncion.new(val[0], nil) }
 		| IDENTIFICADOR '(' LISTA_PASE_PARAMETROS ')'	{ result = LlamadaFuncion.new(val[0], val[2]) }
 		;
 

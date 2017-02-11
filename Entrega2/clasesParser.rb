@@ -62,6 +62,8 @@ class Funcion
 		s << (" "*(tab+2)) + "nombre: \n" + @nombre.to_s(tab+4)
 		if parametros != nil
 			s << (" "*(tab+2)) + "parametros: \n" + @parametros.to_s(tab+4)
+		else
+			s = (" "*(tab+2)) + "parametros: \n"
 		end
 		if @tipo != nil
 			s << (" "*(tab+2)) + "retorna: \n" + @tipo.to_s(tab+4)
@@ -121,14 +123,18 @@ end
 class Bloque
 	attr_accessor :declaraciones, :instrucciones
 
-	def initialize(declaraciones, instrucciones)
+	def initialize(declaraciones = nil, instrucciones)
 		@declaraciones = declaraciones
 		@instrucciones = instrucciones
 	end
 
 	def to_s(tab)
 		s = (" "*tab) + "Bloque:\n" 
-		s << (" "*(tab+2)) + "declaraciones:\n" + @declaraciones.to_s(tab+4) 
+		if declaraciones != nil
+			s << (" "*(tab+2)) + "declaraciones:\n" + @declaraciones.to_s(tab+4) 
+		else
+			s << (" "*(tab+2)) + "declaraciones:\n"			
+		end
 		s << (" "*(tab+2)) + "instrucciones:\n" + @instrucciones.to_s(tab+4)
 		return s
 	end
@@ -548,6 +554,8 @@ class LlamadaFuncion
 		s << (" "*(tab+2)) + "nombre: \n" + @id.to_s(tab+4)
 		if @parametros != nil
 			s << (" "*(tab+2)) + "parametros: \n" + @parametros.to_s(tab+4)
+		else
+			s = (" "*(tab+2)) + "parametros: \n"
 		end
 		
 		return s
