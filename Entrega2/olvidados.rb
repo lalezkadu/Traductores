@@ -24,6 +24,19 @@ end
 		: INSTRUCCIONES INSTRUCCION 	{ result = Instruccion.new(val[1], val[0]) }
 		;
 
+class Instruccion
+	attr_accessor :secuencia
+
+	def initialize(secuencia)
+		@secuencia = secuencia
+	end
+
+	def to_s(tab)
+		s = (" "*tab) + "Instruccion: \n"
+		s << @secuencia.to_s(tab+2)
+		return s
+	end
+end
 
 class Secuenciacion
 	attr_accessor :secuencia

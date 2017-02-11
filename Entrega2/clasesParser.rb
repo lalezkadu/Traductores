@@ -18,11 +18,16 @@ class Estructura
 	end
 
 	def to_s()
-		s = "Estructura: \n" 
-		if @funciones != nil
-			s << "  funciones: \n" + @funciones.to_s(4) 
+		s = ""
+		if @funciones != nil || @programa != nil
+			s = "Estructura: \n" 
+			if @funciones != nil
+				s << "  funciones: \n" + @funciones.to_s(4) 
+			end
+			if @programa != nil
+				s << "  programa: \n" + @programa.to_s(4)
+			end
 		end
-		s << "  programa: \n" + @programa.to_s(4)
 		return s
 	end
 end
@@ -116,7 +121,11 @@ class Programa
 	end
 
 	def to_s(tab)
-		return (" "*tab) + "Programa:\n" + (" "*(tab+2)) + "bloques:\n" + @bloque.to_s(tab+4)
+		if bloque != nil
+			return (" "*tab) + "Programa:\n" + (" "*(tab+2)) + "bloques:\n" + @bloque.to_s(tab+4)
+		else
+			return ""
+		end
 	end
 end
 
@@ -208,20 +217,6 @@ class Identificador
 	
 end
 
-class Instruccion
-	attr_accessor :secuencia
-
-	def initialize(secuencia)
-		@secuencia = secuencia
-	end
-
-	def to_s(tab)
-		s = (" "*tab) + "Instruccion: \n" #"Secuenciacion: \n"
-		s << @secuencia.to_s(tab+2)
-		return s
-	end
-end
-
 class Instrucciones
 	attr_accessor :instruccion, :instrucciones
 
@@ -235,8 +230,10 @@ class Instrucciones
 		if instrucciones != nil
 			s << @instrucciones.to_s(tab)
 		end
-		s << (" "*tab) + "Instruccion: \n"  #"Instruccion:\n"
-		s << @instruccion.to_s(tab+2)
+		s << (" "*tab) + "Instruccion: \n"
+		if instruccion != nil
+			s << @instruccion.to_s(tab+2)
+		end
 		return s
 	end
 end
@@ -345,7 +342,6 @@ class Entrada
     end
 end
 
-# NO SIRVEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE <- Ahora si....
 class Salida 
 
 	attr_accessor :expresion, :cadenas
@@ -363,11 +359,10 @@ class Salida
     		s = (" "*tab) + "Salida: \n"
     	end 
     	s << (" "*(tab+2)) + "impresiones: \n" + @cadenas.to_s(tab+4)
-    	return s + "\n"
+    	return s
     end
 end
- 
-# NOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO <- Tambien... 
+
 class Escribir
 	attr_accessor :expresion, :cadenas
 
@@ -384,11 +379,10 @@ class Escribir
 		s << (" "*tab) + "Impresion: \n"
 		s << (" "*(tab+2)) + "objeto: \n" + @expresion.to_s(tab+4)
 
-		return s + "\n"
+		return s
 	end
 end
 
-# NOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
 class Str
 	attr_accessor :str
 
@@ -397,7 +391,7 @@ class Str
 	end
 
 	def to_s(tab)
-		s = (" "*tab) + "string: " + @str.to_s()
+		s = (" "*tab) + "String: " + @str.to_s() + "\n"
 	end
 end
 
