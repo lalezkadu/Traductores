@@ -11,8 +11,13 @@
 
 # == Clase Estructura
 #
-#
+# Clase que representa el nodo de la estructura del programa 
 class Estructura
+
+	# == Atributos
+	#
+	# funciones: Secuencia de funciones definidas en el programa
+	# programa: Bloque de instrucciones del programa
 	attr_accessor :funciones, :programa
 
 	def initialize(funciones, programa)
@@ -37,12 +42,13 @@ end
 
 # == Clase ListaFunciones
 #
-#
+# Clase que representa al nodo de la lista de funciones
 class ListaFunciones
 
 	# == Atributos
 	#
-	#
+	# funciones:
+	# funcion:
 	attr_accessor :funciones, :funcion
 
 	def initialize(funciones, funcion)
@@ -63,12 +69,15 @@ end
 
 # == Clase Funcion
 #
-#
+# Clase que representa el nodo de una funcion
 class Funcion
 
 	# == Atributos
 	#
-	#
+	# nombre: Identificador de la funcion
+	# parametros: Parametros de la funcion
+	# instrucciones: Secuencia de instrucciones del cuerpo de la funcion
+	# tipo: Tipo de dato del retorno de la funcion
 	attr_accessor :nombre, :parametros, :instrucciones, :tipo
 
 	def initialize(nombre, parametros, tipo, instrucciones)
@@ -96,12 +105,14 @@ end
 
 # == Clase Parametros
 #
-#
+# Clase que representa al nodo de los parametros de una funcion
 class Parametros
 
 	# == Atributos
 	#
-	#
+	# tipo: Tipo de dato del parametro
+	# id: identificador del parametro
+	# parametros: Lista de parametros
 	attr_accessor :tipo, :id, :parametros
 
 	def initialize(tipo, id, parametros)
@@ -121,37 +132,14 @@ class Parametros
 	end
 end
 
-# == Clase Parametro
-#
-#
-class Parametro
-
-	# == Atributos
-	#
-	#
-	attr_accessor :tipo, :id
-
-	def initialize(tipo,id)
-		@tipo = tipo
-		@id = id
-	end
-
-	def to_s(tab)
-		s = (" "*tab) + "Parametro:\n"
-		s << (" "*(tab+2)) + "tipo: \n" + @tipo.to_s(tab+4)
-		s << (" "*(tab+2)) + "id: \n" + @id.to_s(tab+4)
-		return s
-	end
-end
-
 # == Clase Programa
 #
-#
+# Clase que representa al nodo de un programa
 class Programa
 
 	# == Atributos
 	#
-	#
+	# bloque: bloque a ejecutar del programa
 	attr_accessor :bloque
 
 	def initialize(bloque)
@@ -169,12 +157,13 @@ end
 
 # == Clase Bloque
 #
-#
+# Clase que representa al nodo de un programa
 class Bloque
 
 	# == Atributos
 	#
-	#
+	# declaraciones: Declaraciones del bloque.
+	# instrucciones: Instrucciones a ejecutar en el bloque
 	attr_accessor :declaraciones, :instrucciones
 
 	def initialize(declaraciones = nil, instrucciones)
@@ -196,13 +185,13 @@ end
 
 # == Clase ListaDeclaracion
 #
-#
-
+# Clase que represeenta al nodo de una lista de declaracione
 class ListaDeclaracion
 
 	# == Atributos
 	#
-	#
+	# declaracion: Declaracion
+	# declaraciones: Lista de declaraciones
 	attr_accessor :declaracion, :declaraciones
 
 	def initialize(declaraciones, declaracion)
@@ -222,12 +211,13 @@ end
 
 # == Clase Declaracion
 #
-#
+# Clase que representa al nodo de una declaracion
 class Declaracion
 
 	# == Atributos
 	#
-	#
+	# tipo: Tipo de dato de la declaracion
+	# declaracion: Declaracion del identificador
 	attr_accessor :tipo, :declaracion
 
 	def initialize(tipo, declaracion)
@@ -245,12 +235,13 @@ end
 
 # == Clase ListaId
 #
-#
+# Clase que representa al nodo de una lista de identificadores
 class ListaId
 
 	# == Atributos
 	#
-	#
+	# id: Identificador
+	# ids: Lista de identificadores
 	attr_accessor :id, :ids
 
 	def initialize(ids,id)
@@ -268,14 +259,14 @@ class ListaId
 	end
 end
 
-# == Clase Udentificador
+# == Clase Identificador
 #
-#
+# Clase que representa al nodo de un identificador
 class Identificador
 
 	# == Atributos
 	#
-	#
+	# id: Identificador a almacenar
 	attr_accessor :id
 
 	def initialize(id)
@@ -291,12 +282,13 @@ end
 
 # == Clase Instrucciones
 #
-#
+# Clase que representa al nodo de una secuencia de instrucciones
 class Instrucciones
 
 	# == Atributos
 	#
-	#
+	# instruccion:
+	# instrucciones: 
 	attr_accessor :instruccion, :instrucciones
 
 	def initialize(instrucciones, instruccion)
@@ -319,12 +311,12 @@ end
 
 # == Clase Return
 #
-#
+# Clase que representa el nodo de la instruccion retorno de una funcion
 class Return
 
 	# == Atributos
 	#
-	#
+	# expresion: Expresion que retorna una funcion
 	attr_accessor :expresion
 
 	def initialize(expresion)
@@ -340,12 +332,14 @@ end
 
 # == Clase Condicional
 #
-#
+# Clase que representa al nodo de una instruccion condicional
 class Condicional
 
 	# == Atributos
 	#
-	#
+	# condicion: Expresion de tipo boolean a verificar
+	# instif: Secuencia de instrucciones a ejecutar si condicion es true
+	# instelse: Secuencia de instrucciones a ejecutar si condicion es false
 	attr_accessor :condicion, :instif, :instelse
 
 	def initialize(condicion, instif, instelse)
@@ -366,12 +360,13 @@ end
 
 # == Clase RepeticionI
 #
-#
+# Clase que representa al nodo de la instruccion iteracion while
 class RepeticionI
 
 	# == Atributos
 	#
-	#
+	# condicion: Expresion de tipo boolean que determina la ejecucion
+	# instrucciones: Secuencia de instrucciones del cuerpo de la iteracion
 	attr_accessor :condicion, :instrucciones
 
 	def initialize(condicion, instrucciones)
@@ -389,12 +384,13 @@ end
 
 # == Clase Repeat
 #
-#
+# Nodo que representa al nodo de la instruccion de iteracion repeat
 class Repeat
 
 	# == Atributos
 	#
-	#
+	# repeticiones: Expresion del tipo number del numero de iteraciones
+	# instrucciones: Secuencia de instrucciones del cuerpo de la iteracion
 	attr_accessor :repeticiones, :instrucciones
 
 	def initialize(repeticiones, instrucciones)
@@ -411,13 +407,17 @@ class Repeat
 end
 
 # == Clase For
-#
-#
+# 
+# Clase que representa a la clase de una instruccion de iteracion for.
 class For
 
 	# == Atributos
 	#
-	#
+	# id: identificador que  a la iteracion
+	# inicio: Expresion de tipo number que identifica el inicio de la iteracion
+	# fin: Expresion de tipo number que identifica el fin de la iteracion
+	# paso: Expresion de tipo number del incremento del contador de la iteracion
+	# instrucciones: Secuencia de instrucciones del cuerpo de la iteracion
 	attr_accessor :id, :inicio, :fin, :paso, :instrucciones
 
 	def initialize(id, inicio, fin, paso, instrucciones)
@@ -445,12 +445,12 @@ end
 
 # == Clase Entrada
 #
-#
+# Clase que representa al nodo a la instruccion de lectura
 class Entrada
 
 	# == Atributos
 	#
-	#
+	# id: Identificador en el cual se almacena la lectura
 	attr_accessor :id
 
     def initialize(id)
@@ -464,7 +464,7 @@ end
 
 # == Clase Salida
 #
-#
+# Clase que representa al nodo a la instruccion de salida
 class Salida 
 
 	# == Atributos
@@ -491,11 +491,13 @@ end
 
 # == Clase Escribir
 #
-#
+# Clase que representa al nodo de las expresiones o strings que se escriben en
+# la salida
 class Escribir
 
 	# == Atributos
 	#
+	# 
 	#
 	attr_accessor :expresion, :cadenas
 
@@ -517,12 +519,12 @@ end
 
 # == Clase Str
 #
-#
+# Clase que representa al nodo de un string
 class Str
 
 	# == Atributos
 	#
-	#
+	# str: string a almacenar
 	attr_accessor :str
 
 	def initialize(str)
