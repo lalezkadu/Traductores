@@ -38,22 +38,25 @@ def main
 	begin
 		# Tokenizar entrada
 		lex =  LexerRtn.new(programa)
-		begin
+		if !(lex.error.empty?)
 			for tok in lex.error
 				tok.imprimir
 			end
-			pars = ParserRtn.new(lex.parserTk)
-	    	ast = pars.parse
-	    	puts ast.to_s()
-	    	rescue ErrorSintactico => e
-	      		puts e
-	      		return
-		end
+		else
+			begin
+				pars = ParserRtn.new(lex.parserTk)
+	    		ast = pars.parse
+	    		puts ast.to_s()
+	    		rescue ErrorSintactico => e
+	      			puts e
+	      			return
+	      	end
+	    end
 
 	rescue ErrorSintactico => e
       	puts e
       	return
-     end
+    end
 end
 
 main
