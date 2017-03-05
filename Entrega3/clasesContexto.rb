@@ -7,17 +7,26 @@ class SymTable
 	attr_accessor :declaraciones, :funciones, :padre, :hijos, :nombre
 
 	def initialize(nombre="",padre=nil,hijos=nil,declaraciones=nil,funciones=[])
-		@declaraciones
-		@padre
-		@hijos
+		@declaraciones = declaraciones
+		@padre = padre
+		@hijos = []
+		@nombre = nombre
+		if @padre != nil
+			@funciones = padre.funciones
+		else
+			@funciones = funciones
+		end
 	end
 
 	def to_s(tab)
-		aux_tabla = @tabla
 		s = ""
-		aux_tabla.each { |key, value| s+= (" "*tab)+"#{key}: #{value}\n" }
+		if @tabla.length > 0:
+			@tabla.each { |key, value| s+= (" "*tab)+"#{key}: #{value}\n" }
+		else
+			s << "None\n"
+		end
+		return s
 	end
-	return s
 end
 
 # Alcance de las variables
@@ -25,7 +34,7 @@ end
 class Alcance
 	attr_accessor :nombre, :tabla, :alcances, :padre
 
-	def initialize(nombre,tabla,alcances,padre=nil)
+	def initialize(nombre="",tabla,alcances=nil,padre=nil)
 		@nombre = nombre
 		@tabla = tabla
 		@alcances = alcances
@@ -33,18 +42,26 @@ class Alcance
 	end
 
 	def to_s(tab)
-		s = (" "*tab)+"Alcance #{nombre}:\n"
-		s << (" "*(tab+2)) + "Variables:\n"
-		if @tabla != nil
-			s << @tabla.to_s(tab+4)
+		s = ""
+		if @nombre != ""
+			s = (" "*tab)+"Alcance #{nombre}:\n"
+			s << (" "*(tab+2)) + "Variables:\n"
+			if @tabla != nil
+				s << @tabla.to_s(tab+4)
+			else
+				s << "None\n"
+			s << (" "*(tab+2)) + "Sub_alcances:\n"
+			end
+			if @alcances != nil
+				s << @alcances.to_s(tab+4)
+			else
+				s << "None\n"
+			end
 		else
-			s << "None\n"
-		s << (" "*(tab+2)) + "Sub_alcances:\n"
-		if @alcances != nil
-			s << @alcances.to_s(tab+4)
-		else
-			s << "None\n"
-
+			if @funciones != nil
+				s << funciones.to_s(tab)
+			end
+		end
 		return s
 	end
 end
