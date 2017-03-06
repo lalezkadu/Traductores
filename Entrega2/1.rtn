@@ -17,7 +17,7 @@ begin
 end;
 
 program
-    # writeln "Insert a number : ";
+    writeln "Insert a number : ";
     with
         number n;
     do

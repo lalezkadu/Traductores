@@ -13,7 +13,7 @@ begin
 end;
 
 program
-    #my_forward();
+    my_forward();
     with do end; # Dummy block
     with
         number x = 37;
