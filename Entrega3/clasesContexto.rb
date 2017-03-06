@@ -2,20 +2,20 @@ require_relative 'clasesParser'
 require_relative 'lexer'
 
 # Tabla de simbolos
-
 class SymTable
-	attr_accessor :declaraciones, :funciones, :padre, :hijos, :nombre
+	attr_accessor :funciones, :declaraciones, :padre # Todos los atributos son SymTables
 
-	def initialize(nombre="",padre=nil,hijos=nil,declaraciones=nil,funciones=[])
-		@declaraciones = declaraciones
-		@padre = padre
-		@hijos = []
-		@nombre = nombre
+	def initialize(padre=nil,declaraciones=nil,funciones=[])
+		
 		if @padre != nil
 			@funciones = padre.funciones
 		else
 			@funciones = funciones
 		end
+		
+		@declaraciones = declaraciones
+		
+		@padre = padre
 	end
 
 	def to_s(tab)
@@ -30,14 +30,12 @@ class SymTable
 end
 
 # Alcance de las variables
-
 class Alcance
-	attr_accessor :nombre, :tabla, :alcances, :padre
+	attr_accessor :nombre, :tabla, :padre
 
-	def initialize(nombre="",tabla,alcances=nil,padre=nil)
+	def initialize(nombre="",padre=nil)
 		@nombre = nombre
-		@tabla = tabla
-		@alcances = alcances
+		@tabla = SymTable.new()
 		@padre = padre
 	end
 
@@ -175,7 +173,6 @@ class ErrorLimiteVariableIteracionDeterminada < ErrorContexto
 end
 
 # Chequeos de las clases
-
 class Estructura
 	def check(tabla)
 	end
