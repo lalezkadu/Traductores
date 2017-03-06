@@ -68,46 +68,109 @@ end
 
 # Errores de Contexto
 
-class ErrorContexto < RuntimeError
-end
+class ErrorContexto < RuntimeError; end
 
 class ErrorDeclaracion < ErrorContexto
-	def initialize()
+	def initialize(token)
+		@token = token
 	end
 
 	def to_s
+		"Error en la linea #{@token.linea}, columna #{@token.columna}: \nLa variable #{@token.token} fue previamente declarada."
+	end
+end
+
+class ErrorTipoAsignacion < ErrorContexto
+	def initialize(tipo_asig,tipo_var,nombre,linea,columna)
+		@token = token
+	end
+
+	def to_s
+		"Error en la linea #{@token.linea}, columna #{@token.columna}: \nSe intento asignar un valor de tipo #{@tipo_asig} a la variable #{@nombre}\n que es de tipo #{@tipo_var}."
 	end
 end
 
 class ErrorVariableNoDeclarada < ErrorContexto
-	def initialize()
+	def initialize(token)
+		@token = token
 	end
 
 	def to_s
+		"Error en la linea #{@token.linea}, columna #{@token.columna}: \nLa variable #{@token.token} no ha sido declarada."
 	end
 end
 
 class ErrorTipos < ErrorContexto
-	def initialize()
+	def initialize(op,op1,op2,linea,columna)
+		@op = op
+		@op1 = op1
+		@op2 = op2
+		@linea = linea
+		@columna = columna
 	end
 
 	def to_s
-	end
-end
-
-class ErrorOperarDistintosTipos < ErrorContexto
-	def initialize()
-	end
-
-	def to_s
+		"Error en la linea #{@linea}, columna #{@columna}: \nEn la expresion de tipo #{op}: Se intento operar un operando izquierdo del tipo #{@op1} con un\n operando derecho del tipo #{@op2}."
 	end
 end
 
 class ErrorTipoUnario < ErrorContexto
-	def initialize()
+	def initialize(oper,op,linea,columna)
+		@oper = oper
+		@op = op
+		@linea = linea
+		@columna = columna
 	end
 
 	def to_s
+		"Error en la linea #{@linea}, columna #{@columna}: \nSe intento realizar la operacion #{oper} en un operando de tipo #{@operando}"
+	end
+end
+
+class ErrorCondicional < ErrorContexto
+	def initialize(tipo,linea,columna)
+		@tipo = tipo
+		@linea = linea
+		@columna = columna
+	end
+
+	def to_s
+		"Error en la linea #{@linea}, columna #{@columna}: La condicion es de tipo #{@tipo}."
+	end
+end
+
+class ErrorCondicionIteracionIndeterminada < ErrorContexto
+	def initialize(tipo, linea, columna)
+		@tipo = tipo
+		@linea = linea
+		@columna = columna
+	end
+
+	def to_s
+		"Error en la linea #{@linea}, columna #{@columna}: La condicion de la iteracion es de tipo #{@tipo}."
+	end
+end 
+
+class ErrorTipoVariableIteracionDeterminada < ErrorContexto
+	def initialize(tipo,linea,columna)
+		@tipo = tipo
+		@linea = linea
+		@columna = columna
+	end
+
+	def to_s
+		"Error en la linea #{@linea}, columna #{@columna}: La variable de la iteracion es de tipo #{@tipo}."
+	end
+end
+
+class ErrorLimiteVariableIteracionDeterminada < ErrorContexto
+	def initialize(linea,columna)
+		@linea = linea
+		@columna = columna
+	end
+
+	def to_s
+		"Error en la linea #{@linea}, columna #{@columna}: Iteracion fuera del rango."
 	end
 end
 
@@ -170,6 +233,7 @@ end
 
 class Return
 	def check(tabla)
+
 	end
 end
 
