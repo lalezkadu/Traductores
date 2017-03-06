@@ -4,21 +4,11 @@ require_relative 'lexer'
 # Tabla de simbolos
 
 class SymTable
-<<<<<<< HEAD
 	attr_accessor :declaraciones, :funciones, :padre
 
 	def initialize(padre=nil,declaraciones=Hash.new,funciones=[])
 		@declaraciones = declaraciones
 		@padre = padre
-=======
-	attr_accessor :declaraciones, :funciones, :padre, :hijos, :nombre
-
-	def initialize(nombre="",padre=nil,hijos=nil,declaraciones=nil,funciones=[])
-		@declaraciones = declaraciones
-		@padre = padre
-		@hijos = []
-		@nombre = nombre
->>>>>>> d176e43a50478e3a223ce46b7a8d3d6cdab07b4c
 		if @padre != nil
 			@funciones = padre.funciones
 		else
@@ -40,52 +30,21 @@ end
 # Alcance de las variables
 
 class Alcance
-<<<<<<< HEAD
 	attr_accessor :nombre, :tabla, :padre
 
 	def initialize(nombre="",tabla,padre=nil)
 		@nombre = nombre
 		@tabla = tabla
-=======
-	attr_accessor :nombre, :tabla, :alcances, :padre
-
-	def initialize(nombre="",tabla,alcances=nil,padre=nil)
-		@nombre = nombre
-		@tabla = tabla
-		@alcances = alcances
->>>>>>> d176e43a50478e3a223ce46b7a8d3d6cdab07b4c
 		@padre = padre
 	end
 
 	def to_s(tab)
-<<<<<<< HEAD
 		s = (" "*tab)+"Alcance #{nombre}:\n"
 		s << (" "*(tab+2)) + "Variables:\n"
 		if @tabla != nil
 			s << @tabla.to_s(tab+4)
 		else
 			s << "None\n"
-=======
-		s = ""
-		if @nombre != ""
-			s = (" "*tab)+"Alcance #{nombre}:\n"
-			s << (" "*(tab+2)) + "Variables:\n"
-			if @tabla != nil
-				s << @tabla.to_s(tab+4)
-			else
-				s << "None\n"
-			s << (" "*(tab+2)) + "Sub_alcances:\n"
-			end
-			if @alcances != nil
-				s << @alcances.to_s(tab+4)
-			else
-				s << "None\n"
-			end
-		else
-			if @funciones != nil
-				s << funciones.to_s(tab)
-			end
->>>>>>> d176e43a50478e3a223ce46b7a8d3d6cdab07b4c
 		end
 		return s
 	end
@@ -207,18 +166,13 @@ class Estructura
 end
 
 class ListaFunciones
-<<<<<<< HEAD
 	def check(padre)
 		tabla = Hash.new
 		@funciones.each{ |func| aux = func.check(padre); tabla[:(aux[0])] = aux[1] }
-=======
-	def check(tabla)
->>>>>>> d176e43a50478e3a223ce46b7a8d3d6cdab07b4c
 	end
 end
 
 class Funcion
-<<<<<<< HEAD
 	def check(padre)
 		tablaParametros = Hash.new
 		@parametros.check(tablaParametros)
@@ -226,18 +180,12 @@ class Funcion
 		alcance_actual = Alcance.new(@nombre,tablaParametros,padre)
 		@instrucciones.each { |i| i.check(alcance_actual) }
 		return [@nombre,tablaParametros]
-=======
-	def check(tabla)
->>>>>>> d176e43a50478e3a223ce46b7a8d3d6cdab07b4c
 	end
 end
 
 class Parametros
 	def check(tabla)
-<<<<<<< HEAD
 		@parametros.each{ |param| tabla[:(param.id)] = param.tipo }
-=======
->>>>>>> d176e43a50478e3a223ce46b7a8d3d6cdab07b4c
 	end
 end
 
@@ -440,8 +388,6 @@ end
 class TipoBoolean
 	def check(tabla)
 	end
-<<<<<<< HEAD
-=======
 end
 
 class Literal
@@ -457,5 +403,4 @@ end
 class LiteralBooleano
 	def check(tabla)
 	end
->>>>>>> d176e43a50478e3a223ce46b7a8d3d6cdab07b4c
 end
