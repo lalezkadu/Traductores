@@ -101,6 +101,10 @@ class Funcion
 		s << (" "*(tab+2)) + "instrucciones: \n" + @instrucciones.to_s(tab+4)
 		return s
 	end
+
+	def check
+		
+	end
 end
 
 # == Clase Parametros

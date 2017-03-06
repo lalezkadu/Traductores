@@ -3,9 +3,12 @@ require_relative 'lexer'
 
 # Tabla de simbolos
 class SymTable
-	attr_accessor :funciones, :declaraciones, :padre # Todos los atributos son SymTables
 
-	def initialize(padre=nil,declaraciones=nil,funciones=[])
+	attr_accessor :declaraciones, :funciones, :padre
+
+	def initialize(padre=nil,declaraciones=Hash.new,funciones=[])
+		@declaraciones = declaraciones
+		@padre = padre
 		
 		if @padre != nil
 			@funciones = padre.funciones
@@ -33,32 +36,19 @@ end
 class Alcance
 	attr_accessor :nombre, :tabla, :padre
 
-	def initialize(nombre="",padre=nil)
+	def initialize(nombre="",tabla,padre=nil)
 		@nombre = nombre
-		@tabla = SymTable.new()
+		@tabla = tabla
 		@padre = padre
 	end
 
 	def to_s(tab)
-		s = ""
-		if @nombre != ""
-			s = (" "*tab)+"Alcance #{nombre}:\n"
-			s << (" "*(tab+2)) + "Variables:\n"
-			if @tabla != nil
-				s << @tabla.to_s(tab+4)
-			else
-				s << "None\n"
-			s << (" "*(tab+2)) + "Sub_alcances:\n"
-			end
-			if @alcances != nil
-				s << @alcances.to_s(tab+4)
-			else
-				s << "None\n"
-			end
+		s = (" "*tab)+"Alcance #{nombre}:\n"
+		s << (" "*(tab+2)) + "Variables:\n"
+		if @tabla != nil
+			s << @tabla.to_s(tab+4)
 		else
-			if @funciones != nil
-				s << funciones.to_s(tab)
-			end
+			s << "None\n"
 		end
 		return s
 	end
@@ -179,17 +169,26 @@ class Estructura
 end
 
 class ListaFunciones
-	def check(tabla)
+	def check(padre)
+		tabla = Hash.new
+		@funciones.each{ |func| aux = func.check(padre); tabla[:(aux[0])] = aux[1] }
 	end
 end
 
 class Funcion
-	def check(tabla)
+	def check(padre)
+		tablaParametros = Hash.new
+		@parametros.check(tablaParametros)
+		sym_table = SymTable.new(tablaParametros,nil,padre)
+		alcance_actual = Alcance.new(@nombre,tablaParametros,padre)
+		@instrucciones.each { |i| i.check(alcance_actual) }
+		return [@nombre,tablaParametros]
 	end
 end
 
 class Parametros
 	def check(tabla)
+		@parametros.each{ |param| tabla[:(param.id)] = param.tipo }
 	end
 end
 
