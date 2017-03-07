@@ -169,26 +169,31 @@ class Estructura
 end
 
 class ListaFunciones
-	def check(padre)
-		tabla = Hash.new
-		@funciones.each{ |func| aux = func.check(padre); tabla[:(aux[0])] = aux[1] }
+	def check(tabla)
+		@funcion.check(tabla)
+		if @funciones != nil
+			@funciones.check(tabla)
+		end
 	end
 end
 
 class Funcion
-	def check(padre)
+	def check(tabla)
 		tablaParametros = Hash.new
 		@parametros.check(tablaParametros)
-		sym_table = SymTable.new(tablaParametros,nil,padre)
-		alcance_actual = Alcance.new(@nombre,tablaParametros,padre)
-		@instrucciones.each { |i| i.check(alcance_actual) }
-		return [@nombre,tablaParametros]
+		sym_table = SymTable.new(tablaParametros,nil,tabla)
+		alcance_actual = Alcance.new(@nombre,tablaParametros,tabla)
+		@instrucciones.check(alcance_actual)
+		tabla[:(@nombre)] = sym_table
 	end
 end
 
 class Parametros
 	def check(tabla)
-		@parametros.each{ |param| tabla[:(param.id)] = param.tipo }
+		tabla[:(@id)] = @tipo
+		if @parametros != nil
+			@parametros.check(tabla)
+		end
 	end
 end
 
@@ -214,6 +219,7 @@ end
 
 class ListaId
 	def check(tabla)
+
 	end
 end
 
@@ -224,17 +230,30 @@ end
 
 class Instrucciones
 	def check(tabla)
+		if @instrucciones != nil
+			@instrucciones.check(tabla)
+		end
+		if @instruccion != nil
+			@instruccion.check(tabla)
+		end
 	end
 end
 
 class Return
 	def check(tabla)
-
+		@expresion.check(tabla)
 	end
 end
 
 class Condicional
 	def check(tabla)
+        if (@condicion.check(tabla))
+            @instif.check(tabla)
+        else
+            if (@instelse != nil)
+                @instelse.check(tabla)
+            end
+        end
 	end
 end
 
@@ -268,103 +287,135 @@ class Escribir
 	end
 end
 
-class ExpresionBinaria
-	def check(tabla)
-	end
-end
-
 class Asignacion
     def check(tabla)
+
 	end
 end
 
 class OpMultiplicacion
 	def check(tabla)
+		@op1.check(tabla)
+		@op2.check(tabla)
 	end
 end
 
 class OpSuma
     def check(tabla)
+    	@op1.check(tabla)
+		@op2.check(tabla)
 	end
 end
 
 class OpResta
     def check(tabla)
+    	@op1.check(tabla)
+		@op2.check(tabla)
 	end
 end
 
 class OpDivision
     def check(tabla)
+    	@op1.check(tabla)
+		@op2.check(tabla)
 	end
 end
 
 class OpMod
     def check(tabla)
+    	@op1.check(tabla)
+		@op2.check(tabla)
 	end
 end
 
 class OpDivisionE
     def check(tabla)
+    	@op1.check(tabla)
+		@op2.check(tabla)
 	end
 end
 
 class OpModE
     def check(tabla)
+    	@op1.check(tabla)
+		@op2.check(tabla)
 	end
 end
 
 class OpEquivalente
     def check(tabla)
+    	@op1.check(tabla)
+		@op2.check(tabla)
 	end
 end
 
 class OpDesigual
     def check(tabla)
+    	@op1.check(tabla)
+		@op2.check(tabla)
 	end
 end
 
 class OpMenor
     def check(tabla)
+    	@op1.check(tabla)
+		@op2.check(tabla)
 	end
 end
 
 class OpMenorIgual
     def check(tabla)
+    	@op1.check(tabla)
+		@op2.check(tabla)
 	end
 end
 
 class OpMayor
     def check(tabla)
+    	@op1.check(tabla)
+		@op2.check(tabla)
 	end
 end
 
 class OpMayorIgual
     def check(tabla)
+    	@op1.check(tabla)
+		@op2.check(tabla)
 	end
 end
 
 class OpAnd
     def check(tabla)
+    	@op1.check(tabla)
+		@op2.check(tabla)
 	end
 end
 
 class OpOr
 	def check(tabla)
+		@op1.check(tabla)
+		@op2.check(tabla)
 	end
 end
 
 class ExpresionUnaria
 	def check(tabla)
+		@op1.check(tabla)
+		@op2.check(tabla)
 	end
 end
 
 class OpUMINUS
 	def check(tabla)
+		@op1.check(tabla)
+		@op2.check(tabla)
 	end
 end
 
 class OpNot
 	def check(tabla)
+		@op1.check(tabla)
+		@op2.check(tabla)
 	end
 end
 
@@ -375,6 +426,11 @@ end
 
 class ListaPaseParametros
 	def check(tabla)
+		if tabla.has_key?(@id)
+		end
+		# Preguntar si el id esta en la tabla
+		# Si: Checkear parametros con los de la funcion
+		# No: Error
 	end
 end
 
@@ -393,17 +449,22 @@ class TipoBoolean
 	end
 end
 
-class Literal
-	def check(tabla)
-	end
-end
-
 class LiteralNumerico
 	def check(tabla)
+		if /^\d+$/.matches(@valor)
+			return @valor.to_i()
+		else
+			return @valor.to_f()
+		end
 	end
 end
 
 class LiteralBooleano
 	def check(tabla)
+		if @valor == "true"
+			return true
+		else
+			return false
+		end
 	end
 end
