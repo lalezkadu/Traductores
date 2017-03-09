@@ -1,12 +1,14 @@
 require_relative 'clasesParser'
 require_relative 'lexer'
 
+$tabla_simbolos = Hash.new
+
 # Tabla de simbolos
 class SymTable
 
 	attr_accessor :declaraciones, :funciones, :padre
 
-	def initialize(padre=nil,declaraciones=Hash.new,funciones=[])
+	def initialize(padre=nil,declaraciones=Hash.new,funciones)
 		@declaraciones = declaraciones
 		@padre = padre
 		
@@ -23,8 +25,8 @@ class SymTable
 
 	def to_s(tab)
 		s = ""
-		if @tabla.length > 0:
-			@tabla.each { |key, value| s+= (" "*tab)+"#{key}: #{value}\n" }
+		if @declaraciones.length > 0:
+			@declaraciones.each { |key, value| s+= (" "*tab)+"#{key}: #{value}\n" }
 		else
 			s << "None\n"
 		end
@@ -164,293 +166,571 @@ end
 
 # Chequeos de las clases
 class Estructura
-	def check(tabla)
-	end
-end
+	def check()
+		hashEstructura={ 'funciones' => Hash.new }
 
-class ListaFunciones
-	def check(tabla)
-		@funcion.check(tabla)
-		if @funciones != nil
-			@funciones.check(tabla)
+		if @funciones != nil			
+			@funciones.check(hashEstructura['funciones'])
+		end
+
+		if @programa != nil
+			@programa.check(hashEstructura)
 		end
 	end
 end
 
+class ListaFunciones
+	def check(padre)
+		if @funciones != nil
+			@funciones.check(padre).merge!(padre.merge!(@funcion.check(padre))) 	# Si existe una lista de funciones continuo agregando
+		else
+			padre.merge!(@funcion.check(padre)) # Sino, agrego la última función
+		end
+
+
+
+		if @funciones != nil
+			return @funciones.check(padre)
+		end
+		@funcion.check(padre)
+		if @funciones != nil
+			@funciones.check(padre)
+		end
+		return padre
+	end
+end
+
 class Funcion
-	def check(tabla)
-		tablaParametros = Hash.new
-		@parametros.check(tablaParametros)
-		sym_table = SymTable.new(tablaParametros,nil,tabla)
-		alcance_actual = Alcance.new(@nombre,tablaParametros,tabla)
-		@instrucciones.check(alcance_actual)
-		tabla[:(@nombre)] = sym_table
+	def check(padre)	# Padre es lista de Funciones, que contiene las funciones declaradas hasta el momento
+
+		if padre.has_key? @nombre
+			nil	# ERROR ya existe una función con ese nombre
+		end
+
+		# Creo mi tabla de variables y me traigo las funciones declaradas
+		@tabla=Hash.new	
+		@tabla['variables']=Hash.new
+		@tabla['funciones']=padre
+		@tabla['return']=@tipo
+
+		if @parametros != nil
+			@parametros.check(@tabla['variables'],0)	# Obtenemos las variables
+		end
+
+		if @instrucciones != nil
+			@instrucciones.check(@tabla)	# Para futuras instrucciones desarrollamos la función
+		end
+	
+		padre[@nombre]=tabla
+
 	end
 end
 
 class Parametros
-	def check(tabla)
-		tabla[:(@id)] = @tipo
+	def check(tabla,pos)
+		if !(tabla.has_key?(@id)) 
+			tabla[:pos] = @tipo
+			tabla[:(@id)] = @tipo
+		else
+			nil # ERROR ya existe la variable
+		end
+
 		if @parametros != nil
-			@parametros.check(tabla)
+			@parametros.check(tabla,pos+1)
 		end
 	end
 end
 
 class Programa
-	def check(tabla)
+	def check(padre)	# Padre tiene la tabla inicial
+		
+		@tabla=Hash.new	
+		@tabla['variables']=Hash.new
+		@tabla['funciones']=padre['funciones']
+
+		padre['programa']=@tabla
+
+		if @instrucciones != nil
+			@instrucciones.check(tabla)
+		end
 	end
 end
 
-class Bloque
-	def check(tabla)
+class Bloque	## Este señor imprime Variables. 
+	def check(padre)
+		@tabla=Hash.new
+		@tabla['variables']=Hash.new
+		@tabla['funciones']=padre['funciones']
+
+		padre['bloque']=@tabla
+
+		if @declaraciones != nil
+			@declaraciones.check(@tabla['variables'])	# Pasan la lista de variables
+		end
+
+		if @instrucciones != nil
+			@instrucciones.check(@tabla)
+		end
 	end
 end
 
 class ListaDeclaracion
-	def check(tabla)
+	def check(padre)		# Padre referencia a las variables
+		if @declaraciones != nil
+			@declaraciones.check(padre)
+		end
+
+		@declaracion.check(padre)	# Lleno las variables del objeto
 	end
 end
 
 class Declaracion
-	def check(tabla)
+	def check(padre)	# Padre está referenciando a las variables
+		@declaracion.check(padre,@tipo)
+
+		if @declaraciones != nil
+			@declaraciones.check(padre)
+		end
 	end
 end
 
 class ListaId
-	def check(tabla)
+	def check(padre, tipo)	# Padre referencia a las variables
+		@id.check(padre, tipo)
 
+		if @ids != nil
+			@ids.check(padre)
+		end
 	end
 end
 
 class Identificador
-	def check(tabla)
+	def check(padre, tipo=nil)
+		
+		if tipo == nil
+			if not(padre.has_key? @id)
+				nil # Error, no existen variables declaradas
+			end
+		else
+			@tipo=tipo
+			padre[@id]=tipo	    	
+		end
 	end
 end
 
 class Instrucciones
-	def check(tabla)
+	def check(padre)
 		if @instrucciones != nil
-			@instrucciones.check(tabla)
+			@instrucciones.check(padre)
 		end
 		if @instruccion != nil
-			@instruccion.check(tabla)
+			@instruccion.check(padre)
 		end
 	end
 end
 
 class Return
-	def check(tabla)
-		@expresion.check(tabla)
+	def check(padre)
+		@expresion.check(padre)
 	end
 end
 
 class Condicional
-	def check(tabla)
-        if (@condicion.check(tabla))
-            @instif.check(tabla)
-        else
-            if (@instelse != nil)
-                @instelse.check(tabla)
-            end
-        end
+	def check(padre)
+
+		@condicion.check(padre)
+
+		if @instif != nil
+			@instif.check(padre)
+		end
+		if (@instelse != nil)
+			@instelse.check(padre)
+		end
 	end
 end
 
 class RepeticionI
-	def check(tabla)
+	def check(padre)
+		@condicion.check(padre)
+
+		if @instrucciones != nil
+			@instrucciones.check(padre)
+		end
 	end
 end
 
 class Repeat
-	def check(tabla)
+	def check(padre)
+		@tabla=Hash.new
+		@tabla['variables']=padre['variables']
+		@tabla['funciones']=padre['funciones']
+
+		@padre['repeat']=@tabla 	# Hay que ver como identificarlos
+
+		if @repeticiones != nil
+			@repeticiones.check(@tabla, 'number')	# Verifico que la expresión sea de tipo number
+		end
+
+		if @instrucciones != nil
+			@instrucciones.check(@tabla)
+		end
 	end
 end
 
 class For
-	def check(tabla)
+	def check(padre)
+		@tabla=Hash.new
+		@tabla['variables']=padre['variables']
+		@tabla['funciones']=padre['funciones']
+
+		@padre['for']=@tabla 		# Hay que ver como identificarlos
+
+		if @inicio.tipo != 'number' || @fin.tipo != 'number' || @paso.tipo != 'number'
+			nil # Error, deben ser de tipo numérico
+		end
+
+		@instrucciones.check(@tabla)
+
 	end
 end
 
 class Entrada
-    def check(tabla)
+	def check(padre)
 	end
 end
 
 class Salida 
-    def check(tabla)
+	def check(padre)
 	end
 end
 
 class Escribir
-	def check(tabla)
+	def check(padre)
 	end
 end
 
-class Asignacion
-    def check(tabla)
+class ExpresionBinaria
+	def check(padre, tipo=nil)
+		
+		if tipo != nil
+			if @op1.tipo != tipo || @op2.tipo != tipo
+				nil # Error, no es del tipo esperado
+			end
+		else
+			if @op1.tipo != @op2.tipo
+				nil # Error, los tipos no concuerdan
+			end
+		end
 
+		@op1.check(padre, tipo)
+		@op2.check(padre, tipo)
+
+		@tipo = @op1.tipo
+
+
+class Asignacion # Probablemente eliminada
+	def check(padre, tipo=nil)
+		if tipo != nil
+			@op1=
+		end
+
+		if @op1.tipo != @op2.tipo
+			nil # Error, los tipos son distintos
+		end
+
+		@op1.check(padre)
+		@op2.check(padre)
+		# Hay que chequear el tipo de dato 	
 	end
 end
 
 class OpMultiplicacion
-	def check(tabla)
-		@op1.check(tabla)
-		@op2.check(tabla)
+	def check(padre)
+
+		if @op1.tipo != @op2.tipo
+			nil # Error, los tipos son distintos
+		end
+
+		@op1.check(padre)
+		@op2.check(padre)
 	end
 end
 
 class OpSuma
-    def check(tabla)
-    	@op1.check(tabla)
-		@op2.check(tabla)
+	def check(padre)
+
+		if @op1.tipo != @op2.tipo
+			nil # Error, los tipos son distintos
+		end
+
+
+
+		@op1.check(padre)
+		@op2.check(padre)
 	end
 end
 
 class OpResta
-    def check(tabla)
-    	@op1.check(tabla)
-		@op2.check(tabla)
+	def check(padre)
+		if @op1.tipo != @op2.tipo
+			nil # Error, los tipos son distintos
+		end
+
+		
+
+		@op1.check(padre)
+		@op2.check(padre)
 	end
 end
 
-class OpDivision
-    def check(tabla)
-    	@op1.check(tabla)
-		@op2.check(tabla)
+class OpDivision # La división entre cero ? o.O
+	def check(padre)
+		if @op1.tipo != @op2.tipo
+			nil # Error, los tipos son distintos
+		end
+
+		
+
+		@op1.check(padre)
+		@op2.check(padre)
 	end
 end
 
 class OpMod
-    def check(tabla)
-    	@op1.check(tabla)
-		@op2.check(tabla)
+	def check(padre)
+		if @op1.tipo != @op2.tipo
+			nil # Error, los tipos son distintos
+		end
+
+		
+
+		@op1.check(padre)
+		@op2.check(padre)
 	end
 end
 
 class OpDivisionE
-    def check(tabla)
-    	@op1.check(tabla)
-		@op2.check(tabla)
+	def check(padre)
+		if @op1.tipo != @op2.tipo
+			nil # Error, los tipos son distintos
+		end
+
+		
+
+		@op1.check(padre)
+		@op2.check(padre)
 	end
 end
 
 class OpModE
-    def check(tabla)
-    	@op1.check(tabla)
-		@op2.check(tabla)
+	def check(padre)
+		if @op1.tipo != @op2.tipo
+			nil # Error, los tipos son distintos
+		end
+
+		
+
+		@op1.check(padre)
+		@op2.check(padre)
 	end
 end
 
 class OpEquivalente
-    def check(tabla)
-    	@op1.check(tabla)
-		@op2.check(tabla)
+	def check(padre)
+		if @op1.tipo != @op2.tipo
+			nil # Error, los tipos son distintos
+		end
+
+		
+
+		@op1.check(padre)
+		@op2.check(padre)
 	end
 end
 
 class OpDesigual
-    def check(tabla)
-    	@op1.check(tabla)
-		@op2.check(tabla)
+	def check(padre)
+		if @op1.tipo != @op2.tipo
+			nil # Error, los tipos son distintos
+		end
+
+		
+
+		@op1.check(padre)
+		@op2.check(padre)
 	end
 end
 
 class OpMenor
-    def check(tabla)
-    	@op1.check(tabla)
-		@op2.check(tabla)
+	def check(padre)
+		if @op1.tipo != @op2.tipo
+			nil # Error, los tipos son distintos
+		end
+
+		
+
+		@op1.check(padre)
+		@op2.check(padre)
 	end
 end
 
 class OpMenorIgual
-    def check(tabla)
-    	@op1.check(tabla)
-		@op2.check(tabla)
+	def check(padre)
+		if @op1.tipo != @op2.tipo
+			nil # Error, los tipos son distintos
+		end
+
+		
+
+		@op1.check(padre)
+		@op2.check(padre)
 	end
 end
 
 class OpMayor
-    def check(tabla)
-    	@op1.check(tabla)
-		@op2.check(tabla)
+	def check(padre)
+		if @op1.tipo != @op2.tipo
+			nil # Error, los tipos son distintos
+		end
+
+		
+
+		@op1.check(padre)
+		@op2.check(padre)
 	end
 end
 
 class OpMayorIgual
-    def check(tabla)
-    	@op1.check(tabla)
-		@op2.check(tabla)
+	def check(padre)
+		if @op1.tipo != @op2.tipo
+			nil # Error, los tipos son distintos
+		end
+
+		
+
+		@op1.check(padre)
+		@op2.check(padre)
 	end
 end
 
 class OpAnd
-    def check(tabla)
-    	@op1.check(tabla)
-		@op2.check(tabla)
+	def check(padre)
+		if @op1.tipo != @op2.tipo
+			nil # Error, los tipos son distintos
+		end
+
+		
+
+		@op1.check(padre)
+		@op2.check(padre)
 	end
 end
 
 class OpOr
-	def check(tabla)
-		@op1.check(tabla)
-		@op2.check(tabla)
+	def check(padre)
+		if @op1.tipo != @op2.tipo
+			nil # Error, los tipos son distintos
+		end
+
+		
+
+		@op1.check(padre)
+		@op2.check(padre)
 	end
 end
 
 class ExpresionUnaria
-	def check(tabla)
-		@op1.check(tabla)
-		@op2.check(tabla)
+	def check(padre, tipo=nil)
+		if tipo != nil
+			if @tipo != tipo
+				nil # Error, los tipos no concuerdan con el solicitado
+			end
+		else
+			if @op.tipo != @tipo
+				nil # Error, los tipos son distintos
+			end
+		end
+
+		@op.check(padre, tipo)
+
 	end
 end
 
 class OpUMINUS
-	def check(tabla)
-		@op1.check(tabla)
-		@op2.check(tabla)
+	def check(padre)
+		@op1.check(padre)
+		@op2.check(padre)
 	end
 end
 
 class OpNot
-	def check(tabla)
-		@op1.check(tabla)
-		@op2.check(tabla)
+	def check(padre)
+		@op1.check(padre)
+		@op2.check(padre)
 	end
 end
 
 class LlamadaFuncion
-	def check(tabla)
+	def check(padre, tipo=nil)
+		
+		if not(padre['funciones'].has_key? @id.id)
+			nil # Error, función no declarada
+		end
+
+		if tipo != nil
+			if padre['funciones'][@id.id]['return'] != tipo
+				nil # Error, los tipos no coinciden con el esperado
+			end
+		end
+
+		@parametros.check(padre['funciones'][@id.id], 0)
+
+		@tipo = padre['funciones'][@id.id]['return']
+
 	end
 end
 
 class ListaPaseParametros
-	def check(tabla)
-		if tabla.has_key?(@id)
+	def check(padre, pos)	# Padre tiene la lista de los parametros de la funcion en cuestión
+
+		if not(padre.has_key? pos)
+			nil # Hay mas argumentos de los necesarios
+		elsif @lista == nil && (padre.length/2-1) > pos # Pregunto si hay tantos argumentos como en el hash
+			nil # Faltan argumentos
 		end
-		# Preguntar si el id esta en la tabla
+
+		@parametro.check(padre)
+
+		if @parametro.tipo != padre[pos.to_s]
+			nil # Error en los tipos 
+		end
+
+
+		if padre.has_key?(@id)
+		end
+		# Preguntar si el id esta en la tabla de padre
 		# Si: Checkear parametros con los de la funcion
 		# No: Error
 	end
 end
 
 class Tipo
-	def check(tabla)
+	def check(padre)
 	end
 end
 
 class TipoNum
-	def check(tabla)
+	def check(padre)
 	end
 end
 
 class TipoBoolean
-	def check(tabla)
+	def check(padre)
 	end
 end
 
 class LiteralNumerico
-	def check(tabla)
+	def check(padre)
 		if /^\d+$/.matches(@valor)
 			return @valor.to_i()
 		else
@@ -460,7 +740,7 @@ class LiteralNumerico
 end
 
 class LiteralBooleano
-	def check(tabla)
+	def check(padre)
 		if @valor == "true"
 			return true
 		else

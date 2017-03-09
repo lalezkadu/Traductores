@@ -267,10 +267,11 @@ class Identificador
 	# == Atributos
 	#
 	# id: Identificador a almacenar
-	attr_accessor :id
+	attr_accessor :id, :tipo
 
 	def initialize(id)
 		@id = id
+		@tipo = nil
 	end
 
 	def to_s(tab)
@@ -548,7 +549,7 @@ class ExpresionBinaria
 	# op1 	: 	Operador izquierdo de la expresión
 	# op2 	: 	Operador derecho de la expresión
 	# oper 	: 	Operación correspondiente a la expresión
-	attr_accessor :op1, :op2, :oper
+	attr_accessor :op1, :op2, :oper, :tipo
 
 	def initialize(op1, op2, oper)
 		@op1 = op1
@@ -571,6 +572,7 @@ class Asignacion < ExpresionBinaria
 
     def initialize(id, expresion)
         super(id, expresion, "Asignacion")
+        @tipo=@op1.tipo
     end
 end
 
@@ -581,6 +583,7 @@ class OpMultiplicacion < ExpresionBinaria
 
     def initialize(op1,op2)
         super(op1, op2,"Multiplicacion")
+        @tipo='number'
     end
 end
 
@@ -591,6 +594,7 @@ class OpSuma < ExpresionBinaria
 
     def initialize(op1,op2)
         super(op1, op2,"Suma")
+        @tipo='number'
     end
 end
 
@@ -601,6 +605,7 @@ class OpResta < ExpresionBinaria
 
     def initialize(op1,op2)
         super(op1, op2,"Resta")
+        @tipo='number'
     end
 end
 
@@ -611,6 +616,7 @@ class OpDivision < ExpresionBinaria
 
     def initialize(op1,op2)
         super(op1, op2,"Division")
+        @tipo='number'
     end
 end
 
@@ -622,6 +628,7 @@ class OpMod < ExpresionBinaria
 
     def initialize(op1,op2)
         super(op1, op2,"Mod")
+        @tipo='number'
     end
 end
 
@@ -633,6 +640,7 @@ class OpDivisionE < ExpresionBinaria
 
     def initialize(op1,op2)
         super(op1, op2,"Division Exacta")
+        @tipo='number'
     end
 end
 
@@ -644,6 +652,7 @@ class OpModE < ExpresionBinaria
 
     def initialize(op1,op2)
         super(op1, op2,"Mod Exacto")
+        @tipo='number'
     end
 end
 
@@ -655,6 +664,7 @@ class OpEquivalente < ExpresionBinaria
 
     def initialize(op1,op2)
         super(op1, op2,"Equivalente")
+        @tipo='boolean'
     end
 end
 
@@ -666,6 +676,7 @@ class OpDesigual < ExpresionBinaria
 
     def initialize(op1,op2)
         super(op1, op2,"Desigual")
+        @tipo='boolean'
     end
 end
 
@@ -677,6 +688,7 @@ class OpMenor < ExpresionBinaria
 
     def initialize(op1,op2)
         super(op1, op2,"Menor que")
+        @tipo='boolean'
     end
 end
 
@@ -688,6 +700,7 @@ class OpMenorIgual < ExpresionBinaria
 
     def initialize(op1,op2)
         super(op1, op2,"Menor o igual que")
+        @tipo='boolean'
     end
 end
 
@@ -699,6 +712,7 @@ class OpMayor < ExpresionBinaria
 
     def initialize(op1,op2)
         super(op1, op2,"Mayor que")
+        @tipo='boolean'
     end
 end
 
@@ -710,6 +724,7 @@ class OpMayorIgual < ExpresionBinaria
 
     def initialize(op1,op2)
         super(op1, op2,"Mayor o igual que")
+        @tipo='boolean'
     end
 end
 
@@ -721,6 +736,7 @@ class OpAnd < ExpresionBinaria
 
     def initialize(op1,op2)
         super(op1, op2,"And")
+        @tipo='boolean'
     end
 end
 
@@ -732,6 +748,7 @@ class OpOr < ExpresionBinaria
 
     def initialize(op1,op2)
         super(op1, op2,"Or")
+        @tipo='boolean'
     end
 end
 
@@ -745,7 +762,7 @@ class ExpresionUnaria
 	#
 	# op 	: 	Recibe el operador que afecta la expresión.
 	# oper 	: 	Recibe el operando que es afectado por el operador unario.
-	attr_accessor :op, :oper
+	attr_accessor :op, :oper, :tipo
 
 	def initialize(op, oper)
 		@op = op
@@ -765,6 +782,7 @@ class OpUMINUS < ExpresionUnaria
 
     def initialize(op)
         super(op,"UMINUS")
+        @tipo='number'
     end
 end
 
@@ -776,6 +794,7 @@ class OpNot < ExpresionUnaria
 
 	def initialize(op)
         super(op,"Not")
+        @tipo='boolean'
     end
 end
 
@@ -789,7 +808,7 @@ class LlamadaFuncion
 	#
 	# id 	: 	Recibe el nodo identificador de la función.
 	# parametros 	: 	Recibe el nodo lista de parametros que recibe la función
-	attr_accessor :id, :parametros
+	attr_accessor :id, :parametros, :tipo
 
 	def initialize(id, parametros)
 		@id = id
@@ -867,10 +886,10 @@ class TipoNum < Tipo
 	end
 end
 
-# == Clase TipoBoolean
+# == Clase Tipoboolean
 #
 # Clase que representa el nodo de un tipo booleano. Hereda de Tipo.
-class TipoBoolean < Tipo
+class Tipoboolean < Tipo
 
 	def initialize()
 		super("boolean")
