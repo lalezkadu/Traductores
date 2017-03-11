@@ -26,7 +26,7 @@ class SymTable
 	def to_s(tab)
 		s = ""
 		if @declaraciones.length > 0:
-			@declaraciones.each { |key, value| s+= (" "*tab)+"#{key}: #{value}\n" }
+			@declaraciones.each { |key, value| s<< (" "*tab)+"#{key}: #{value}\n" }
 		else
 			s << "None\n"
 		end
@@ -66,17 +66,18 @@ class ErrorDeclaracion < ErrorContexto
 	end
 
 	def to_s
-		"Error en la linea #{@token.linea}, columna #{@token.columna}: \nLa variable #{@token.token} fue previamente declarada."
+		"Error: \nLa variable #{@token} fue previamente declarada."
 	end
 end
 
 class ErrorTipoAsignacion < ErrorContexto
-	def initialize(tipo_asig,tipo_var,nombre,linea,columna)
-		@token = token
+	def initialize(tipo_asig,tipo_var,nombre)
+		@tipo_asig = tipo_asig
+		@tipo_var = tipo_var
 	end
 
 	def to_s
-		"Error en la linea #{@token.linea}, columna #{@token.columna}: \nSe intento asignar un valor de tipo #{@tipo_asig} a la variable #{@nombre}\n que es de tipo #{@tipo_var}."
+		"Error: \nSe intento asignar un valor de tipo #{@tipo_asig} a la variable #{@nombre}\n que es de tipo #{@tipo_var}."
 	end
 end
 
@@ -86,81 +87,67 @@ class ErrorVariableNoDeclarada < ErrorContexto
 	end
 
 	def to_s
-		"Error en la linea #{@token.linea}, columna #{@token.columna}: \nLa variable #{@token.token} no ha sido declarada."
+		"Error: \nLa variable #{@token} no ha sido declarada."
 	end
 end
 
 class ErrorTipos < ErrorContexto
-	def initialize(op,op1,op2,linea,columna)
+	def initialize(op,op1,op2)
 		@op = op
 		@op1 = op1
 		@op2 = op2
-		@linea = linea
-		@columna = columna
 	end
 
 	def to_s
-		"Error en la linea #{@linea}, columna #{@columna}: \nEn la expresion de tipo #{op}: Se intento operar un operando izquierdo del tipo #{@op1} con un\n operando derecho del tipo #{@op2}."
+		"Error: \nEn la expresion de tipo #{op}: Se intento operar un operando izquierdo del tipo #{@op1} con un\n operando derecho del tipo #{@op2}."
 	end
 end
 
 class ErrorTipoUnario < ErrorContexto
-	def initialize(oper,op,linea,columna)
+	def initialize(oper,op)
 		@oper = oper
 		@op = op
-		@linea = linea
-		@columna = columna
 	end
 
 	def to_s
-		"Error en la linea #{@linea}, columna #{@columna}: \nSe intento realizar la operacion #{oper} en un operando de tipo #{@operando}"
+		"Error: \nSe intento realizar la operacion #{oper} en un operando de tipo #{@operando}"
 	end
 end
 
 class ErrorCondicional < ErrorContexto
-	def initialize(tipo,linea,columna)
+	def initialize(tipo)
 		@tipo = tipo
-		@linea = linea
-		@columna = columna
 	end
 
 	def to_s
-		"Error en la linea #{@linea}, columna #{@columna}: La condicion es de tipo #{@tipo}."
+		"Error: La condicion es de tipo #{@tipo}."
 	end
 end
 
 class ErrorCondicionIteracionIndeterminada < ErrorContexto
-	def initialize(tipo, linea, columna)
+	def initialize(tipo)
 		@tipo = tipo
-		@linea = linea
-		@columna = columna
 	end
 
 	def to_s
-		"Error en la linea #{@linea}, columna #{@columna}: La condicion de la iteracion es de tipo #{@tipo}."
+		"Error: La condicion de la iteracion es de tipo #{@tipo}."
 	end
 end 
 
 class ErrorTipoVariableIteracionDeterminada < ErrorContexto
-	def initialize(tipo,linea,columna)
+	def initialize(tipo)
 		@tipo = tipo
-		@linea = linea
-		@columna = columna
 	end
 
 	def to_s
-		"Error en la linea #{@linea}, columna #{@columna}: La variable de la iteracion es de tipo #{@tipo}."
+		"Error: La variable de la iteracion es de tipo #{@tipo}."
 	end
 end
 
 class ErrorLimiteVariableIteracionDeterminada < ErrorContexto
-	def initialize(linea,columna)
-		@linea = linea
-		@columna = columna
-	end
 
 	def to_s
-		"Error en la linea #{@linea}, columna #{@columna}: Iteracion fuera del rango."
+		"Error: Iteracion fuera del rango."
 	end
 end
 
@@ -187,8 +174,6 @@ class ListaFunciones
 			padre.merge!(@funcion.check(padre)) # Sino, agrego la última función
 		end
 
-
-
 		if @funciones != nil
 			return @funciones.check(padre)
 		end
@@ -204,7 +189,8 @@ class Funcion
 	def check(padre)	# Padre es lista de Funciones, que contiene las funciones declaradas hasta el momento
 
 		if padre.has_key? @nombre
-			nil	# ERROR ya existe una función con ese nombre
+			puts ErrorDeclaracion.new(@nombre).to_s()	# ERROR ya existe una función con ese nombre
+			exit
 		end
 
 		# Creo mi tabla de variables y me traigo las funciones declaradas
@@ -232,7 +218,8 @@ class Parametros
 			tabla[:pos] = @tipo
 			tabla[:(@id)] = @tipo
 		else
-			nil # ERROR ya existe la variable
+			puts ErrorVariableNoDeclarada.new(@id).to_s() # ERROR ya existe la variable
+			exit
 		end
 
 		if @parametros != nil
@@ -309,7 +296,8 @@ class Identificador
 		
 		if tipo == nil
 			if not(padre.has_key? @id)
-				nil # Error, no existen variables declaradas
+				puts ErrorVariableNoDeclarada.new(@id).to_s() # Error, no existen variables declaradas
+				exit
 			end
 		else
 			@tipo=tipo
@@ -385,288 +373,470 @@ class For
 
 		@padre['for']=@tabla 		# Hay que ver como identificarlos
 
+
 		if @inicio.tipo != 'number' || @fin.tipo != 'number' || @paso.tipo != 'number'
-			nil # Error, deben ser de tipo numérico
+			if @inicio.tipo != 'number'
+				puts ErrorTipoVariableIteracionDeterminada.new(@inicio.tipo) # Error, deben ser de tipo numérico
+			elsif @fin.tipo != 'number'
+				puts ErrorTipoVariableIteracionDeterminada.new(@fin.tipo)
+			else
+				puts ErrorTipoVariableIteracionDeterminada.new(@paso.tipo)
+			end
+			exit				
 		end
 
 		@instrucciones.check(@tabla)
-
 	end
 end
 
-class Entrada
-	def check(padre)
-	end
-end
-
-class Salida 
-	def check(padre)
-	end
-end
-
-class Escribir
-	def check(padre)
-	end
-end
-
-class ExpresionBinaria
-	def check(padre, tipo=nil)
-		
-		if tipo != nil
-			if @op1.tipo != tipo || @op2.tipo != tipo
-				nil # Error, no es del tipo esperado
-			end
-		else
-			if @op1.tipo != @op2.tipo
-				nil # Error, los tipos no concuerdan
-			end
-		end
-
-		@op1.check(padre, tipo)
-		@op2.check(padre, tipo)
-
-		@tipo = @op1.tipo
-
+#class ExpresionBinaria
+#	def check(padre, tipo=nil)
+#		
+#		if tipo != nil
+#			if @op1.tipo != tipo || @op2.tipo != tipo
+#				nil # Error, no es del tipo esperado
+#			end
+#		else
+#			if @op1.tipo != @op2.tipo
+#				puts ErrorTipos.new(@op,@op1,@op2) # Error, los tipos no concuerdan
+#			end
+#		end
+#
+#		@op1.check(padre, tipo)
+#		@op2.check(padre, tipo)
+#
+#		@tipo = @op1.tipo
+#	end
+#end
 
 class Asignacion # Probablemente eliminada
 	def check(padre, tipo=nil)
 		if tipo != nil
-			@op1=
+			nil
+			exit
 		end
 
-		if @op1.tipo != @op2.tipo
-			nil # Error, los tipos son distintos
+		if @expresion.op1.tipo != @expresion.op2.tipo
+			puts ErrorTipoAsignacion.new(@expresion.op1.tipo,@expresion.op2.tipo,@id).to_s() # Error, los tipos son distintos
+			exit
 		end
 
-		@op1.check(padre)
-		@op2.check(padre)
+		@expresion.op1.check(padre)
+		@expresion.op2.check(padre)
 		# Hay que chequear el tipo de dato 	
 	end
 end
 
 class OpMultiplicacion
-	def check(padre)
-
-		if @op1.tipo != @op2.tipo
-			nil # Error, los tipos son distintos
+	def check(padre,tipo=nil)
+		if tipo != nil
+			if @op1.tipo != tipo || @op2.tipo != tipo
+				if @op1.tipo != tipo
+					puts "Error: Esperaba lado izquierdo de la expresion de tipo #{@op1.tipo} pero recibi una expresion de tipo #{tipo}"
+				else
+					puts "Error: Esperaba lado derecho de la expresion de tipo #{@op2.tipo} pero recibi una expresion de tipo #{tipo}"
+				end # Error, no es del tipo esperado
+				exit
+			end
+		else
+			if @op1.tipo != @op2.tipo
+				puts ErrorTipos.new(@op,@op1,@op2) # Error, los tipos no concuerdan
+				exit
+			end
 		end
 
-		@op1.check(padre)
-		@op2.check(padre)
+		oper1 = @op1.check(padre,tipo)
+		oper2 = @op2.check(padre,tipo)
+		return oper1 * oper2
 	end
 end
 
 class OpSuma
-	def check(padre)
-
-		if @op1.tipo != @op2.tipo
-			nil # Error, los tipos son distintos
+	def check(padre,tipo=nil)
+		if tipo != nil
+			if @op1.tipo != tipo || @op2.tipo != tipo
+				if @op1.tipo != tipo
+					puts "Error: Esperaba lado izquierdo de la expresion de tipo #{@op1.tipo} pero recibi una expresion de tipo #{tipo}"
+				else
+					puts "Error: Esperaba lado derecho de la expresion de tipo #{@op2.tipo} pero recibi una expresion de tipo #{tipo}"
+				end # Error, no es del tipo esperado
+				exit
+			end
+		else
+			if @op1.tipo != @op2.tipo
+				puts ErrorTipos.new(@op,@op1,@op2) # Error, los tipos no concuerdan
+				exit
+			end
 		end
 
-
-
-		@op1.check(padre)
-		@op2.check(padre)
+		oper1 = @op1.check(padre,tipo)
+		oper2 = @op2.check(padre,tipo)
+		return oper1 + oper2
 	end
 end
 
 class OpResta
-	def check(padre)
-		if @op1.tipo != @op2.tipo
-			nil # Error, los tipos son distintos
+	def check(padre,tipo=nil)
+		if tipo != nil
+			if @op1.tipo != tipo || @op2.tipo != tipo
+				puts ErrorTipos.new(@op,@op1,@op2) # Error, no es del tipo esperado
+				exit
+			end
+		else
+			if @op1.tipo != @op2.tipo
+				puts ErrorTipos.new(@op,@op1,@op2) # Error, los tipos no concuerdan
+				exit
+			end
 		end
 
-		
-
-		@op1.check(padre)
-		@op2.check(padre)
+		oper1 = @op1.check(padre,tipo)
+		oper2 = @op2.check(padre,tipo)
+		return oper1 - oper2
 	end
 end
 
 class OpDivision # La división entre cero ? o.O
-	def check(padre)
-		if @op1.tipo != @op2.tipo
-			nil # Error, los tipos son distintos
+	def check(padre,tipo=nil)
+		if tipo != nil
+			if @op1.tipo != tipo || @op2.tipo != tipo
+				if @op1.tipo != tipo
+					puts "Error: Esperaba lado izquierdo de la expresion de tipo #{@op1.tipo} pero recibi una expresion de tipo #{tipo}"
+				else
+					puts "Error: Esperaba lado derecho de la expresion de tipo #{@op2.tipo} pero recibi una expresion de tipo #{tipo}"
+				end # Error, no es del tipo esperado
+				exit
+			end
+		else
+			if @op1.tipo != @op2.tipo
+				puts ErrorTipos.new(@op,@op1,@op2) # Error, los tipos no concuerdan
+				exit
+			end
 		end
 
-		
-
-		@op1.check(padre)
-		@op2.check(padre)
+		oper1 = @op1.check(padre,tipo)
+		oper2 = @op2.check(padre,tipo)
+		if oper1 != 0
+			return oper1 / oper2
+		else
+			puts "Error: Division entre cero."
+			exit
+		end
 	end
 end
 
 class OpMod
-	def check(padre)
-		if @op1.tipo != @op2.tipo
-			nil # Error, los tipos son distintos
+	def check(padre,tipo=nil)
+		if tipo != nil
+			if @op1.tipo != tipo || @op2.tipo != tipo
+				if @op1.tipo != tipo
+					puts "Error: Esperaba lado izquierdo de la expresion de tipo #{@op1.tipo} pero recibi una expresion de tipo #{tipo}"
+				else
+					puts "Error: Esperaba lado derecho de la expresion de tipo #{@op2.tipo} pero recibi una expresion de tipo #{tipo}"
+				end # Error, no es del tipo esperado
+				exit
+			end
+		else
+			if @op1.tipo != @op2.tipo
+				puts ErrorTipos.new(@op,@op1,@op2) # Error, los tipos no concuerdan
+				exit
+			end
 		end
 
-		
-
-		@op1.check(padre)
-		@op2.check(padre)
+		oper1 = @op1.check(padre,tipo)
+		oper2 = @op2.check(padre,tipo)
+		if oper1 != 0
+			return oper1 % oper2
+		else
+			puts "Error: Division entre cero."
+			exit
+		end
 	end
 end
 
 class OpDivisionE
-	def check(padre)
-		if @op1.tipo != @op2.tipo
-			nil # Error, los tipos son distintos
+	def check(padre,tipo=nil)
+		if tipo != nil
+			if @op1.tipo != tipo || @op2.tipo != tipo
+				if @op1.tipo != tipo
+					puts "Error: Esperaba lado izquierdo de la expresion de tipo #{@op1.tipo} pero recibi una expresion de tipo #{tipo}"
+				else
+					puts "Error: Esperaba lado derecho de la expresion de tipo #{@op2.tipo} pero recibi una expresion de tipo #{tipo}"
+				end # Error, no es del tipo esperado
+				exit
+			end
+		else
+			if @op1.tipo != @op2.tipo
+				puts ErrorTipos.new(@op,@op1,@op2) # Error, los tipos no concuerdan
+				exit
+			end
 		end
 
-		
-
-		@op1.check(padre)
-		@op2.check(padre)
+		oper1 = @op1.check(padre,tipo)
+		oper2 = @op2.check(padre,tipo)
+		if oper1 != 0
+			return oper1.to_f() / oper2.to_f()
+		else
+			puts "Error: Division entre cero."
+			exit
+		end
 	end
 end
 
 class OpModE
-	def check(padre)
-		if @op1.tipo != @op2.tipo
-			nil # Error, los tipos son distintos
+	def check(padre,tipo=nil)
+		if tipo != nil
+			if @op1.tipo != tipo || @op2.tipo != tipo
+				if @op1.tipo != tipo
+					puts "Error: Esperaba lado izquierdo de la expresion de tipo #{@op1.tipo} pero recibi una expresion de tipo #{tipo}"
+				else
+					puts "Error: Esperaba lado derecho de la expresion de tipo #{@op2.tipo} pero recibi una expresion de tipo #{tipo}"
+				end # Error, no es del tipo esperado
+				exit
+			end
+		else
+			if @op1.tipo != @op2.tipo
+				puts ErrorTipos.new(@op,@op1,@op2) # Error, los tipos no concuerdan
+				exit
+			end
 		end
 
-		
-
-		@op1.check(padre)
-		@op2.check(padre)
+		oper1 = @op1.check(padre,tipo)
+		oper2 = @op2.check(padre,tipo)
+		if oper1 != 0
+			return oper1.to_f() % oper2.to_f()
+		else
+			puts "Error: Division entre cero."
+			exit
+		end
 	end
 end
 
 class OpEquivalente
-	def check(padre)
-		if @op1.tipo != @op2.tipo
-			nil # Error, los tipos son distintos
+	def check(padre,tipo=nil)
+		if tipo != nil
+			if @op1.tipo != tipo || @op2.tipo != tipo
+				if @op1.tipo != tipo
+					puts "Error: Esperaba lado izquierdo de la expresion de tipo #{@op1.tipo} pero recibi una expresion de tipo #{tipo}"
+				else
+					puts "Error: Esperaba lado derecho de la expresion de tipo #{@op2.tipo} pero recibi una expresion de tipo #{tipo}"
+				end # Error, no es del tipo esperado
+				exit
+			end
+		else
+			if @op1.tipo != @op2.tipo
+				puts ErrorTipos.new(@op,@op1,@op2) # Error, los tipos no concuerdan
+				exit
+			end
 		end
 
-		
-
-		@op1.check(padre)
-		@op2.check(padre)
+		oper1 = @op1.check(padre,tipo)
+		oper2 = @op2.check(padre,tipo)
+		return oper1 == oper2
 	end
 end
 
 class OpDesigual
-	def check(padre)
-		if @op1.tipo != @op2.tipo
-			nil # Error, los tipos son distintos
+	def check(padre,tipo=nil)
+		if tipo != nil
+			if @op1.tipo != tipo || @op2.tipo != tipo
+				if @op1.tipo != tipo
+					puts "Error: Esperaba lado izquierdo de la expresion de tipo #{@op1.tipo} pero recibi una expresion de tipo #{tipo}"
+				else
+					puts "Error: Esperaba lado derecho de la expresion de tipo #{@op2.tipo} pero recibi una expresion de tipo #{tipo}"
+				end # Error, no es del tipo esperado
+				exit
+			end
+		else
+			if @op1.tipo != @op2.tipo
+				puts ErrorTipos.new(@op,@op1,@op2) # Error, los tipos no concuerdan
+				exit
+			end
 		end
 
-		
-
-		@op1.check(padre)
-		@op2.check(padre)
+		oper1 = @op1.check(padre,tipo)
+		oper2 = @op2.check(padre,tipo)
+		return oper1 != oper2
 	end
 end
 
 class OpMenor
-	def check(padre)
-		if @op1.tipo != @op2.tipo
-			nil # Error, los tipos son distintos
+	def check(padre,tipo=nil)
+		if tipo != nil
+			if @op1.tipo != tipo || @op2.tipo != tipo
+				if @op1.tipo != tipo
+					puts "Error: Esperaba lado izquierdo de la expresion de tipo #{@op1.tipo} pero recibi una expresion de tipo #{tipo}"
+				else
+					puts "Error: Esperaba lado derecho de la expresion de tipo #{@op2.tipo} pero recibi una expresion de tipo #{tipo}"
+				end # Error, no es del tipo esperado
+				exit
+			end
+		else
+			if @op1.tipo != @op2.tipo
+				puts ErrorTipos.new(@op,@op1,@op2) # Error, los tipos no concuerdan
+				exit
+			end
 		end
 
-		
-
-		@op1.check(padre)
-		@op2.check(padre)
+		oper1 = @op1.check(padre,tipo)
+		oper2 = @op2.check(padre,tipo)
+		return oper1 < oper2
 	end
 end
 
 class OpMenorIgual
-	def check(padre)
-		if @op1.tipo != @op2.tipo
-			nil # Error, los tipos son distintos
+	def check(padre,tipo=nil)
+		if tipo != nil
+			if @op1.tipo != tipo || @op2.tipo != tipo
+				if @op1.tipo != tipo
+					puts "Error: Esperaba lado izquierdo de la expresion de tipo #{@op1.tipo} pero recibi una expresion de tipo #{tipo}"
+				else
+					puts "Error: Esperaba lado derecho de la expresion de tipo #{@op2.tipo} pero recibi una expresion de tipo #{tipo}"
+				end # Error, no es del tipo esperado
+				exit
+			end
+		else
+			if @op1.tipo != @op2.tipo
+				puts ErrorTipos.new(@op,@op1,@op2) # Error, los tipos no concuerdan
+				exit
+			end
 		end
 
-		
-
-		@op1.check(padre)
-		@op2.check(padre)
+		oper1 = @op1.check(padre,tipo)
+		oper2 = @op2.check(padre,tipo)
+		return oper1 <= oper2
 	end
 end
 
 class OpMayor
-	def check(padre)
+	def check(padre,tipo=nil)
 		if @op1.tipo != @op2.tipo
-			nil # Error, los tipos son distintos
-		end
+		if tipo != nil
+			if @op1.tipo != tipo || @op2.tipo != tipo
+				if @op1.tipo != tipo
+					puts "Error: Esperaba lado izquierdo de la expresion de tipo #{@op1.tipo} pero recibi una expresion de tipo #{tipo}"
+				else
+					puts "Error: Esperaba lado derecho de la expresion de tipo #{@op2.tipo} pero recibi una expresion de tipo #{tipo}"
+				end # Error, no es del tipo esperado
+				exit
+			end
+		else
+			if @op1.tipo != @op2.tipo
+				puts ErrorTipos.new(@op,@op1,@op2) # Error, los tipos no concuerdan
+				exit
+			end
+		end	
 
-		
-
-		@op1.check(padre)
-		@op2.check(padre)
+		oper1 = @op1.check(padre,tipo)
+		oper2 = @op2.check(padre,tipo)
+		return oper1 > oper2
 	end
 end
 
 class OpMayorIgual
-	def check(padre)
-		if @op1.tipo != @op2.tipo
-			nil # Error, los tipos son distintos
+	def check(padre,tipo=nil)
+		if tipo != nil
+			if @op1.tipo != tipo || @op2.tipo != tipo
+				if @op1.tipo != tipo
+					puts "Error: Esperaba lado izquierdo de la expresion de tipo #{@op1.tipo} pero recibi una expresion de tipo #{tipo}"
+				else
+					puts "Error: Esperaba lado derecho de la expresion de tipo #{@op2.tipo} pero recibi una expresion de tipo #{tipo}"
+				end # Error, no es del tipo esperado
+				exit
+			end
+		else
+			if @op1.tipo != @op2.tipo
+				puts ErrorTipos.new(@op,@op1,@op2) # Error, los tipos no concuerdan
+				exit
+			end
 		end
 
-		
-
-		@op1.check(padre)
-		@op2.check(padre)
+		oper1 = @op1.check(padre,tipo)
+		oper2 = @op2.check(padre,tipo)
+		return oper1 >= oper2
 	end
 end
 
 class OpAnd
-	def check(padre)
-		if @op1.tipo != @op2.tipo
-			nil # Error, los tipos son distintos
+	def check(padre,tipo=nil)
+		if tipo != nil
+			if @op1.tipo != tipo || @op2.tipo != tipo
+				if @op1.tipo != tipo
+					puts "Error: Esperaba lado izquierdo de la expresion de tipo #{@op1.tipo} pero recibi una expresion de tipo #{tipo}"
+				else
+					puts "Error: Esperaba lado derecho de la expresion de tipo #{@op2.tipo} pero recibi una expresion de tipo #{tipo}"
+				end # Error, no es del tipo esperado
+				exit
+			end
+		else
+			if @op1.tipo != @op2.tipo
+				puts ErrorTipos.new(@op,@op1,@op2) # Error, los tipos no concuerdan
+				exit
+			end
 		end
-
-		
-
-		@op1.check(padre)
-		@op2.check(padre)
+	
+		oper1 = @op1.check(padre,tipo)
+		oper2 = @op2.check(padre,tipo)
+		return oper1 && oper2
 	end
 end
 
 class OpOr
-	def check(padre)
-		if @op1.tipo != @op2.tipo
-			nil # Error, los tipos son distintos
+	def check(padre,tipo=nil)
+		if tipo != nil
+			if @op1.tipo != tipo || @op2.tipo != tipo
+				if @op1.tipo != tipo
+					puts "Error: Esperaba lado izquierdo de la expresion de tipo #{@op1.tipo} pero recibi una expresion de tipo #{tipo}"
+				else
+					puts "Error: Esperaba lado derecho de la expresion de tipo #{@op2.tipo} pero recibi una expresion de tipo #{tipo}"
+				end # Error, no es del tipo esperado
+				exit
+			end
+		else
+			if @op1.tipo != @op2.tipo
+				puts ErrorTipos.new(@op,@op1,@op2) # Error, los tipos no concuerdan
+				exit
+			end
 		end
 
-		
-
-		@op1.check(padre)
-		@op2.check(padre)
+		oper1 = @op1.check(padre,tipo)
+		oper2 = @op2.check(padre,tipo)
+		return oper1 || oper2
 	end
 end
 
-class ExpresionUnaria
-	def check(padre, tipo=nil)
+class OpMINUS
+	def check(padre,tipo=nil)
 		if tipo != nil
 			if @tipo != tipo
-				nil # Error, los tipos no concuerdan con el solicitado
+				puts "Error: Esperaba una expresion del tipo #{tipo} pero recibi una expresion de tipo #{tipo}." # Error, los tipos no concuerdan con el solicitado
+				exit
 			end
 		else
 			if @op.tipo != @tipo
-				nil # Error, los tipos son distintos
+				puts ErrorTipoUnario.new(@oper,@tipo).to_s() # Error, los tipos son distintos
+				exit
 			end
 		end
-
-		@op.check(padre, tipo)
-
-	end
-end
-
-class OpUMINUS
-	def check(padre)
-		@op1.check(padre)
-		@op2.check(padre)
+		oper = @op.check(padre,tipo)
+		return -(oper)
 	end
 end
 
 class OpNot
-	def check(padre)
-		@op1.check(padre)
-		@op2.check(padre)
+	def check(padre,tipo=nil)
+		if tipo != nil
+			if @tipo != tipo
+				puts "Error: Esperaba una expresion del tipo #{tipo} pero recibi una expresion de tipo #{tipo}." # Error, los tipos no concuerdan con el solicitado
+				exit
+			end
+		else
+			if @op.tipo != @tipo
+				puts ErrorTipoUnario.new(@oper,@tipo).to_s() # Error, los tipos son distintos
+				exit
+			end
+		end
+		oper = @op.check(padre,tipo)
+		return !(oper)
 	end
 end
 
@@ -674,12 +844,14 @@ class LlamadaFuncion
 	def check(padre, tipo=nil)
 		
 		if not(padre['funciones'].has_key? @id.id)
-			nil # Error, función no declarada
+			puts "Error: Función no declarada." # Error, función no declarada
+			exit
 		end
 
 		if tipo != nil
 			if padre['funciones'][@id.id]['return'] != tipo
-				nil # Error, los tipos no coinciden con el esperado
+				puts "Error: El tipo de return no coincide con el esperado." # Error, los tipos no coinciden con el esperado
+				exit
 			end
 		end
 
@@ -694,38 +866,28 @@ class ListaPaseParametros
 	def check(padre, pos)	# Padre tiene la lista de los parametros de la funcion en cuestión
 
 		if not(padre.has_key? pos)
-			nil # Hay mas argumentos de los necesarios
+			puts "Error: Hay mas argumentos de los esperados."
+			exit # Hay mas argumentos de los necesarios
 		elsif @lista == nil && (padre.length/2-1) > pos # Pregunto si hay tantos argumentos como en el hash
-			nil # Faltan argumentos
+			puts "Error: Faltan argumentos." # Faltan argumentos
+			exit
 		end
 
 		@parametro.check(padre)
 
 		if @parametro.tipo != padre[pos.to_s]
-			nil # Error en los tipos 
+			tipo_f = padre[pos.to_s]
+			puts "Error: Esperaba un parametro de tipo #{tipo_f} pero el tipo recibido es #{@parametro.tipo}" # Error en los tipos 
+			exit
 		end
 
 
 		if padre.has_key?(@id)
+			exit
 		end
 		# Preguntar si el id esta en la tabla de padre
 		# Si: Checkear parametros con los de la funcion
 		# No: Error
-	end
-end
-
-class Tipo
-	def check(padre)
-	end
-end
-
-class TipoNum
-	def check(padre)
-	end
-end
-
-class TipoBoolean
-	def check(padre)
 	end
 end
 
