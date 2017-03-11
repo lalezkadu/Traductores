@@ -1,6 +1,6 @@
 func circle(number radio)
 begin
-    arc(360, radio);
+    radio = 1;
 end;
 
 program

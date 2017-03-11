@@ -58,7 +58,8 @@ $tabla_simbolos = Hash.new
 
 # Errores de Contexto
 
-class ErrorContexto < RuntimeError; end
+class ErrorContexto < RuntimeError 
+end
 
 class ErrorDeclaracion < ErrorContexto
 	def initialize(token)
@@ -207,7 +208,7 @@ class Funcion
 			@instrucciones.check(@tabla)	# Para futuras instrucciones desarrollamos la función
 		end
 	
-		padre[@nombre]=tabla
+		padre[@nombre]=@tabla
 
 	end
 end
@@ -389,27 +390,7 @@ class For
 	end
 end
 
-#class ExpresionBinaria
-#	def check(padre, tipo=nil)
-#		
-#		if tipo != nil
-#			if @op1.tipo != tipo || @op2.tipo != tipo
-#				nil # Error, no es del tipo esperado
-#			end
-#		else
-#			if @op1.tipo != @op2.tipo
-#				puts ErrorTipos.new(@op,@op1,@op2) # Error, los tipos no concuerdan
-#			end
-#		end
-#
-#		@op1.check(padre, tipo)
-#		@op2.check(padre, tipo)
-#
-#		@tipo = @op1.tipo
-#	end
-#end
-
-class Asignacion # Probablemente eliminada
+class ExpresionBinaria
 	def check(padre, tipo=nil)
 		if tipo != nil
 			if @op1.tipo != tipo || @op2.tipo != tipo
@@ -422,13 +403,37 @@ class Asignacion # Probablemente eliminada
 			end
 		else
 			if @op1.tipo != @op2.tipo
-				puts ErrorTipos.new(@op,@op1,@op2) # Error, los tipos no concuerdan
+				puts ErrorTipos.new(@oper,@op1,@op2) # Error, los tipos no concuerdan
 				exit
 			end
 		end
 
 		@op1.check(padre)
 		@op2.check(padre)
+		# Hay que chequear el tipo de dato 	
+	end
+end
+
+class Asignacion # Probablemente eliminada
+	def check(padre, tipo=nil)
+		if tipo != nil
+			if @id.tipo != tipo || @expresion.tipo != tipo
+				if @op1.tipo != tipo
+					puts "Error: Esperaba lado izquierdo de la expresion de tipo #{@op1.tipo} pero recibi una expresion de tipo #{tipo}"
+				else
+					puts "Error: Esperaba lado derecho de la expresion de tipo #{@op2.tipo} pero recibi una expresion de tipo #{tipo}"
+				end # Error, no es del tipo esperado
+				exit
+			end
+		else
+			if @id.tipo != @expresion.tipo
+				puts ErrorTipos.new(@oper,@op1,@op2) # Error, los tipos no concuerdan
+				exit
+			end
+		end
+
+		@id.check(padre)
+		@expresion.check(padre,nil)
 		# Hay que chequear el tipo de dato 	
 	end
 end
@@ -446,7 +451,7 @@ class OpMultiplicacion
 			end
 		else
 			if @op1.tipo != @op2.tipo
-				puts ErrorTipos.new(@op,@op1,@op2) # Error, los tipos no concuerdan
+				puts ErrorTipos.new(@oper,@op1,@op2) # Error, los tipos no concuerdan
 				exit
 			end
 		end
@@ -470,7 +475,7 @@ class OpSuma
 			end
 		else
 			if @op1.tipo != @op2.tipo
-				puts ErrorTipos.new(@op,@op1,@op2) # Error, los tipos no concuerdan
+				puts ErrorTipos.new(@oper,@op1,@op2) # Error, los tipos no concuerdan
 				exit
 			end
 		end
@@ -485,12 +490,12 @@ class OpResta
 	def check(padre,tipo=nil)
 		if tipo != nil
 			if @op1.tipo != tipo || @op2.tipo != tipo
-				puts ErrorTipos.new(@op,@op1,@op2) # Error, no es del tipo esperado
+				puts ErrorTipos.new(@oper,@op1,@op2) # Error, no es del tipo esperado
 				exit
 			end
 		else
 			if @op1.tipo != @op2.tipo
-				puts ErrorTipos.new(@op,@op1,@op2) # Error, los tipos no concuerdan
+				puts ErrorTipos.new(@oper,@op1,@op2) # Error, los tipos no concuerdan
 				exit
 			end
 		end
@@ -514,7 +519,7 @@ class OpDivision # La división entre cero ? o.O
 			end
 		else
 			if @op1.tipo != @op2.tipo
-				puts ErrorTipos.new(@op,@op1,@op2) # Error, los tipos no concuerdan
+				puts ErrorTipos.new(@oper,@op1,@op2) # Error, los tipos no concuerdan
 				exit
 			end
 		end
@@ -543,7 +548,7 @@ class OpMod
 			end
 		else
 			if @op1.tipo != @op2.tipo
-				puts ErrorTipos.new(@op,@op1,@op2) # Error, los tipos no concuerdan
+				puts ErrorTipos.new(@oper,@op1,@op2) # Error, los tipos no concuerdan
 				exit
 			end
 		end
@@ -572,7 +577,7 @@ class OpDivisionE
 			end
 		else
 			if @op1.tipo != @op2.tipo
-				puts ErrorTipos.new(@op,@op1,@op2) # Error, los tipos no concuerdan
+				puts ErrorTipos.new(@oper,@op1,@op2) # Error, los tipos no concuerdan
 				exit
 			end
 		end
@@ -601,7 +606,7 @@ class OpModE
 			end
 		else
 			if @op1.tipo != @op2.tipo
-				puts ErrorTipos.new(@op,@op1,@op2) # Error, los tipos no concuerdan
+				puts ErrorTipos.new(@oper,@op1,@op2) # Error, los tipos no concuerdan
 				exit
 			end
 		end
@@ -630,7 +635,7 @@ class OpEquivalente
 			end
 		else
 			if @op1.tipo != @op2.tipo
-				puts ErrorTipos.new(@op,@op1,@op2) # Error, los tipos no concuerdan
+				puts ErrorTipos.new(@oper,@op1,@op2) # Error, los tipos no concuerdan
 				exit
 			end
 		end
@@ -654,7 +659,7 @@ class OpDesigual
 			end
 		else
 			if @op1.tipo != @op2.tipo
-				puts ErrorTipos.new(@op,@op1,@op2) # Error, los tipos no concuerdan
+				puts ErrorTipos.new(@oper,@op1,@op2) # Error, los tipos no concuerdan
 				exit
 			end
 		end
@@ -678,7 +683,7 @@ class OpMenor
 			end
 		else
 			if @op1.tipo != @op2.tipo
-				puts ErrorTipos.new(@op,@op1,@op2) # Error, los tipos no concuerdan
+				puts ErrorTipos.new(@oper,@op1,@op2) # Error, los tipos no concuerdan
 				exit
 			end
 		end
@@ -702,7 +707,7 @@ class OpMenorIgual
 			end
 		else
 			if @op1.tipo != @op2.tipo
-				puts ErrorTipos.new(@op,@op1,@op2) # Error, los tipos no concuerdan
+				puts ErrorTipos.new(@oper,@op1,@op2) # Error, los tipos no concuerdan
 				exit
 			end
 		end
@@ -715,19 +720,18 @@ end
 
 class OpMayor
 	def check(padre,tipo=nil)
-		if @op1.tipo != @op2.tipo
 		if tipo != nil
 			if @op1.tipo != tipo || @op2.tipo != tipo
 				if @op1.tipo != tipo
 					puts "Error: Esperaba lado izquierdo de la expresion de tipo #{@op1.tipo} pero recibi una expresion de tipo #{tipo}"
 				else
 					puts "Error: Esperaba lado derecho de la expresion de tipo #{@op2.tipo} pero recibi una expresion de tipo #{tipo}"
-				end # Error, no es del tipo esperado
+				end
 				exit
 			end
 		else
 			if @op1.tipo != @op2.tipo
-				puts ErrorTipos.new(@op,@op1,@op2) # Error, los tipos no concuerdan
+				puts ErrorTipos.new(@oper,@op1,@op2) # Error, los tipos no concuerdan
 				exit
 			end
 		end	
@@ -751,7 +755,7 @@ class OpMayorIgual
 			end
 		else
 			if @op1.tipo != @op2.tipo
-				puts ErrorTipos.new(@op,@op1,@op2) # Error, los tipos no concuerdan
+				puts ErrorTipos.new(@oper,@op1,@op2) # Error, los tipos no concuerdan
 				exit
 			end
 		end
@@ -775,7 +779,7 @@ class OpAnd
 			end
 		else
 			if @op1.tipo != @op2.tipo
-				puts ErrorTipos.new(@op,@op1,@op2) # Error, los tipos no concuerdan
+				puts ErrorTipos.new(@oper,@op1,@op2) # Error, los tipos no concuerdan
 				exit
 			end
 		end
@@ -799,7 +803,7 @@ class OpOr
 			end
 		else
 			if @op1.tipo != @op2.tipo
-				puts ErrorTipos.new(@op,@op1,@op2) # Error, los tipos no concuerdan
+				puts ErrorTipos.new(@oper,@op1,@op2) # Error, los tipos no concuerdan
 				exit
 			end
 		end
