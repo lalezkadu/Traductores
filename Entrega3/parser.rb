@@ -9,6 +9,7 @@ require 'racc/parser.rb'
 
 require_relative 'lexer'
 require_relative 'clasesParser'
+require_relative 'clasesContexto'
 
 # Errores sintacticos
 class ErrorSintactico < RuntimeError
@@ -24,7 +25,7 @@ end
 
 class ParserRtn < Racc::Parser
 
-module_eval(<<'...end parser.y/module_eval...', 'parser.y', 255)
+module_eval(<<'...end parser.y/module_eval...', 'parser.y', 256)
 	
 	def initialize(tokens)
 		@tokens = tokens

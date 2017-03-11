@@ -238,6 +238,7 @@ end
 
 require_relative 'lexer'
 require_relative 'clasesParser'
+require_relative 'clasesContexto'
 
 # Errores sintacticos
 class ErrorSintactico < RuntimeError

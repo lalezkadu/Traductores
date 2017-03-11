@@ -46,7 +46,9 @@ def main
 			begin
 				pars = ParserRtn.new(lex.parserTk)
 	    		ast = pars.parse
-	    		puts ast.check()
+	    		#puts ast.class
+	    		ast.check()
+	    		puts ast.tabla
 	    		rescue ErrorSintactico => e
 	      			puts e
 	      			return

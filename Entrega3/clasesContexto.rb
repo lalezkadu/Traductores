@@ -4,57 +4,57 @@ require_relative 'lexer'
 $tabla_simbolos = Hash.new
 
 # Tabla de simbolos
-class SymTable
+#class SymTable
 
-	attr_accessor :declaraciones, :funciones, :padre
+#	attr_accessor :declaraciones, :funciones, :padre
 
-	def initialize(padre=nil,declaraciones=Hash.new,funciones)
-		@declaraciones = declaraciones
-		@padre = padre
+#	def initialize(padre=nil,declaraciones=Hash.new,funciones)
+#		@declaraciones = declaraciones
+#		@padre = padre
 		
-		if @padre != nil
-			@funciones = padre.funciones
-		else
-			@funciones = funciones
-		end
+#		if @padre != nil
+#			@funciones = padre.funciones
+#		else
+#			@funciones = funciones
+#		end
 		
-		@declaraciones = declaraciones
+#		@declaraciones = declaraciones
 		
-		@padre = padre
-	end
+#		@padre = padre
+#	end
 
-	def to_s(tab)
-		s = ""
-		if @declaraciones.length > 0:
-			@declaraciones.each { |key, value| s<< (" "*tab)+"#{key}: #{value}\n" }
-		else
-			s << "None\n"
-		end
-		return s
-	end
-end
+#	def to_s(tab)
+#		s = ""
+#		if @declaraciones.length > 0:
+#			@declaraciones.each { |key, value| s<< (" "*tab)+"#{key}: #{value}\n" }
+#		else
+#			s << "None\n"
+#		end
+#		return s
+#	end
+#end
 
 # Alcance de las variables
-class Alcance
-	attr_accessor :nombre, :tabla, :padre
+#class Alcance
+#	attr_accessor :nombre, :tabla, :padre
 
-	def initialize(nombre="",tabla,padre=nil)
-		@nombre = nombre
-		@tabla = tabla
-		@padre = padre
-	end
+#	def initialize(nombre="",padre=nil,tabla)
+#		@nombre = nombre
+#		@tabla = tabla
+#		@padre = padre
+#	end
 
-	def to_s(tab)
-		s = (" "*tab)+"Alcance #{nombre}:\n"
-		s << (" "*(tab+2)) + "Variables:\n"
-		if @tabla != nil
-			s << @tabla.to_s(tab+4)
-		else
-			s << "None\n"
-		end
-		return s
-	end
-end
+#	def to_s(tab)
+#		s = (" "*tab)+"Alcance #{nombre}:\n"
+#		s << (" "*(tab+2)) + "Variables:\n"
+#		if @tabla != nil
+#			s << @tabla.to_s(tab+4)
+#		else
+#			s << "None\n"
+#		end
+#		return s
+#	end
+#end
 
 # Errores de Contexto
 
@@ -216,7 +216,7 @@ class Parametros
 	def check(tabla,pos)
 		if !(tabla.has_key?(@id)) 
 			tabla[:pos] = @tipo
-			tabla[:(@id)] = @tipo
+			tabla[:@id] = @tipo
 		else
 			puts ErrorVariableNoDeclarada.new(@id).to_s() # ERROR ya existe la variable
 			exit
@@ -412,17 +412,23 @@ end
 class Asignacion # Probablemente eliminada
 	def check(padre, tipo=nil)
 		if tipo != nil
-			nil
-			exit
+			if @op1.tipo != tipo || @op2.tipo != tipo
+				if @op1.tipo != tipo
+					puts "Error: Esperaba lado izquierdo de la expresion de tipo #{@op1.tipo} pero recibi una expresion de tipo #{tipo}"
+				else
+					puts "Error: Esperaba lado derecho de la expresion de tipo #{@op2.tipo} pero recibi una expresion de tipo #{tipo}"
+				end # Error, no es del tipo esperado
+				exit
+			end
+		else
+			if @op1.tipo != @op2.tipo
+				puts ErrorTipos.new(@op,@op1,@op2) # Error, los tipos no concuerdan
+				exit
+			end
 		end
 
-		if @expresion.op1.tipo != @expresion.op2.tipo
-			puts ErrorTipoAsignacion.new(@expresion.op1.tipo,@expresion.op2.tipo,@id).to_s() # Error, los tipos son distintos
-			exit
-		end
-
-		@expresion.op1.check(padre)
-		@expresion.op2.check(padre)
+		@op1.check(padre)
+		@op2.check(padre)
 		# Hay que chequear el tipo de dato 	
 	end
 end
