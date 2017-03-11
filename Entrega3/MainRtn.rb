@@ -48,7 +48,7 @@ def main
 	    		ast = pars.parse
 	    		#puts ast.class
 	    		ast.check()
-	    		puts ast.tabla
+	    		puts ast.tabla.class
 	    		rescue ErrorSintactico => e
 	      			puts e
 	      			return

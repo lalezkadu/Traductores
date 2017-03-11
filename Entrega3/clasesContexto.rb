@@ -100,7 +100,7 @@ class ErrorTipos < ErrorContexto
 	end
 
 	def to_s
-		"Error: \nEn la expresion de tipo #{op}: Se intento operar un operando izquierdo del tipo #{@op1} con un\n operando derecho del tipo #{@op2}."
+		"Error: \nEn la expresion de tipo #{@op}: Se intento operar un operando izquierdo del tipo #{@op1} con un\n operando derecho del tipo #{@op2}."
 	end
 end
 
@@ -155,14 +155,14 @@ end
 # Chequeos de las clases
 class Estructura
 	def check()
-		hashEstructura={ 'funciones' => Hash.new }
+		@tabla={ 'funciones' => Hash.new }
 
 		if @funciones != nil			
-			@funciones.check(hashEstructura['funciones'])
+			@funciones.check(@tabla['funciones'])
 		end
 
 		if @programa != nil
-			@programa.check(hashEstructura)
+			@programa.check(@tabla)
 		end
 	end
 end
@@ -417,7 +417,7 @@ end
 class Asignacion # Probablemente eliminada
 	def check(padre, tipo=nil)
 		if tipo != nil
-			if @id.tipo != tipo || @expresion.tipo != tipo
+			if @op1.tipo != tipo || @op2.tipo != tipo
 				if @op1.tipo != tipo
 					puts "Error: Esperaba lado izquierdo de la expresion de tipo #{@op1.tipo} pero recibi una expresion de tipo #{tipo}"
 				else
@@ -426,14 +426,14 @@ class Asignacion # Probablemente eliminada
 				exit
 			end
 		else
-			if @id.tipo != @expresion.tipo
+			if @op1.tipo != @op2.tipo
 				puts ErrorTipos.new(@oper,@op1,@op2) # Error, los tipos no concuerdan
 				exit
 			end
 		end
 
-		@id.check(padre)
-		@expresion.check(padre,nil)
+		@op1.check(padre)
+		@op2.check(padre,nil)
 		# Hay que chequear el tipo de dato 	
 	end
 end
@@ -885,8 +885,8 @@ class ListaPaseParametros
 
 		@parametro.check(padre)
 
-		if @parametro.tipo != padre[pos.to_s]
-			tipo_f = padre[pos.to_s]
+		if @parametro.tipo != padre[pos]
+			tipo_f = padre[pos]
 			puts "Error: Esperaba un parametro de tipo #{tipo_f} pero el tipo recibido es #{@parametro.tipo}" # Error en los tipos 
 			exit
 		end
