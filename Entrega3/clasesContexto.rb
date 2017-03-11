@@ -218,7 +218,11 @@ class Parametros
 		if !(tabla.has_key?(@id)) 
 			tabla[:pos] = @tipo
 			tabla[:@id] = @tipo
+			@id.tipo = @tipo
+			puts 'Que pasó ?'
+			puts @id
 		else
+			puts 'Acá'
 			puts ErrorVariableNoDeclarada.new(@id).to_s() # ERROR ya existe la variable
 			exit
 		end
@@ -297,6 +301,7 @@ class Identificador
 		
 		if tipo == nil
 			if not(padre.has_key? @id)
+				puts 'Aquí'
 				puts ErrorVariableNoDeclarada.new(@id).to_s() # Error, no existen variables declaradas
 				exit
 			end
@@ -403,7 +408,7 @@ class ExpresionBinaria
 			end
 		else
 			if @op1.tipo != @op2.tipo
-				puts ErrorTipos.new(@oper,@op1,@op2) # Error, los tipos no concuerdan
+				puts ErrorTipos.new(@oper,@op1,@op2).to_s() # Error, los tipos no concuerdan
 				exit
 			end
 		end
@@ -416,6 +421,9 @@ end
 
 class Asignacion # Probablemente eliminada
 	def check(padre, tipo=nil)
+		@op1.check(padre)
+		@op2.check(padre,nil)
+
 		if tipo != nil
 			if @op1.tipo != tipo || @op2.tipo != tipo
 				if @op1.tipo != tipo
@@ -427,19 +435,23 @@ class Asignacion # Probablemente eliminada
 			end
 		else
 			if @op1.tipo != @op2.tipo
+				puts @op1.tipo
+				puts @op2.tipo
 				puts ErrorTipos.new(@oper,@op1,@op2) # Error, los tipos no concuerdan
 				exit
 			end
 		end
-
-		@op1.check(padre)
-		@op2.check(padre,nil)
 		# Hay que chequear el tipo de dato 	
+		@tipo=@op1.tipo
 	end
 end
 
 class OpMultiplicacion
 	def check(padre,tipo=nil)
+
+		oper1 = @op1.check(padre,tipo)
+		oper2 = @op2.check(padre,tipo)
+
 		if tipo != nil
 			if @op1.tipo != tipo || @op2.tipo != tipo
 				if @op1.tipo != tipo
@@ -456,14 +468,15 @@ class OpMultiplicacion
 			end
 		end
 
-		oper1 = @op1.check(padre,tipo)
-		oper2 = @op2.check(padre,tipo)
 		return oper1 * oper2
 	end
 end
 
 class OpSuma
 	def check(padre,tipo=nil)
+		oper1 = @op1.check(padre,tipo)
+		oper2 = @op2.check(padre,tipo)
+
 		if tipo != nil
 			if @op1.tipo != tipo || @op2.tipo != tipo
 				if @op1.tipo != tipo
@@ -480,14 +493,16 @@ class OpSuma
 			end
 		end
 
-		oper1 = @op1.check(padre,tipo)
-		oper2 = @op2.check(padre,tipo)
+		@tipo=@op1.tipo
 		return oper1 + oper2
 	end
 end
 
 class OpResta
 	def check(padre,tipo=nil)
+		oper1 = @op1.check(padre,tipo)
+		oper2 = @op2.check(padre,tipo)
+
 		if tipo != nil
 			if @op1.tipo != tipo || @op2.tipo != tipo
 				puts ErrorTipos.new(@oper,@op1,@op2) # Error, no es del tipo esperado
@@ -500,8 +515,7 @@ class OpResta
 			end
 		end
 
-		oper1 = @op1.check(padre,tipo)
-		oper2 = @op2.check(padre,tipo)
+		@tipo=@op1.tipo
 		return oper1 - oper2
 	end
 end
@@ -509,6 +523,9 @@ end
 class OpDivision # La división entre cero ? o.O
 	def check(padre,tipo=nil)
 		if tipo != nil
+			oper1 = @op1.check(padre,tipo)
+			oper2 = @op2.check(padre,tipo)
+
 			if @op1.tipo != tipo || @op2.tipo != tipo
 				if @op1.tipo != tipo
 					puts "Error: Esperaba lado izquierdo de la expresion de tipo #{@op1.tipo} pero recibi una expresion de tipo #{tipo}"
@@ -524,8 +541,7 @@ class OpDivision # La división entre cero ? o.O
 			end
 		end
 
-		oper1 = @op1.check(padre,tipo)
-		oper2 = @op2.check(padre,tipo)
+		@tipo=@op1.tipo
 		if oper1 != 0
 			return oper1 / oper2
 		else
@@ -537,6 +553,9 @@ end
 
 class OpMod
 	def check(padre,tipo=nil)
+		oper1 = @op1.check(padre,tipo)
+		oper2 = @op2.check(padre,tipo)
+
 		if tipo != nil
 			if @op1.tipo != tipo || @op2.tipo != tipo
 				if @op1.tipo != tipo
@@ -553,8 +572,8 @@ class OpMod
 			end
 		end
 
-		oper1 = @op1.check(padre,tipo)
-		oper2 = @op2.check(padre,tipo)
+
+		@tipo=@op1.tipo
 		if oper1 != 0
 			return oper1 % oper2
 		else
@@ -566,6 +585,9 @@ end
 
 class OpDivisionE
 	def check(padre,tipo=nil)
+		oper1 = @op1.check(padre,tipo)
+		oper2 = @op2.check(padre,tipo)
+		
 		if tipo != nil
 			if @op1.tipo != tipo || @op2.tipo != tipo
 				if @op1.tipo != tipo
@@ -582,8 +604,7 @@ class OpDivisionE
 			end
 		end
 
-		oper1 = @op1.check(padre,tipo)
-		oper2 = @op2.check(padre,tipo)
+		@tipo=@op1.tipo
 		if oper1 != 0
 			return oper1.to_f() / oper2.to_f()
 		else
@@ -595,6 +616,10 @@ end
 
 class OpModE
 	def check(padre,tipo=nil)
+		
+		oper1 = @op1.check(padre,tipo)
+		oper2 = @op2.check(padre,tipo)
+
 		if tipo != nil
 			if @op1.tipo != tipo || @op2.tipo != tipo
 				if @op1.tipo != tipo
@@ -611,8 +636,8 @@ class OpModE
 			end
 		end
 
-		oper1 = @op1.check(padre,tipo)
-		oper2 = @op2.check(padre,tipo)
+		@tipo=@op1.tipo
+
 		if oper1 != 0
 			return oper1.to_f() % oper2.to_f()
 		else
@@ -624,6 +649,10 @@ end
 
 class OpEquivalente
 	def check(padre,tipo=nil)
+		
+		oper1 = @op1.check(padre,tipo)
+		oper2 = @op2.check(padre,tipo)
+		
 		if tipo != nil
 			if @op1.tipo != tipo || @op2.tipo != tipo
 				if @op1.tipo != tipo
@@ -640,14 +669,17 @@ class OpEquivalente
 			end
 		end
 
-		oper1 = @op1.check(padre,tipo)
-		oper2 = @op2.check(padre,tipo)
+		@tipo=@op1.tipo
 		return oper1 == oper2
 	end
 end
 
 class OpDesigual
 	def check(padre,tipo=nil)
+		
+		oper1 = @op1.check(padre,tipo)
+		oper2 = @op2.check(padre,tipo)
+		
 		if tipo != nil
 			if @op1.tipo != tipo || @op2.tipo != tipo
 				if @op1.tipo != tipo
@@ -664,14 +696,17 @@ class OpDesigual
 			end
 		end
 
-		oper1 = @op1.check(padre,tipo)
-		oper2 = @op2.check(padre,tipo)
+		@tipo=@op1.tipo
 		return oper1 != oper2
 	end
 end
 
 class OpMenor
 	def check(padre,tipo=nil)
+		
+		oper1 = @op1.check(padre,tipo)
+		oper2 = @op2.check(padre,tipo)
+		
 		if tipo != nil
 			if @op1.tipo != tipo || @op2.tipo != tipo
 				if @op1.tipo != tipo
@@ -688,14 +723,17 @@ class OpMenor
 			end
 		end
 
-		oper1 = @op1.check(padre,tipo)
-		oper2 = @op2.check(padre,tipo)
+		@tipo=@op1.tipo
 		return oper1 < oper2
 	end
 end
 
 class OpMenorIgual
 	def check(padre,tipo=nil)
+		
+		oper1 = @op1.check(padre,tipo)
+		oper2 = @op2.check(padre,tipo)
+		
 		if tipo != nil
 			if @op1.tipo != tipo || @op2.tipo != tipo
 				if @op1.tipo != tipo
@@ -712,14 +750,17 @@ class OpMenorIgual
 			end
 		end
 
-		oper1 = @op1.check(padre,tipo)
-		oper2 = @op2.check(padre,tipo)
+		@tipo=@op1.tipo
 		return oper1 <= oper2
 	end
 end
 
 class OpMayor
 	def check(padre,tipo=nil)
+		
+		oper1 = @op1.check(padre,tipo)
+		oper2 = @op2.check(padre,tipo)
+		
 		if tipo != nil
 			if @op1.tipo != tipo || @op2.tipo != tipo
 				if @op1.tipo != tipo
@@ -736,14 +777,17 @@ class OpMayor
 			end
 		end	
 
-		oper1 = @op1.check(padre,tipo)
-		oper2 = @op2.check(padre,tipo)
+		@tipo=@op1.tipo
 		return oper1 > oper2
 	end
 end
 
 class OpMayorIgual
 	def check(padre,tipo=nil)
+
+		oper1 = @op1.check(padre,tipo)
+		oper2 = @op2.check(padre,tipo)
+		
 		if tipo != nil
 			if @op1.tipo != tipo || @op2.tipo != tipo
 				if @op1.tipo != tipo
@@ -760,14 +804,17 @@ class OpMayorIgual
 			end
 		end
 
-		oper1 = @op1.check(padre,tipo)
-		oper2 = @op2.check(padre,tipo)
+		@tipo=@op1.tipo
 		return oper1 >= oper2
 	end
 end
 
 class OpAnd
 	def check(padre,tipo=nil)
+
+		oper1 = @op1.check(padre,tipo)
+		oper2 = @op2.check(padre,tipo)
+		
 		if tipo != nil
 			if @op1.tipo != tipo || @op2.tipo != tipo
 				if @op1.tipo != tipo
@@ -783,15 +830,18 @@ class OpAnd
 				exit
 			end
 		end
-	
-		oper1 = @op1.check(padre,tipo)
-		oper2 = @op2.check(padre,tipo)
+		
+		@tipo=@op1.tipo
 		return oper1 && oper2
 	end
 end
 
 class OpOr
 	def check(padre,tipo=nil)
+		
+		oper1 = @op1.check(padre,tipo)
+		oper2 = @op2.check(padre,tipo)
+
 		if tipo != nil
 			if @op1.tipo != tipo || @op2.tipo != tipo
 				if @op1.tipo != tipo
@@ -808,14 +858,14 @@ class OpOr
 			end
 		end
 
-		oper1 = @op1.check(padre,tipo)
-		oper2 = @op2.check(padre,tipo)
+		@tipo=@op1.tipo
 		return oper1 || oper2
 	end
 end
 
 class OpMINUS
 	def check(padre,tipo=nil)
+		oper = @op.check(padre,tipo)
 		if tipo != nil
 			if @tipo != tipo
 				puts "Error: Esperaba una expresion del tipo #{tipo} pero recibi una expresion de tipo #{tipo}." # Error, los tipos no concuerdan con el solicitado
@@ -827,13 +877,14 @@ class OpMINUS
 				exit
 			end
 		end
-		oper = @op.check(padre,tipo)
+		@tipo=@op.tipo
 		return -(oper)
 	end
 end
 
 class OpNot
 	def check(padre,tipo=nil)
+		oper = @op.check(padre,tipo)
 		if tipo != nil
 			if @tipo != tipo
 				puts "Error: Esperaba una expresion del tipo #{tipo} pero recibi una expresion de tipo #{tipo}." # Error, los tipos no concuerdan con el solicitado
@@ -845,7 +896,7 @@ class OpNot
 				exit
 			end
 		end
-		oper = @op.check(padre,tipo)
+		@tipo=@op.tipo
 		return !(oper)
 	end
 end
