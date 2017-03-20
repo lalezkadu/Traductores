@@ -208,7 +208,7 @@ class Funcion
 			@instrucciones.check(@tabla)	# Para futuras instrucciones desarrollamos la función
 		end
 	
-		padre[@nombre]=@tabla
+		padre[@nombre.id.to_s()]=@tabla
 
 	end
 end
@@ -216,8 +216,8 @@ end
 class Parametros
 	def check(tabla,pos)
 		if !(tabla.has_key?(@id)) 
-			tabla[:pos] = @tipo
-			tabla[:@id] = @tipo
+			tabla[pos.to_s] = @tipo.tipo
+			tabla[@id.id.to_s()] = @tipo.tipo
 			@id.tipo = @tipo
 			puts 'Que pasó ?'
 			puts @id
@@ -300,14 +300,17 @@ class Identificador
 	def check(padre, tipo=nil)
 		
 		if tipo == nil
-			if not(padre.has_key? @id)
+			puts padre['variables']
+			if not(padre['variables'].has_key? @id.to_s())
 				puts 'Aquí'
+				puts padre['variables']
 				puts ErrorVariableNoDeclarada.new(@id).to_s() # Error, no existen variables declaradas
 				exit
 			end
+			@tipo=padre['variables'][@id.to_s()]
 		else
 			@tipo=tipo
-			padre[@id]=tipo	    	
+			padre['variables'][@id.to_s()]=tipo	    	
 		end
 	end
 end
@@ -953,9 +956,9 @@ class ListaPaseParametros
 end
 
 class LiteralNumerico
-	def check(padre)
-		if /^\d+$/.matches(@valor)
-			return @valor.to_i()
+	def check(padre, tipo)
+		if /^\d+$/.match?(@valor.token)
+			return @valor.to_s().to_f()
 		else
 			return @valor.to_f()
 		end
@@ -963,8 +966,8 @@ class LiteralNumerico
 end
 
 class LiteralBooleano
-	def check(padre)
-		if @valor == "true"
+	def check(padre, tipo)
+		if @valor.token == "true"
 			return true
 		else
 			return false

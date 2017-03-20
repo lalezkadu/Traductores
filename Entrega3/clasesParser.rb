@@ -18,7 +18,7 @@ class Estructura
 	#
 	# funciones: Secuencia de funciones definidas en el programa
 	# programa: Bloque de instrucciones del programa
-	attr_accessor :funciones, :programa
+	attr_accessor :funciones, :programa, :tabla
 
 	def initialize(funciones, programa)
 		@funciones = funciones
