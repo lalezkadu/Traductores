@@ -1,8 +1,9 @@
 #!/usr/bin/env ruby
 
 class Imagen
-	attr_accessor :tam_ancho, :tam_alto, :plano, :x, :y, :sentido, :pintar
-	def initialize()
+	attr_accessor :tam_ancho, :tam_alto, :plano, :x, :y, :sentido, :pintar, :programa
+	def initialize(programa="archivo")
+		@programa = programa
 		@tam_ancho = 11
 		@tam_alto = 11
 		@plano = Array.new(@tam_ancho) { Array.new(@tam_alto) { 0 } }
@@ -187,7 +188,9 @@ class Imagen
 	end
 
 	def genPbm()
-		File.open('imagen.pbm', 'w') do |f2|
+		File.open(@programa+'.pbm', 'w') do |f2|
+			f2.puts "P1"
+			f2.puts "#{@tam_ancho} #{@tam_alto}"
   			@tam_alto.times do |i|
   				s = ""
 				@tam_ancho.times do |j|
@@ -208,5 +211,5 @@ class Imagen
 	end
 end
 
-x = Imagen.new
+x = Imagen.new()
 x.genPbm
