@@ -32,28 +32,32 @@ class Imagen
 		if pasos < 0
 			backward(pasos.abs)
 		else
-			if @grados >= 0 && @grados < 90	# Calculamos el punto final de la trayectoria
+			if @grados >= 0 && @grados <= 90	# Calculamos el punto final de la trayectoria
+				puts "0-90"
 				grados_aux = @grados
 				alfa = self.grados2radianes(grados_aux)
 				co = (pasos*Math.sin(alfa)).abs
 				ca = (pasos*Math.cos(alfa)).abs
 				x_final = self.redondear(@x+ca)
 				y_final = self.redondear(@y+co)
-			elsif @grados >= 90 && @grados < 180
+			elsif @grados > 90 && @grados <= 180
+				puts "90-180"
 				grados_aux = 180 - @grados
 				alfa = self.grados2radianes(grados_aux)
 				co = (pasos*Math.sin(alfa)).abs
 				ca = (pasos*Math.cos(alfa)).abs
 				x_final = self.redondear(@x-ca)
 				y_final = self.redondear(@y+co)
-			elsif @grados >= 180 && @grados < 270
+			elsif @grados > 180 && @grados <= 270
+				puts "180-270"
 				grados_aux = 270 - @grados
 				alfa = self.grados2radianes(grados_aux)
 				co = (pasos*Math.sin(alfa)).abs
 				ca = (pasos*Math.cos(alfa)).abs
 				x_final = self.redondear(@x-ca)
 				y_final = self.redondear(@y-co)
-			elsif @grados >= 270 && @grados < 360
+			elsif @grados > 270 && @grados < 360 
+				puts "270-360"
 				grados_aux = 360 - @grados
 				alfa = self.grados2radianes(grados_aux)
 				co = (pasos*Math.sin(alfa)).abs
@@ -61,55 +65,51 @@ class Imagen
 				x_final = self.redondear(@x+ca)
 				y_final = self.redondear(@y-co)
 			end
+			puts "#{@x} #{@y} @x,@y #{x_final} #{y_final} xf,yf"
 
-			if @x < x_final	# definimos los limites de la iteracion
+			if @x <= x_final	# definimos los limites de la iteracion
 				x0 = @x
 				xf = x_final
-			else
-				x0 = x_final
-				xf = @x
-			end
-
-			if @y < y_final
 				y0 = @y
 				yf = y_final
 			else
+				x0 = x_final
+				xf = @x
 				y0 = y_final
 				yf = @y
 			end
 
 			puts "#{x0} #{y0} x0,y0 #{xf} #{yf} xf,yf"
-			if yf == y0 || xf == x0
-				pendiente = 0
-			elsif yf != y0 && xf != x0
-				pendiente = (yf-y0)/(xf-x0).to_f
-			elsif yf == yo
-				pendiente = 0
+			if yf == y0 && xf == x0
+				pendiente = yo/x0
+			elsif xf == x0 && xf < 0
+				pendiente = -100000
+			elsif xf == x0 && xf >= 0
+				pendiente = 1000000
+			else
+				pendiente = (yf-y0)/(xf-x0)
 			end
 			
 			a = pendiente
 			b = -1
 			c = y0-pendiente*x0
+			puts "#{a} #{b} #{c} a,b,c"
 
-			puts "#{pendiente}"
+			puts "#{pendiente} PENDIENTE"
 			#distancia = ((A*x+B*y).abs)/Math.sqrt(A*A+B*B)
 
 			(x0..xf).each do |x|
 				(y0..yf).each do |y|
 					puts "#{x} #{y} puntos x,y"
-					y1 = pendiente*x
+					y1 = self.redondear(pendiente*x)
 					puts "#{y1} y1"
-					if xf == x0
-						distancia = 0
-					else
-						distancia = (a*x+b*y1+c).abs/Math.sqrt(a*a+b*b)
-					end
+					distancia = (a*x+b*y+c).abs/Math.sqrt(a*a+b*b)
 					puts "#{distancia} distancia"
 					if distancia <= Math.sqrt(2)/2
-						if @pintar
-							if x >= 0 && x < @tam_ancho && y >= 0 && y < @tam_alto
-								@plano[y][x] = 1
-							end
+						puts "VOY A PINTAR"
+						if @pintar && x >= 0 && x < @tam_ancho && y >= 0 && y < @tam_alto
+							puts "PINTE"
+							@plano[x][y] = 1
 						end
 					end
 				end
@@ -145,15 +145,36 @@ class Imagen
 	def arc(grados,radio)
 	end
 
-	def rotatel(grados)
-		puts "#{@grados} inicial"
-		@grados += grados
-		puts "#{@grados} despues"
-	end
+     def rotatel(grados)
+        if grados < 0
+            self.rotater(grados.abs)
+        else
+            suma = @grados + grados
+            if suma >= 360
+                @grados = suma%360
+            else
+            	@grados = suma
+            end
+        end
+    end
 
-	def rotater(grados)
-		@grados -= grados
-	end
+    def rotater(grados)
+        if grados < 0
+            self.rotatel(grados.abs)
+        else
+            suma = @grados - grados
+            if suma >= 360
+                grados_aux = suma%360	
+            else
+            	grados_aux = suma
+            end
+            if grados_aux < 0
+           		@grados = 360 + grados_aux
+           	else
+           		@grados = grados_aux
+           	end
+        end
+    end
 
 	def setposition(x,y)
 		@x = x
@@ -185,6 +206,7 @@ class Imagen
 end
 
 x = Imagen.new()
-x.rotatel(90)
-x.forward(10)
+x.rotatel(30)
+puts x.grados
+x.forward(5)
 x.to_s
