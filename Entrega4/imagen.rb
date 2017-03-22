@@ -32,49 +32,52 @@ class Imagen
 		if pasos < 0
 			backward(pasos.abs)
 		else
-			if @grados >= 0 && @grados <= 90	# Calculamos el punto final de la trayectoria
+			if @grados >= 0 && @grados < 90	# Calculamos el punto final de la trayectoria
 				puts "0-90"
 				grados_aux = @grados
 				alfa = self.grados2radianes(grados_aux)
 				co = (pasos*Math.sin(alfa)).abs
 				ca = (pasos*Math.cos(alfa)).abs
-				x_final = self.redondear(@x+ca)
-				y_final = self.redondear(@y+co)
-			elsif @grados > 90 && @grados <= 180
+				x_final = (@x+ca).round
+				y_final = (@y-co).round
+			elsif @grados >= 90 && @grados <= 180
 				puts "90-180"
 				grados_aux = 180 - @grados
 				alfa = self.grados2radianes(grados_aux)
 				co = (pasos*Math.sin(alfa)).abs
 				ca = (pasos*Math.cos(alfa)).abs
-				x_final = self.redondear(@x-ca)
-				y_final = self.redondear(@y+co)
-			elsif @grados > 180 && @grados <= 270
+				x_final = (@x-ca).round
+				y_final = (@y-co).round
+			elsif @grados > 180 && @grados < 270
 				puts "180-270"
 				grados_aux = 270 - @grados
 				alfa = self.grados2radianes(grados_aux)
 				co = (pasos*Math.sin(alfa)).abs
 				ca = (pasos*Math.cos(alfa)).abs
-				x_final = self.redondear(@x-ca)
-				y_final = self.redondear(@y-co)
-			elsif @grados > 270 && @grados < 360 
+				x_final = (@x-ca).round
+				y_final = (@y+co).round
+			elsif @grados >= 270 && @grados < 360 
 				puts "270-360"
 				grados_aux = 360 - @grados
 				alfa = self.grados2radianes(grados_aux)
 				co = (pasos*Math.sin(alfa)).abs
 				ca = (pasos*Math.cos(alfa)).abs
-				x_final = self.redondear(@x+ca)
-				y_final = self.redondear(@y-co)
+				x_final = (@x+ca).round
+				y_final = (@y+co).round
 			end
 			puts "#{@x} #{@y} @x,@y #{x_final} #{y_final} xf,yf"
 
 			if @x <= x_final	# definimos los limites de la iteracion
 				x0 = @x
 				xf = x_final
-				y0 = @y
-				yf = y_final
 			else
 				x0 = x_final
 				xf = @x
+			end
+			if @y <= y_final	# definimos los limites de la iteracion
+				y0 = @y
+				yf = y_final
+			else
 				y0 = y_final
 				yf = @y
 			end
@@ -99,17 +102,16 @@ class Imagen
 			#distancia = ((A*x+B*y).abs)/Math.sqrt(A*A+B*B)
 
 			(x0..xf).each do |x|
+				puts "AQUI"
 				(y0..yf).each do |y|
 					puts "#{x} #{y} puntos x,y"
-					y1 = self.redondear(pendiente*x)
-					puts "#{y1} y1"
-					distancia = (a*x+b*y+c).abs/Math.sqrt(a*a+b*b)
+					distancia = (a*x+b*y+c).to_f.abs/Math.sqrt(a*a+b*b)
 					puts "#{distancia} distancia"
 					if distancia <= Math.sqrt(2)/2
 						puts "VOY A PINTAR"
 						if @pintar && x >= 0 && x < @tam_ancho && y >= 0 && y < @tam_alto
 							puts "PINTE"
-							@plano[x][y] = 1
+							@plano[y][x] = 1		# Ya que en realidad (x,y) representa a la fila y y la columna x
 						end
 					end
 				end
@@ -198,7 +200,7 @@ class Imagen
 	def to_s
 		@tam_alto.times do |i|
 			@tam_ancho.times do |j|
-				print @plano[j][i].to_s + " "
+				print @plano[i][j].to_s + " "
 			end
 			print "\n"
 		end
@@ -206,7 +208,7 @@ class Imagen
 end
 
 x = Imagen.new()
-x.rotatel(30)
+#x.rotatel(180)
 puts x.grados
 x.forward(5)
 x.to_s
