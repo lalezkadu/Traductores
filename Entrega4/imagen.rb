@@ -1,15 +1,17 @@
 #!/usr/bin/env ruby
 
+include Math
+
 class Imagen
-	attr_accessor :tam_ancho, :tam_alto, :plano, :x, :y, :sentido, :pintar, :programa
+	attr_accessor :tam_ancho, :tam_alto, :plano, :x, :y, :grados, :pintar, :programa
 	def initialize(programa="archivo")
 		@programa = programa
 		@tam_ancho = 11
 		@tam_alto = 11
 		@plano = Array.new(@tam_ancho) { Array.new(@tam_alto) { 0 } }
 		self.home()
-		@plano[@y][@x] = 1
-		@sentido = 90
+		@plano[@x][@y] = 1
+		@grados = 90
 		self.openeye()
 	end
 
@@ -30,7 +32,103 @@ class Imagen
 		if pasos < 0
 			backward(pasos.abs)
 		else
-			#implementar forward
+			if @grados >= 0 && @grados < 90	# Calculamos el punto final de la trayectoria
+				grados_aux = @grados
+				alfa = self.grados2radianes(grados_aux)
+				co = (pasos*Math.sin(alfa)).abs
+				ca = (pasos*Math.cos(alfa)).abs
+				x_final = self.redondear(@x+ca)
+				y_final = self.redondear(@y+co)
+			elsif @grados >= 90 && @grados < 180
+				grados_aux = 180 - @grados
+				alfa = self.grados2radianes(grados_aux)
+				co = (pasos*Math.sin(alfa)).abs
+				ca = (pasos*Math.cos(alfa)).abs
+				x_final = self.redondear(@x-ca)
+				y_final = self.redondear(@y+co)
+			elsif @grados >= 180 && @grados < 270
+				grados_aux = 270 - @grados
+				alfa = self.grados2radianes(grados_aux)
+				co = (pasos*Math.sin(alfa)).abs
+				ca = (pasos*Math.cos(alfa)).abs
+				x_final = self.redondear(@x-ca)
+				y_final = self.redondear(@y-co)
+			elsif @grados >= 270 && @grados < 360
+				grados_aux = 360 - @grados
+				alfa = self.grados2radianes(grados_aux)
+				co = (pasos*Math.sin(alfa)).abs
+				ca = (pasos*Math.cos(alfa)).abs
+				x_final = self.redondear(@x+ca)
+				y_final = self.redondear(@y-co)
+			end
+
+			if @x < x_final	# definimos los limites de la iteracion
+				x0 = @x
+				xf = x_final
+			else
+				x0 = x_final
+				xf = @x
+			end
+
+			if @y < y_final
+				y0 = @y
+				yf = y_final
+			else
+				y0 = y_final
+				yf = @y
+			end
+
+			puts "#{x0} #{y0} x0,y0 #{xf} #{yf} xf,yf"
+			if yf == y0 || xf == x0
+				pendiente = 0
+			elsif yf != y0 && xf != x0
+				pendiente = (yf-y0)/(xf-x0).to_f
+			elsif yf == yo
+				pendiente = 0
+			end
+			
+			a = pendiente
+			b = -1
+			c = y0-pendiente*x0
+
+			puts "#{pendiente}"
+			#distancia = ((A*x+B*y).abs)/Math.sqrt(A*A+B*B)
+
+			(x0..xf).each do |x|
+				(y0..yf).each do |y|
+					puts "#{x} #{y} puntos x,y"
+					y1 = pendiente*x
+					puts "#{y1} y1"
+					if xf == x0
+						distancia = 0
+					else
+						distancia = (a*x+b*y1+c).abs/Math.sqrt(a*a+b*b)
+					end
+					puts "#{distancia} distancia"
+					if distancia <= Math.sqrt(2)/2
+						if @pintar
+							if x >= 0 && x < @tam_ancho && y >= 0 && y < @tam_alto
+								@plano[y][x] = 1
+							end
+						end
+					end
+				end
+			end
+		end	
+	end
+
+	def grados2radianes(alfa)
+		r = (alfa*Math::PI)/180
+		return r
+	end
+
+	def redondear(num)
+		base = num.floor
+		decimal = num - base
+		if decimal >= 0.5
+			return num.round
+		else
+			return base
 		end
 	end
 
@@ -38,19 +136,23 @@ class Imagen
 		if pasos < 0
 			forward(pasos.abs)
 		else
-			#implementar backward
+			self.rotatel(180)
+			self.forward(pasos)
+			self.rotatel(180)
 		end
 	end
 
-	def arc(grado,radio)
+	def arc(grados,radio)
 	end
 
-	def rotatel(grado)
-		aux = @sentido + grado
+	def rotatel(grados)
+		puts "#{@grados} inicial"
+		@grados += grados
+		puts "#{@grados} despues"
 	end
 
-	def rotater(grado)
-		aux = @sentido - grado
+	def rotater(grados)
+		@grados -= grados
 	end
 
 	def setposition(x,y)
@@ -75,7 +177,7 @@ class Imagen
 	def to_s
 		@tam_alto.times do |i|
 			@tam_ancho.times do |j|
-				print @plano[i][j].to_s + " "
+				print @plano[j][i].to_s + " "
 			end
 			print "\n"
 		end
@@ -83,4 +185,6 @@ class Imagen
 end
 
 x = Imagen.new()
-x.genPbm
+x.rotatel(90)
+x.forward(10)
+x.to_s
