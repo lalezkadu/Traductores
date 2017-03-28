@@ -142,16 +142,6 @@ class Imagen
 		return auxY
 	end
 
-	def redondear(num)
-		base = num.floor
-		decimal = num - base
-		if decimal >= 0.5
-			return num.round
-		else
-			return base
-		end
-	end
-
 	def backward(pasos)	
 		if pasos < 0
 			forward(pasos.abs)
@@ -161,7 +151,6 @@ class Imagen
 			self.rotatel(180)
 		end
 	end
-
 
     def rotatel(grados)
         if grados < 0
@@ -223,8 +212,8 @@ class Imagen
 	end
 end
 
-x = Imagen.new()
+#x = Imagen.new()
 #x.rotatel(180)
-puts x.grados
-x.forward(6)
-x.to_s
+#puts x.grados
+#x.forward(6)
+#x.to_s
