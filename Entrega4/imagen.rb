@@ -30,8 +30,8 @@ class Imagen
 	# Crea la imagen
 	def initialize(programa="archivo")
 		@programa = programa
-		@tam_ancho = 21
-		@tam_alto = 21
+		@tam_ancho = 1001
+		@tam_alto = 1001
 		@plano = Array.new(@tam_ancho) { Array.new(@tam_alto) { 0 } }
 		self.home()
 		@plano[@y][@x] = 1
@@ -265,7 +265,7 @@ class Imagen
 end
 
 # Pequeña prueba
-"""
+
 x = Imagen.new()
 x.forward(3)
 x.rotatel(60)
@@ -274,6 +274,5 @@ x.rotatel(75)
 x.forward(5)
 x.rotater(75)
 x.forward(5)
-x.to_s
+#x.to_s
 x.generarImagen
-"""
