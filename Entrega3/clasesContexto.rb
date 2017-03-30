@@ -383,6 +383,10 @@ class Identificador
 			padre.add(@id.to_s(), tipo)
 		end
 	end
+
+	def get_valor()
+		#return @id.token
+	end
 end
 
 class Instrucciones
@@ -585,8 +589,10 @@ class OpMultiplicacion
 		end
 
 		@tipo="number"
+	end
 
-		#return oper1 * oper2
+	def get_valor()
+		return @op1*@op2
 	end
 end
 
@@ -612,8 +618,11 @@ class OpSuma
 		end
 
 		@tipo="number"
-		#return oper1 + oper2
 	end
+
+	def get_valor()
+		return @op1 + @op2
+	end 
 end
 
 class OpResta
@@ -634,7 +643,10 @@ class OpResta
 		end
 
 		@tipo="number"
-		#return oper1 - oper2
+	end
+
+	def get_valor()
+		return @op1.get_valor - @op2.get_valor
 	end
 end
 
@@ -660,8 +672,12 @@ class OpDivision # La división entre cero ? o.O
 		end
 
 		@tipo="number"
-		if oper1 != 0
-			#return oper1 / oper2
+	end
+
+	def get_valor()
+		oper2 = @op2.get_valor
+		if oper2 != 0
+			return @op1.get_valor / oper2
 		else
 			puts "Error: Division entre cero."
 			exit
@@ -692,8 +708,12 @@ class OpMod
 
 
 		@tipo="number"
-		if oper1 != 0
-			#return oper1 % oper2
+	end
+
+	def get_valor()
+		oper2 = @op2.get_valor
+		if @op2 != 0
+			return @op1.get_valor % oper2
 		else
 			puts "Error: Division entre cero."
 			exit
@@ -723,8 +743,12 @@ class OpDivisionE
 		end
 
 		@tipo="number"
-		if oper1 != 0
-			#return oper1.to_i() / oper2.to_i()
+	end
+
+	def get_valor()
+		oper2 = @op2.get_valor.to_i
+		if oper2 != 0
+			return @op1.get_valor.to_i / oper2
 		else
 			puts "Error: Division entre cero."
 			exit
@@ -755,13 +779,17 @@ class OpModE
 		end
 
 		@tipo="number"
+	end
 
-		if oper1 != 0
-			#return oper1.to_i() % oper2.to_i()
+	def get_valor()
+		oper2 = @op2.get_valor.to_i
+		if oper2 != 0
+			return @op1.get_valor.to_i % oper2
 		else
 			puts "Error: Division entre cero."
 			exit
 		end
+		
 	end
 end
 
@@ -788,7 +816,10 @@ class OpEquivalente
 		end
 
 		@tipo="boolean"
-		#return oper1 == oper2
+	end
+
+	def get_valor()
+		return @op1.get_valor == @op2.get_valor
 	end
 end
 
@@ -815,7 +846,10 @@ class OpDesigual
 		end
 
 		@tipo="boolean"
-		#return oper1 != oper2
+	end
+
+	def get_valor()
+		return @op1.get_valor != @op2.get_valor
 	end
 end
 
@@ -842,7 +876,10 @@ class OpMenor
 		end
 
 		@tipo="boolean"
-		#return oper1 < oper2
+	end
+
+	def get_valor()
+		return @op1.get_valor < @op2.get_valor
 	end
 end
 
@@ -869,7 +906,10 @@ class OpMenorIgual
 		end
 
 		@tipo="boolean"
-		#return oper1 <= oper2
+	end
+
+	def get_valor()
+		return @op1.get_valor <= @op2.get_valor
 	end
 end
 
@@ -896,7 +936,10 @@ class OpMayor
 		end	
 
 		@tipo="boolean"
-		#return oper1 > oper2
+	end
+
+	def get_valor()
+		return @op1.get_valor > @op2.get_valor
 	end
 end
 
@@ -923,7 +966,10 @@ class OpMayorIgual
 		end
 
 		@tipo="boolean"
-		#return oper1 >= oper2
+	end
+
+	def get_valor()
+		return @op1.get_valor >= @op2.get_valor
 	end
 end
 
@@ -950,7 +996,10 @@ class OpAnd
 		end
 		
 		@tipo="boolean"
-		#return oper1 && oper2
+	end
+
+	def get_valor()
+		return @op1.get_valor && @op2.get_valor
 	end
 end
 
@@ -977,7 +1026,10 @@ class OpOr
 		end
 
 		@tipo="boolean"
-		#return oper1 || oper2
+	end
+
+	def get_valor()
+		return @op1.get_valor || @op2.get_valor
 	end
 end
 
@@ -995,8 +1047,10 @@ class OpMINUS
 				exit
 			end
 		end
+	end
 
-		#return -(oper)
+	def get_valor()
+		return -(@op.get_valor)
 	end
 end
 
@@ -1014,8 +1068,10 @@ class OpNot
 				exit
 			end
 		end
+	end
 
-		#return !(oper)
+	def get_valor()
+		return !(@op.get_valor)
 	end
 end
 
