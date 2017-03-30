@@ -4,17 +4,17 @@ program
         boolean rompedor = false;
     do
         writeln "Un numero especial: ", x;
-        for i from x to 360 do
+        for i from 1 to 10 by 3 do
 	        rotater(15);
 	        with
         		number y = 0;
     		do
-    			while (y == 0) do
+    			while 9 do
                     with
                         boolean aja = true;
                     do
-                        if (y == 0) then
-                            x = y + x;
+                        if (y) then
+                            x = 9 * 9;
                         else
                             repeat x times
                                 y = 28;
