@@ -9,11 +9,11 @@ program
 	        with
         		number y = 0;
     		do
-    			while 777 do
+    			while (y == 0) do
                     with
                         boolean aja = true;
                     do
-                        if (rompedor == true) then
+                        if (y == 0) then
                             x = y + x;
                         else
                             repeat x times
