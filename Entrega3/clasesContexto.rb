@@ -532,7 +532,7 @@ class OpMultiplicacion
 
 		@tipo="number"
 
-		return oper1 * oper2
+		#return oper1 * oper2
 	end
 end
 
@@ -558,7 +558,7 @@ class OpSuma
 		end
 
 		@tipo="number"
-		return oper1 + oper2
+		#return oper1 + oper2
 	end
 end
 
@@ -580,7 +580,7 @@ class OpResta
 		end
 
 		@tipo="number"
-		return oper1 - oper2
+		#return oper1 - oper2
 	end
 end
 
@@ -607,7 +607,7 @@ class OpDivision # La división entre cero ? o.O
 
 		@tipo="number"
 		if oper1 != 0
-			return oper1 / oper2
+			#return oper1 / oper2
 		else
 			puts "Error: Division entre cero."
 			exit
@@ -639,7 +639,7 @@ class OpMod
 
 		@tipo="number"
 		if oper1 != 0
-			return oper1 % oper2
+			#return oper1 % oper2
 		else
 			puts "Error: Division entre cero."
 			exit
@@ -670,7 +670,7 @@ class OpDivisionE
 
 		@tipo="number"
 		if oper1 != 0
-			return oper1.to_i() / oper2.to_i()
+			#return oper1.to_i() / oper2.to_i()
 		else
 			puts "Error: Division entre cero."
 			exit
@@ -703,7 +703,7 @@ class OpModE
 		@tipo="number"
 
 		if oper1 != 0
-			return oper1.to_i() % oper2.to_i()
+			#return oper1.to_i() % oper2.to_i()
 		else
 			puts "Error: Division entre cero."
 			exit
@@ -734,7 +734,7 @@ class OpEquivalente
 		end
 
 		@tipo="boolean"
-		return oper1 == oper2
+		#return oper1 == oper2
 	end
 end
 
@@ -761,7 +761,7 @@ class OpDesigual
 		end
 
 		@tipo="boolean"
-		return oper1 != oper2
+		#return oper1 != oper2
 	end
 end
 
@@ -788,7 +788,7 @@ class OpMenor
 		end
 
 		@tipo="boolean"
-		return oper1 < oper2
+		#return oper1 < oper2
 	end
 end
 
@@ -815,7 +815,7 @@ class OpMenorIgual
 		end
 
 		@tipo="boolean"
-		return oper1 <= oper2
+		#return oper1 <= oper2
 	end
 end
 
@@ -842,7 +842,7 @@ class OpMayor
 		end	
 
 		@tipo="boolean"
-		return oper1 > oper2
+		#return oper1 > oper2
 	end
 end
 
@@ -869,7 +869,7 @@ class OpMayorIgual
 		end
 
 		@tipo="boolean"
-		return oper1 >= oper2
+		#return oper1 >= oper2
 	end
 end
 
@@ -896,7 +896,7 @@ class OpAnd
 		end
 		
 		@tipo="boolean"
-		return oper1 && oper2
+		#return oper1 && oper2
 	end
 end
 
@@ -923,7 +923,7 @@ class OpOr
 		end
 
 		@tipo="boolean"
-		return oper1 || oper2
+		#return oper1 || oper2
 	end
 end
 
@@ -942,7 +942,7 @@ class OpMINUS
 			end
 		end
 
-		return -(oper)
+		#return -(oper)
 	end
 end
 
@@ -961,7 +961,7 @@ class OpNot
 			end
 		end
 
-		return !(oper)
+		#return !(oper)
 	end
 end
 

@@ -7,7 +7,7 @@ end;
 
 program
     for i from 1 to 360 do
-        incremental_forward(i);
+        incremental_forward(i - 2 * true);
         rotater(15);
     end;
 end;
