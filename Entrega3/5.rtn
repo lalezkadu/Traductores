@@ -9,11 +9,11 @@ program
 	        with
         		number y = 0;
     		do
-    			while (y == 0) do
+    			while (true) do
                     with
                         boolean aja = true;
                     do
-                        if (y == 0) then
+                        if 9 then
                             x = y + x;
                         else
                             repeat x times
