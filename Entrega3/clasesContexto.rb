@@ -403,7 +403,10 @@ class Repeat
 		@tabla = SymTable.new "Repeat", padre.funciones, padre
 
 		if @repeticiones != nil
-			@repeticiones.check(@tabla, 'number')	# Verifico que la expresión sea de tipo number
+			@repeticiones.check(@tabla, nil)	# Verifico que la expresión sea de tipo number
+			if @repeticiones.tipo != 'number'
+				puts "Error: Esperaba una expresión de tipo \'number\' y recibi una expresión de tipo \'#{@repeticiones.tipo}\'"
+			end
 		end
 
 		if @instrucciones != nil

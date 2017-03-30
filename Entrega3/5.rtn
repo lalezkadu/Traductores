@@ -1,6 +1,7 @@
 program
     with
         number x = 37;
+        boolean rompedor = false;
     do
         writeln "Un numero especial: ", x;
         for i from 1 to 360 do
@@ -9,7 +10,17 @@ program
         		number y = 0;
     		do
     			while true do
-                    x = y + x;
+                    with
+                        boolean aja = true;
+                    do
+                        if (rompedor == true) then
+                            x = y + x;
+                        else
+                            repeat x times
+                                y = 28;
+                            end; 
+                        end;
+                    end;
     			end;
     		end;
 	    end;
