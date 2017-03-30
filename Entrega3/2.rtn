@@ -1,4 +1,4 @@
-func incremental_forward(number steps)
+func incremental_forward(number steps, boolean holis)
 begin
     for i from 1 to steps do
         forward(i);
@@ -7,7 +7,7 @@ end;
 
 program
     for i from 1 to 360 do
-        incremental_forward(3);
+        incremental_forward(3, true);
         rotater(15);
     end;
 end;

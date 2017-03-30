@@ -200,7 +200,7 @@ class ParserRtn
 	# Reglas para reconocer los parametros de una llamada a funcion
 	LISTA_PASE_PARAMETROS
 		: EXPRESION 							{ result = ListaPaseParametros.new(nil,val[0]) }
-		| LISTA_PASE_PARAMETROS ',' EXPRESION 	{ result = ListaPaseParametros.new(val[0],val[2]) }
+		| EXPRESION ',' LISTA_PASE_PARAMETROS 	{ result = ListaPaseParametros.new(val[2],val[0]) }
 		;
 
 	# Reglas de tipos de datos

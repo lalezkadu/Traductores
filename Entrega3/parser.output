@@ -77,7 +77,7 @@ rule 72 EXPRESION: EXPRESION "or" EXPRESION
 rule 73 LLAMADA_FUNCION: IDENTIFICADOR "(" ")"
 rule 74 LLAMADA_FUNCION: IDENTIFICADOR "(" LISTA_PASE_PARAMETROS ")"
 rule 75 LISTA_PASE_PARAMETROS: EXPRESION
-rule 76 LISTA_PASE_PARAMETROS: LISTA_PASE_PARAMETROS "," EXPRESION
+rule 76 LISTA_PASE_PARAMETROS: EXPRESION "," LISTA_PASE_PARAMETROS
 rule 77 TIPO: "number"
 rule 78 TIPO: "boolean"
 rule 79 LITERAL: LITERAL_NUMBER
@@ -1723,6 +1723,7 @@ state 107
   71) EXPRESION : EXPRESION _ "and" EXPRESION
   72) EXPRESION : EXPRESION _ "or" EXPRESION
   75) LISTA_PASE_PARAMETROS : EXPRESION _
+  76) LISTA_PASE_PARAMETROS : EXPRESION _ "," LISTA_PASE_PARAMETROS
 
   "*"           shift, and go to state 88
   "/"           shift, and go to state 89
@@ -1739,6 +1740,7 @@ state 107
   "<"           shift, and go to state 100
   "and"         shift, and go to state 101
   "or"          shift, and go to state 102
+  ","           shift, and go to state 139
   $default      reduce using rule 75 (LISTA_PASE_PARAMETROS)
 
 
@@ -1752,10 +1754,8 @@ state 108
 state 109
 
   74) LLAMADA_FUNCION : IDENTIFICADOR "(" LISTA_PASE_PARAMETROS _ ")"
-  76) LISTA_PASE_PARAMETROS : LISTA_PASE_PARAMETROS _ "," EXPRESION
 
-  ")"           shift, and go to state 139
-  ","           shift, and go to state 140
+  ")"           shift, and go to state 140
 
 
 state 110
@@ -2448,14 +2448,7 @@ state 138
 
 state 139
 
-  74) LLAMADA_FUNCION : IDENTIFICADOR "(" LISTA_PASE_PARAMETROS ")" _
-
-  $default      reduce using rule 74 (LLAMADA_FUNCION)
-
-
-state 140
-
-  76) LISTA_PASE_PARAMETROS : LISTA_PASE_PARAMETROS "," _ EXPRESION
+  76) LISTA_PASE_PARAMETROS : EXPRESION "," _ LISTA_PASE_PARAMETROS
 
   "TkNum"       shift, and go to state 64
   "TkId"        shift, and go to state 11
@@ -2468,9 +2461,17 @@ state 140
   LITERAL       go to state 56
   LLAMADA_FUNCION  go to state 57
   IDENTIFICADOR  go to state 58
-  EXPRESION     go to state 154
+  EXPRESION     go to state 107
+  LISTA_PASE_PARAMETROS  go to state 154
   LITERAL_NUMBER  go to state 62
   LITERAL_BOOLEAN  go to state 63
+
+state 140
+
+  74) LLAMADA_FUNCION : IDENTIFICADOR "(" LISTA_PASE_PARAMETROS ")" _
+
+  $default      reduce using rule 74 (LLAMADA_FUNCION)
+
 
 state 141
 
@@ -2770,38 +2771,8 @@ state 153
 
 state 154
 
-  58) EXPRESION : EXPRESION _ "*" EXPRESION
-  59) EXPRESION : EXPRESION _ "/" EXPRESION
-  60) EXPRESION : EXPRESION _ "%" EXPRESION
-  61) EXPRESION : EXPRESION _ "div" EXPRESION
-  62) EXPRESION : EXPRESION _ "mod" EXPRESION
-  63) EXPRESION : EXPRESION _ "+" EXPRESION
-  64) EXPRESION : EXPRESION _ "-" EXPRESION
-  65) EXPRESION : EXPRESION _ "==" EXPRESION
-  66) EXPRESION : EXPRESION _ "/=" EXPRESION
-  67) EXPRESION : EXPRESION _ ">=" EXPRESION
-  68) EXPRESION : EXPRESION _ "<=" EXPRESION
-  69) EXPRESION : EXPRESION _ ">" EXPRESION
-  70) EXPRESION : EXPRESION _ "<" EXPRESION
-  71) EXPRESION : EXPRESION _ "and" EXPRESION
-  72) EXPRESION : EXPRESION _ "or" EXPRESION
-  76) LISTA_PASE_PARAMETROS : LISTA_PASE_PARAMETROS "," EXPRESION _
+  76) LISTA_PASE_PARAMETROS : EXPRESION "," LISTA_PASE_PARAMETROS _
 
-  "*"           shift, and go to state 88
-  "/"           shift, and go to state 89
-  "%"           shift, and go to state 90
-  "div"         shift, and go to state 91
-  "mod"         shift, and go to state 92
-  "+"           shift, and go to state 93
-  "-"           shift, and go to state 94
-  "=="          shift, and go to state 95
-  "/="          shift, and go to state 96
-  ">="          shift, and go to state 97
-  "<="          shift, and go to state 98
-  ">"           shift, and go to state 99
-  "<"           shift, and go to state 100
-  "and"         shift, and go to state 101
-  "or"          shift, and go to state 102
   $default      reduce using rule 76 (LISTA_PASE_PARAMETROS)
 
 
