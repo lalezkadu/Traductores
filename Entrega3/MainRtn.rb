@@ -48,8 +48,7 @@ def main
 				ast = pars.parse
 				ast.check()		  					# Entrega 3		
 				#ast.exec(ARG[0]) 					# Entrega 4
-				#puts ast.tabla
-				rescue ErrorSintactico => e
+				rescue ErrorSintactico => e 
 					puts e
 					return
 			end
