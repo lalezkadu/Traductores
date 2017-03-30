@@ -37,21 +37,15 @@ class SymTable
 	end
 
 	def check_func_exists(key)
-		puts @funciones.has_key? key
-		puts @funciones
-		puts key + "34"
 		return @funciones.has_key? key
 	end
 
 	def check_func_var_pos(key, pos)
-		puts check_func_exists(key)
 		if self.check_func_exists(key)
 			return @funciones[key].tabla.has_key? pos
 		else
-			puts "Aqui"
 			puts "Error: Función no declarada." # Error, función no declarada
 			exit
-			print "Pues no..."
 		end
 	end
 
@@ -232,16 +226,6 @@ class ListaFunciones
 		else
 			#padre.merge!(@funcion.check(padre)) # Sino, agrego la última función
 		end
-
-		if @funciones != nil
-			return @funciones.check(padre)
-		end
-
-		@funcion.check(padre)
-		if @funciones != nil
-			@funciones.check(padre)
-		end
-		return padre
 	end
 end
 
@@ -255,7 +239,13 @@ class Funcion
 
 		# Creo mi tabla de variables y me traigo las funciones declaradas
 		@tabla= SymTable.new @nombre.id.to_s(), padre # Las funciones son padre, porque está sobre el hash de las funciones
-		@tabla.add('return', @tipo)
+		
+		if @tipo
+			@tabla.add('return', @tipo.tipo.to_s)
+		else
+			@tabla.add('return', nil)
+		end
+
 		puts @tabla
 		padre[@nombre.id.to_s()] = @tabla
 
