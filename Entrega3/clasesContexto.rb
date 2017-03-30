@@ -24,7 +24,6 @@ class SymTable
 	end
 
 	def check_var_exists(key)
-		
 		if @padre == nil
 			return (@tabla.has_key? key)
 		else
@@ -331,7 +330,10 @@ class Identificador
 	def check(padre, tipo=nil)
 		
 		if tipo == nil
-			padre.check_var_exists(@id.to_s())
+			if !(padre.check_var_exists(@id.to_s()))
+				puts ErrorVariableNoDeclarada.new @id.to_s()
+				exit
+			end
 			@tipo = padre.tabla[@id.to_s()]
 		else
 			@tipo=tipo
@@ -980,7 +982,14 @@ class LlamadaFuncion
 			end
 		end
 
-		@parametros.check(padre, 0, @id.id.to_s())
+		if @parametros != nil
+			@parametros.check(padre, 0, @id.id.to_s())
+		else
+			if padre.check_func_var_pos(@id.id.to_s(), 0.to_s)
+				puts "Error: Faltan argumentos." # Faltan argumentos
+				exit
+			end
+		end
 
 		@tipo = padre.get_func_var_type( @id.id.to_s(), 'return')
 
