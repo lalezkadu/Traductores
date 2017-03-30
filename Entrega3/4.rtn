@@ -1,11 +1,8 @@
-with
-    number x = 37;
-    boolean rompedor = false;
-do
 program
     with
+    	number x = 5;
         number y = 37;
-        boolean tata = false;
+        boolean rompedor = false;
     do
 	    with
         	number no = 0;
