@@ -9,7 +9,7 @@ program
 	        with
         		number y = 0;
     		do
-    			while true do
+    			while 777 do
                     with
                         boolean aja = true;
                     do

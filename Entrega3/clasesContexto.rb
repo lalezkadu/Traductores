@@ -389,7 +389,11 @@ end
 
 class RepeticionI
 	def check(padre)
-		@condicion.check(padre, 'booleano')
+		@condicion.check(padre, nil)
+
+		if @condicion.tipo != 'boolean'
+			puts "Error: Esperaba una expresión de tipo \'boolean\' y recibi una expresión de tipo \'#{@condicion.tipo}\'"
+		end
 
 		if @instrucciones != nil
 			@instrucciones.check(padre)
