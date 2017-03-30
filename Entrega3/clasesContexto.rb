@@ -411,6 +411,10 @@ class Condicional
 
 		@condicion.check(padre)
 
+		if @condicion.tipo != 'boolean'
+			puts "Error: Esperaba una expresión de tipo \'boolean\' y recibi una expresión de tipo \'#{@condicion.tipo}\'"
+		end
+		
 		if @instif != nil
 			@instif.check(padre)
 		end
