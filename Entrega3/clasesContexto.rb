@@ -1,5 +1,6 @@
 require_relative 'clasesParser'
 require_relative 'lexer'
+require_relative 'imagen'
 
 # Clase de la tabla
 
@@ -257,14 +258,22 @@ class Estructura	# Construyo primero la lista de funciones y luego cada uno de l
 			@programa.check(@tabla)
 		end
 	end
+
+	def exec(nombre_imagen)
+		imagen = Imagen.new(nombre_imagen)
+		if @programa =! nil
+			@programa.exec(imagen)
+		end
+		imagen.generarImagen
+	end
 end
 
 class ListaFunciones
 	def check(padre)
 		@funcion.check(padre)
 		if @funciones != nil
-			@funciones.check(padre)#.merge!(padre.merge!(@funcion.check(padre))) 	# Si existe una lista de funciones continuo agregando
-		else
+			@funciones.check(padre) #.merge!(padre.merge!(@funcion.check(padre))) 	# Si existe una lista de funciones continuo agregando
+		#else
 			#padre.merge!(@funcion.check(padre)) # Sino, agrego la última función
 		end
 	end
@@ -298,6 +307,12 @@ class Funcion
 		end
 
 	end
+
+	def exec(imagen)
+		if @instrucciones != nil
+			@instrucciones.exec(imagen)
+		end
+	end
 end
 
 class Parametros
@@ -324,6 +339,12 @@ class Programa
 		
 		if @instrucciones != nil
 			@instrucciones.check(@tabla)
+		end
+	end
+
+	def exec(imagen)
+		if @instrucciones != nil
+			@instrucciones.exec(imagen)
 		end
 	end
 end
@@ -398,11 +419,24 @@ class Instrucciones
 			@instruccion.check(padre)
 		end
 	end
+
+	def exec(imagen)
+		if @instrucciones != nil
+			@instrucciones.exec(imagen)
+		end
+		if @instruccion != nil
+			@instruccion.exec(imagen)
+		end
+	end
 end
 
 class Return
 	def check(padre)
 		@expresion.check(padre)
+	end
+
+	def exec(imagen)
+		return @expresion.exec(imagen)
 	end
 end
 
@@ -423,6 +457,18 @@ class Condicional
 			@instelse.check(padre)
 		end
 	end
+
+	def exec(imagen)
+		if @condicion.get_valor
+			if @instif != nil
+				@instif.exec(imagen)
+			end
+		else
+			if @instelse != nil
+				@instelse.exec(imagen)
+			end
+		end
+	end
 end
 
 class RepeticionI
@@ -436,6 +482,16 @@ class RepeticionI
 
 		if @instrucciones != nil
 			@instrucciones.check(padre)
+		end
+	end
+
+	def exec(imagen)
+		condicion = @condicion.get_valor()
+		while condicion
+			if @instrucciones != nil
+				@instrucciones.exec(imagen)
+			end
+			condicion = @condicion.get_valor()
 		end
 	end
 end
@@ -456,6 +512,11 @@ class Repeat
 		if @instrucciones != nil
 			@instrucciones.check(@tabla)
 		end
+	end
+
+	def exec(imagen)
+		repeticiones = @repeticiones.get_valor()
+
 	end
 end
 
@@ -481,6 +542,30 @@ class For
 		end
 
 		@instrucciones.check(@tabla)
+	end
+
+	def exec(imagen)
+		#id = @id.get_valor()		# Falta declarar y asiganr valor de id para la tabla de valores de los hijos
+		inicio = @inicio.get_valor()
+		fin = @fin.get_valor()
+		if @paso != nil
+			paso = @paso.get_valor()
+		end
+		i = inicio
+		if inicio <= fin
+			if paso == nil
+				for i in (inicio..fin)	# Falta declarar y asignar valor de i para la tabla de valores para los hijos
+					@instrucciones.exec(imagen)
+				end
+			else
+				for i in (inicio..fin).step(paso)	# Falta declarar y asignar valor de i para la tabla de valores para los hijos
+					@instrucciones.exec(imagen)
+				end
+			end
+		else
+			puts "Error Dinamico: Rango invalido para la iteracion for."
+			exit
+		end
 	end
 end
 
@@ -511,11 +596,27 @@ class Escribir
 			@impresiones.check(tabla)
 		end
 	end
+
+	def exec(imagen)
+		str = ""
+		if not(@expresion.is_a? String)
+			str << @expresion.get_valor.to_s
+		end
+
+		if impresiones != nil
+			str << @impresiones.get_valor.to_s
+		end
+		print str
+	end
 end
 
 class Str
 	def check(tabla)
-		return @str
+		return @str.to_s
+	end
+
+	def get_valor()
+		return @str.to_s
 	end
 end
 
@@ -1089,7 +1190,7 @@ class LlamadaFuncion
 
 		if tipo != nil
 			if not(padre.check_func_var_type(@id.id.to_s(), tipo, 'return'))
-				puts "Error: El tipo de return no coincide con el esperado." # Error, los tipos no coinciden con el esperado
+				puts "Error: El tipo de return de la funcion #{@id.id} no coincide con el esperado." # Error, los tipos no coinciden con el esperado
 				exit
 			end
 		end
@@ -1098,13 +1199,34 @@ class LlamadaFuncion
 			@parametros.check(padre, 0, @id.id.to_s())
 		else
 			if padre.check_func_var_pos(@id.id.to_s(), 0.to_s)
-				puts "Error: Faltan argumentos." # Faltan argumentos
+				puts "Error: Faltan argumentos en la llamada de funcion de #{@id.id}." # Faltan argumentos
 				exit
 			end
 		end
 
 		@tipo = padre.get_func_var_type( @id.id.to_s(), 'return')
+	end
 
+	def exec(imagen)
+		if @id.id.to_s == "home"
+			imagen.home()
+		elsif @id.id.to_s == "setposition"
+			imagen.setposition()
+		elsif @id.id.to_s == "rotater"
+			imagen.rotater()
+		elsif @id.id.to_s == "rotatel"
+			imagen.rotatel()
+		elsif @id.id.to_s == "forward"
+			imagen.forward()
+		elsif @id.id.to_s == "backward"
+			imagen.backward()
+		elsif @id.id.to_s == "openeye"
+			imagen.openeye()
+		elsif @id.id.to_s == "closeeye"
+			imagen.closeeye()
+		else
+			# COMO LLAMAR A LA FUNCION :C
+		end	
 	end
 end
 
