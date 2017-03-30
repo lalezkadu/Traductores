@@ -1,10 +1,12 @@
 program
     with
-        number x = 4;
+        boolean i;
+        boolean j;
     do
-        repeat x times
-            forward(50);
-            rotatel(90);
-        end;
+        writeln "Insert a number : ";
+        #repeat i times
+        #    forward(50);
+        #    rotatel(90);
+        #end;
     end;
 end;

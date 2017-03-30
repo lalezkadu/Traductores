@@ -18,7 +18,7 @@ class Estructura
 	#
 	# funciones: Secuencia de funciones definidas en el programa
 	# programa: Bloque de instrucciones del programa
-	attr_accessor :funciones, :programa, :tabla
+	attr_accessor :funciones, :programa, :tabla, :tablafunciones
 
 	def initialize(funciones, programa)
 		@funciones = funciones
@@ -863,7 +863,7 @@ end
 # == Clase Tipoboolean
 #
 # Clase que representa el nodo de un tipo booleano. Hereda de Tipo.
-class Tipoboolean < Tipo
+class TipoBoolean < Tipo
 
 	def initialize()
 		super("boolean")

@@ -1,60 +1,92 @@
 require_relative 'clasesParser'
 require_relative 'lexer'
 
-$tabla_simbolos = Hash.new
+# Clase de la tabla
 
-# Tabla de simbolos
-#class SymTable
+class SymTable
+	attr_accessor :tabla, :nombre, :padre, :funciones
 
-#	attr_accessor :declaraciones, :funciones, :padre
+	def initialize(nombre, funciones, padre=nil, tabla=Hash.new)
+		@tabla = tabla
+		@nombre = nombre
+		@padre = padre
+		@funciones = funciones
+	end
 
-#	def initialize(padre=nil,declaraciones=Hash.new,funciones)
-#		@declaraciones = declaraciones
-#		@padre = padre
+	def add(key, value)
+
+		if self.check_var_exists(key)
+			puts ErrorDeclaracion.new(key).to_s()
+		else
+			@tabla[key] = value
+		end
+
+	end
+
+	def check_var_exists(key)
 		
-#		if @padre != nil
-#			@funciones = padre.funciones
-#		else
-#			@funciones = funciones
-#		end
-		
-#		@declaraciones = declaraciones
-		
-#		@padre = padre
-#	end
+		if @padre == nil
+			return (@tabla.has_key? key)
+		else
+			if @tabla.has_key? key || @padre.check_var_exists(key)
+				return true
+			end
+		end
 
-#	def to_s(tab)
-#		s = ""
-#		if @declaraciones.length > 0:
-#			@declaraciones.each { |key, value| s<< (" "*tab)+"#{key}: #{value}\n" }
-#		else
-#			s << "None\n"
-#		end
-#		return s
-#	end
-#end
+		return false
+	end
 
-# Alcance de las variables
-#class Alcance
-#	attr_accessor :nombre, :tabla, :padre
+	def check_func_exists(key)
+		puts @funciones.has_key? key
+		puts @funciones
+		puts key + "34"
+		return @funciones.has_key? key
+	end
 
-#	def initialize(nombre="",padre=nil,tabla)
-#		@nombre = nombre
-#		@tabla = tabla
-#		@padre = padre
-#	end
+	def check_func_var_pos(key, pos)
+		puts check_func_exists(key)
+		if self.check_func_exists(key)
+			return @funciones[key].tabla.has_key? pos
+		else
+			puts "Aqui"
+			puts "Error: Función no declarada." # Error, función no declarada
+			exit
+			print "Pues no..."
+		end
+	end
 
-#	def to_s(tab)
-#		s = (" "*tab)+"Alcance #{nombre}:\n"
-#		s << (" "*(tab+2)) + "Variables:\n"
-#		if @tabla != nil
-#			s << @tabla.to_s(tab+4)
-#		else
-#			s << "None\n"
-#		end
-#		return s
-#	end
-#end
+	def get_func_var_type(key, pos)
+		if self.check_func_var_pos(key, pos)
+			return @funciones[key].tabla[pos]
+		else
+			puts "Error: Hay mas argumentos de los esperados."
+			exit
+		end
+	end
+
+	def check_func_var_type(key, type, pos)
+		if self.check_func_var_pos(key, pos)
+			return @funciones[key].tabla[pos] == type
+		else
+			puts "Error: Hay mas argumentos de los esperados."
+			exit
+		end
+	end
+
+	def to_s()
+		puts @nombre
+		puts
+		puts 'Tabla: '
+		puts @tabla 
+		puts 
+		puts 'Padre: '
+		puts @padre
+		puts 
+		puts 'Funciones: '
+		puts @funciones
+		puts
+	end
+end
 
 # Errores de Contexto
 
@@ -153,17 +185,42 @@ class ErrorLimiteVariableIteracionDeterminada < ErrorContexto
 end
 
 # Chequeos de las clases
-class Estructura
+class Estructura	# Construyo primero la lista de funciones y luego cada uno de los demas bloques
 	def check()
-		@tabla={ 'funciones' => Hash.new }
+
+		@tablafunciones = Hash.new
+
+		func_home = SymTable.new 'home', @tablafunciones, nil, { 'return'=>nil }
+		func_openeye = SymTable.new 'openeye', @tablafunciones, nil, { 'return'=>nil }
+		func_closeeye = SymTable.new 'closeeye', @tablafunciones, nil, { '0'=>'number', 'return'=>nil }
+		func_forward = SymTable.new 'forward', @tablafunciones, nil, { '0'=>'number', 'return'=>nil }
+		func_backward = SymTable.new 'backward', @tablafunciones, nil, { '0'=>'number', 'return'=>nil }
+		func_rotatel = SymTable.new 'rotatel', @tablafunciones, nil, { '0'=>'number', 'return'=>nil }
+		func_rotater = SymTable.new 'rotater', @tablafunciones, nil, { '0'=>'number', 'return'=>nil }
+		func_setposition = SymTable.new 'setposition', @tablafunciones, nil, { '0'=>'number', '1'=>'number', 'return'=>nil }
+		func_arc = SymTable.new 'arc', @tablafunciones, nil, { '0'=>'number', '1'=>'number', 'return'=>nil }
+
+		@tablafunciones.merge!({	'home'=>func_home,
+									'openeye'=>func_openeye,
+									'closeeye'=>func_closeeye,
+									'forward'=>func_forward,
+									'backward'=>func_backward,
+									'rotatel'=>func_rotatel,
+									'rotater'=>func_rotater,
+									'setposition'=>func_setposition,
+									'arc'=>func_arc
+								})
 
 		if @funciones != nil			
-			@funciones.check(@tabla['funciones'])
+			@funciones.check(@tablafunciones)
 		end
+
+		@tabla = SymTable.new "Estructura", @tablafunciones
 
 		if @programa != nil
 			@programa.check(@tabla)
 		end
+		puts @tabla
 	end
 end
 
@@ -178,6 +235,7 @@ class ListaFunciones
 		if @funciones != nil
 			return @funciones.check(padre)
 		end
+
 		@funcion.check(padre)
 		if @funciones != nil
 			@funciones.check(padre)
@@ -189,40 +247,35 @@ end
 class Funcion
 	def check(padre)	# Padre es lista de Funciones, que contiene las funciones declaradas hasta el momento
 
-		if padre.has_key? @nombre
+		if padre.has_key? @nombre.id.to_s()
 			puts ErrorDeclaracion.new(@nombre).to_s()	# ERROR ya existe una función con ese nombre
 			exit
 		end
 
 		# Creo mi tabla de variables y me traigo las funciones declaradas
-		@tabla=Hash.new	
-		@tabla['variables']=Hash.new
-		@tabla['funciones']=padre
-		@tabla['return']=@tipo
+		@tabla= SymTable.new @nombre.id.to_s(), padre # Las funciones son padre, porque está sobre el hash de las funciones
+		@tabla.add('return', @tipo)
+		puts @tabla
+		padre[@nombre.id.to_s()] = @tabla
 
 		if @parametros != nil
-			@parametros.check(@tabla['variables'],0)	# Obtenemos las variables
+			@parametros.check(@tabla,0)	# Obtenemos las variables
 		end
 
 		if @instrucciones != nil
 			@instrucciones.check(@tabla)	# Para futuras instrucciones desarrollamos la función
 		end
-	
-		padre[@nombre.id.to_s()]=@tabla
 
 	end
 end
 
 class Parametros
 	def check(tabla,pos)
-		if !(tabla.has_key?(@id)) 
-			tabla[pos.to_s] = @tipo.tipo
-			tabla[@id.id.to_s()] = @tipo.tipo
+		if !(tabla.check_var_exists(@id.id.to_s())) 
+			tabla.add(pos.to_s, @tipo.tipo)
+			tabla.add(@id.id.to_s(), @tipo.tipo)
 			@id.tipo = @tipo
-			puts 'Que pasó ?'
-			puts @id
 		else
-			puts 'Acá'
 			puts ErrorVariableNoDeclarada.new(@id).to_s() # ERROR ya existe la variable
 			exit
 		end
@@ -236,53 +289,43 @@ end
 class Programa
 	def check(padre)	# Padre tiene la tabla inicial
 		
-		@tabla=Hash.new	
-		@tabla['variables']=Hash.new
-		@tabla['funciones']=padre['funciones']
-
-		padre['programa']=@tabla
-
-		if @instrucciones != nil
-			@instrucciones.check(tabla)
-		end
-	end
-end
-
-class Bloque	## Este señor imprime Variables. 
-	def check(padre)
-		@tabla=Hash.new
-		@tabla['variables']=Hash.new
-		@tabla['funciones']=padre['funciones']
-
-		padre['bloque']=@tabla
-
-		if @declaraciones != nil
-			@declaraciones.check(@tabla['variables'])	# Pasan la lista de variables
-		end
-
+		@tabla= SymTable.new "Programa", padre.funciones, padre
+		
 		if @instrucciones != nil
 			@instrucciones.check(@tabla)
 		end
 	end
 end
 
+class Bloque	## Este señor imprime Variables. 
+	def check(padre)
+
+		@tabla =SymTable.new "Bloque", padre.funciones, padre
+
+		if @declaraciones != nil
+			@declaraciones.check(@tabla)	# Pasan la lista de variables
+		end
+
+		if @instrucciones != nil
+			@instrucciones.check(@tabla)
+		end
+		puts @tabla.to_s()
+	end
+end
+
 class ListaDeclaracion
 	def check(padre)		# Padre referencia a las variables
+		@declaracion.check(padre)	# Lleno las variables del objeto
+		
 		if @declaraciones != nil
 			@declaraciones.check(padre)
 		end
-
-		@declaracion.check(padre)	# Lleno las variables del objeto
 	end
 end
 
 class Declaracion
 	def check(padre)	# Padre está referenciando a las variables
-		@declaracion.check(padre,@tipo)
-
-		if @declaraciones != nil
-			@declaraciones.check(padre)
-		end
+		@declaracion.check(padre,@tipo.to_s)
 	end
 end
 
@@ -291,7 +334,7 @@ class ListaId
 		@id.check(padre, tipo)
 
 		if @ids != nil
-			@ids.check(padre)
+			@ids.check(padre, tipo)
 		end
 	end
 end
@@ -300,17 +343,11 @@ class Identificador
 	def check(padre, tipo=nil)
 		
 		if tipo == nil
-			puts padre['variables']
-			if not(padre['variables'].has_key? @id.to_s())
-				puts 'Aquí'
-				puts padre['variables']
-				puts ErrorVariableNoDeclarada.new(@id).to_s() # Error, no existen variables declaradas
-				exit
-			end
-			@tipo=padre['variables'][@id.to_s()]
+			padre.check_var_exists(@id.to_s())
+			@tipo = padre.tabla[@id.to_s()]
 		else
 			@tipo=tipo
-			padre['variables'][@id.to_s()]=tipo	    	
+			padre.add(@id.to_s(), tipo)
 		end
 	end
 end
@@ -340,6 +377,7 @@ class Condicional
 		if @instif != nil
 			@instif.check(padre)
 		end
+
 		if (@instelse != nil)
 			@instelse.check(padre)
 		end
@@ -358,11 +396,8 @@ end
 
 class Repeat
 	def check(padre)
-		@tabla=Hash.new
-		@tabla['variables']=padre['variables']
-		@tabla['funciones']=padre['funciones']
 
-		@padre['repeat']=@tabla 	# Hay que ver como identificarlos
+		@tabla = SymTable.new "Repeat", padre.funciones, padre
 
 		if @repeticiones != nil
 			@repeticiones.check(@tabla, 'number')	# Verifico que la expresión sea de tipo number
@@ -376,12 +411,13 @@ end
 
 class For
 	def check(padre)
-		@tabla=Hash.new
-		@tabla['variables']=padre['variables']
-		@tabla['funciones']=padre['funciones']
 
-		@padre['for']=@tabla 		# Hay que ver como identificarlos
+		@tabla = SymTable.new "For", padre.funciones, padre
 
+		@id.check(@tabla,'number')
+		@inicio.check(@tabla,'number')
+		@fin.check(@tabla,'number')
+		@paso.check(@tabla,'number')
 
 		if @inicio.tipo != 'number' || @fin.tipo != 'number' || @paso.tipo != 'number'
 			if @inicio.tipo != 'number'
@@ -395,6 +431,41 @@ class For
 		end
 
 		@instrucciones.check(@tabla)
+	end
+end
+
+class Entrada
+
+	def check(tabla)
+		@id.check(tabla)
+	end
+end
+
+class Salida 
+	def check(tabla)
+		if not(@expresion.is_a? String)
+			@expresion.check(tabla, nil)
+		end
+		if impresiones != nil
+			@impresiones.check(tabla)
+		end
+	end
+end
+
+class Escribir
+	def check(tabla)
+		if not(@expresion.is_a? String)
+			@expresion.check(tabla)
+		end
+		if @impresiones != nil
+			@impresiones.check(tabla)
+		end
+	end
+end
+
+class Str
+	def check(tabla)
+		return @str
 	end
 end
 
@@ -424,8 +495,8 @@ end
 
 class Asignacion # Probablemente eliminada
 	def check(padre, tipo=nil)
-		@op1.check(padre)
-		@op2.check(padre,nil)
+		@op1.check(padre, tipo)
+		@op2.check(padre, tipo)
 
 		if tipo != nil
 			if @op1.tipo != tipo || @op2.tipo != tipo
@@ -438,8 +509,6 @@ class Asignacion # Probablemente eliminada
 			end
 		else
 			if @op1.tipo != @op2.tipo
-				puts @op1.tipo
-				puts @op2.tipo
 				puts ErrorTipos.new(@oper,@op1,@op2) # Error, los tipos no concuerdan
 				exit
 			end
@@ -672,7 +741,7 @@ class OpEquivalente
 			end
 		end
 
-		@tipo=@op1.tipo
+		@tipo="boolean"
 		return oper1 == oper2
 	end
 end
@@ -699,7 +768,7 @@ class OpDesigual
 			end
 		end
 
-		@tipo=@op1.tipo
+		@tipo="boolean"
 		return oper1 != oper2
 	end
 end
@@ -726,7 +795,7 @@ class OpMenor
 			end
 		end
 
-		@tipo=@op1.tipo
+		@tipo="boolean"
 		return oper1 < oper2
 	end
 end
@@ -753,7 +822,7 @@ class OpMenorIgual
 			end
 		end
 
-		@tipo=@op1.tipo
+		@tipo="boolean"
 		return oper1 <= oper2
 	end
 end
@@ -780,7 +849,7 @@ class OpMayor
 			end
 		end	
 
-		@tipo=@op1.tipo
+		@tipo="boolean"
 		return oper1 > oper2
 	end
 end
@@ -807,7 +876,7 @@ class OpMayorIgual
 			end
 		end
 
-		@tipo=@op1.tipo
+		@tipo="boolean"
 		return oper1 >= oper2
 	end
 end
@@ -834,7 +903,7 @@ class OpAnd
 			end
 		end
 		
-		@tipo=@op1.tipo
+		@tipo="boolean"
 		return oper1 && oper2
 	end
 end
@@ -861,7 +930,7 @@ class OpOr
 			end
 		end
 
-		@tipo=@op1.tipo
+		@tipo="boolean"
 		return oper1 || oper2
 	end
 end
@@ -880,7 +949,7 @@ class OpMINUS
 				exit
 			end
 		end
-		@tipo=@op.tipo
+
 		return -(oper)
 	end
 end
@@ -899,7 +968,7 @@ class OpNot
 				exit
 			end
 		end
-		@tipo=@op.tipo
+
 		return !(oper)
 	end
 end
@@ -907,61 +976,51 @@ end
 class LlamadaFuncion
 	def check(padre, tipo=nil)
 		
-		if not(padre['funciones'].has_key? @id.id)
+		if not(padre.check_func_exists(@id.id.to_s()))
 			puts "Error: Función no declarada." # Error, función no declarada
 			exit
 		end
 
 		if tipo != nil
-			if padre['funciones'][@id.id]['return'] != tipo
+			if not(padre.check_func_var_type(@id.id.to_s(), tipo, 'return'))
 				puts "Error: El tipo de return no coincide con el esperado." # Error, los tipos no coinciden con el esperado
 				exit
 			end
 		end
 
-		@parametros.check(padre['funciones'][@id.id], 0)
+		@parametros.check(padre, 0, @id.id.to_s())
 
-		@tipo = padre['funciones'][@id.id]['return']
+		@tipo = padre.get_func_var_type( @id.id.to_s(), 'return')
 
 	end
 end
 
 class ListaPaseParametros
-	def check(padre, pos)	# Padre tiene la lista de los parametros de la funcion en cuestión
+	def check(padre, pos, func)	# Padre tiene la lista de los parametros de la funcion en cuestión
 
-		if not(padre.has_key? pos)
-			puts "Error: Hay mas argumentos de los esperados."
-			exit # Hay mas argumentos de los necesarios
-		elsif @lista == nil && (padre.length/2-1) > pos # Pregunto si hay tantos argumentos como en el hash
+		@parametro.check( padre, padre.get_func_var_type(func, pos.to_s))
+
+		if !padre.check_func_var_type(func, @parametro.tipo, pos.to_s)
+			puts "Error: Esperaba un parametro de tipo #{padre.get_func_var_type(func, pos.to_s)} pero el tipo recibido es #{@parametro.tipo}" # Error en los tipos 
+			exit
+		elsif @lista == nil && padre.check_func_var_pos(func, (pos+1).to_s)
 			puts "Error: Faltan argumentos." # Faltan argumentos
 			exit
 		end
 
-		@parametro.check(padre)
-
-		if @parametro.tipo != padre[pos]
-			tipo_f = padre[pos]
-			puts "Error: Esperaba un parametro de tipo #{tipo_f} pero el tipo recibido es #{@parametro.tipo}" # Error en los tipos 
-			exit
+		if @lista != nil
+			@lista.check(padre,(pos+1).to_s)
 		end
-
-
-		if padre.has_key?(@id)
-			exit
-		end
-		# Preguntar si el id esta en la tabla de padre
-		# Si: Checkear parametros con los de la funcion
-		# No: Error
 	end
 end
 
 class LiteralNumerico
 	def check(padre, tipo)
-		if /^\d+$/.match?(@valor.token)
-			return @valor.to_s().to_f()
-		else
-			return @valor.to_f()
-		end
+		#if /^\d+$/.match?(@valor.token)
+		#	return @valor
+		#else
+		#	return @valor
+		#end
 	end
 end
 
