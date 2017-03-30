@@ -1211,15 +1211,15 @@ class LlamadaFuncion
 		if @id.id.to_s == "home"
 			imagen.home()
 		elsif @id.id.to_s == "setposition"
-			imagen.setposition()
+			imagen.setposition(@parametros.parametro.get_valor,@parametros.lista[0].get_valor)
 		elsif @id.id.to_s == "rotater"
-			imagen.rotater()
+			imagen.rotater(@parametros.parametro.get_valor)
 		elsif @id.id.to_s == "rotatel"
-			imagen.rotatel()
+			imagen.rotatel(@parametros.parametro.get_valor)
 		elsif @id.id.to_s == "forward"
-			imagen.forward()
+			imagen.forward(@parametros.parametro.get_valor)
 		elsif @id.id.to_s == "backward"
-			imagen.backward()
+			imagen.backward(@parametros.parametro.get_valor)
 		elsif @id.id.to_s == "openeye"
 			imagen.openeye()
 		elsif @id.id.to_s == "closeeye"
