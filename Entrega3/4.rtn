@@ -14,7 +14,7 @@ program
                     x = y + x;
                 else
                     repeat x times
-                        y = 28;
+                        x = 28;
                     end; 
                 end;
             end;

@@ -4,7 +4,7 @@ program
         boolean rompedor = false;
     do
         writeln "Un numero especial: ", x;
-        for i from 1 to 360 do
+        for i from x to 360 do
 	        rotater(15);
 	        with
         		number y = 0;

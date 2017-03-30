@@ -421,9 +421,9 @@ class For
 		@tabla = SymTable.new "For", padre.funciones, padre
 
 		@id.check(@tabla,'number')
-		@inicio.check(@tabla,'number')
-		@fin.check(@tabla,'number')
-		@paso.check(@tabla,'number')
+		@inicio.check(@tabla,nil)
+		@fin.check(@tabla,nil)
+		@paso.check(@tabla,nil)
 
 		if @inicio.tipo != 'number' || @fin.tipo != 'number' || @paso.tipo != 'number'
 			if @inicio.tipo != 'number'
