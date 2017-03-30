@@ -93,7 +93,7 @@ class ErrorDeclaracion < ErrorContexto
 	end
 
 	def to_s
-		"Error: \nLa variable #{@token} fue previamente declarada."
+		"Error: La variable #{@token} fue previamente declarada."
 	end
 end
 
@@ -104,7 +104,7 @@ class ErrorTipoAsignacion < ErrorContexto
 	end
 
 	def to_s
-		"Error: \nSe intento asignar un valor de tipo #{@tipo_asig} a la variable #{@nombre}\n que es de tipo #{@tipo_var}."
+		"Error: Se intento asignar un valor de tipo #{@tipo_asig} a la variable #{@nombre} que es de tipo #{@tipo_var}."
 	end
 end
 
@@ -114,7 +114,7 @@ class ErrorVariableNoDeclarada < ErrorContexto
 	end
 
 	def to_s
-		"Error: \nLa variable #{@token} no ha sido declarada."
+		"Error: La variable #{@token} no ha sido declarada."
 	end
 end
 
@@ -126,7 +126,7 @@ class ErrorTipos < ErrorContexto
 	end
 
 	def to_s
-		"Error: \nEn la expresion de tipo #{@op}: Se intento operar un operando izquierdo del tipo #{@op1} con un\n operando derecho del tipo #{@op2}."
+		"Error: En la expresion de tipo #{@op}: Se intento operar un operando izquierdo del tipo #{@op1} con un operando derecho del tipo #{@op2}."
 	end
 end
 
@@ -137,7 +137,7 @@ class ErrorTipoUnario < ErrorContexto
 	end
 
 	def to_s
-		"Error: \nSe intento realizar la operacion #{oper} en un operando de tipo #{@operando}"
+		"Error: Se intento realizar la operacion #{oper} en un operando de tipo #{@operando}"
 	end
 end
 
@@ -969,7 +969,7 @@ class LlamadaFuncion
 	def check(padre, tipo=nil)
 		
 		if not(padre.check_func_exists(@id.id.to_s()))
-			puts "Error: Función no declarada." # Error, función no declarada
+			puts "Error: Función #{@id.id} no declarada." # Error, función no declarada
 			exit
 		end
 

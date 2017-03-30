@@ -1,6 +1,7 @@
 func circle(number radio)
 begin
     radio = 1;
+    return radio;
 end;
 
 program
