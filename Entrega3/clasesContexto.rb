@@ -1016,6 +1016,7 @@ end
 
 class LiteralNumerico
 	def check(padre, tipo)
+		puts @valor
 		#if /^\d+$/.match?(@valor.token)
 		#	return @valor
 		#else
@@ -1026,7 +1027,8 @@ end
 
 class LiteralBooleano
 	def check(padre, tipo)
-		if @valor.token == "true"
+		puts @valor
+		if @valor.token.to_s == "true"
 			return true
 		else
 			return false
