@@ -169,17 +169,47 @@ class ErrorCondicionIteracionIndeterminada < ErrorContexto
 	end
 
 	def to_s
-		"Error: La condicion de la iteracion es de tipo #{@tipo}."
+		"Error: La condicion de la iteracion while es de tipo #{@tipo}, pero debe ser de tipo boolean."
 	end
 end 
 
-class ErrorTipoVariableIteracionDeterminada < ErrorContexto
+class ErrorTipoVariableInicioIteracionDeterminadaFor < ErrorContexto
 	def initialize(tipo)
 		@tipo = tipo
 	end
 
 	def to_s
-		"Error: La variable de la iteracion es de tipo #{@tipo}."
+		"Error: El inicio de la iteracion for es de tipo #{@tipo}, pero debe ser de tipo number."
+	end
+end
+
+class ErrorTipoVariableFinIteracionDeterminadaFor < ErrorContexto
+	def initialize(tipo)
+		@tipo = tipo
+	end
+
+	def to_s
+		"Error: El fin de la iteracion for es de tipo #{@tipo}, pero debe ser de tipo number."
+	end
+end
+
+class ErrorTipoVariableStepIteracionDeterminadaFor < ErrorContexto
+	def initialize(tipo)
+		@tipo = tipo
+	end
+
+	def to_s
+		"Error: El step de la iteracion for es de tipo #{@tipo}, pero debe ser de tipo number."
+	end
+end
+
+class ErrorTipoVariableIteracionDeterminadaRepeat < ErrorContexto
+	def initialize(tipo)
+		@tipo = tipo
+	end
+
+	def to_s
+		"Error: La variable de la iteracion repeat es de tipo #{@tipo}, pero debe ser de tipo number."
 	end
 end
 
@@ -396,7 +426,8 @@ class RepeticionI
 		@condicion.check(padre, nil)
 
 		if @condicion.tipo != 'boolean'
-			puts "Error: Esperaba una expresión de tipo \'boolean\' y recibi una expresión de tipo \'#{@condicion.tipo}\'"
+			puts ErrorCondicionIteracionIndeterminada.new(@condicion.tipo)
+			exit
 		end
 
 		if @instrucciones != nil
@@ -413,7 +444,8 @@ class Repeat
 		if @repeticiones != nil
 			@repeticiones.check(@tabla, nil)	# Verifico que la expresión sea de tipo number
 			if @repeticiones.tipo != 'number'
-				puts "Error: Esperaba una expresión de tipo \'number\' y recibi una expresión de tipo \'#{@repeticiones.tipo}\'"
+				puts ErrorTipoVariableIteracionDeterminadaRepeat.new(@repeticiones.tipo)
+				exit
 			end
 		end
 
@@ -435,11 +467,11 @@ class For
 
 		if @inicio.tipo != 'number' || @fin.tipo != 'number' || @paso.tipo != 'number'
 			if @inicio.tipo != 'number'
-				puts ErrorTipoVariableIteracionDeterminada.new(@inicio.tipo) # Error, deben ser de tipo numérico
+				puts ErrorTipoVariableInicioIteracionDeterminadaFor.new(@inicio.tipo) # Error, deben ser de tipo numérico
 			elsif @fin.tipo != 'number'
-				puts ErrorTipoVariableIteracionDeterminada.new(@fin.tipo)
+				puts ErrorTipoVariableFinIteracionDeterminadaFor.new(@fin.tipo)
 			else
-				puts ErrorTipoVariableIteracionDeterminada.new(@paso.tipo)
+				puts ErrorTipoVariableStepIteracionDeterminadaFor.new(@paso.tipo)
 			end
 			exit				
 		end
@@ -488,13 +520,13 @@ class ExpresionBinaria
 		@op1.check(padre, tipo)
 		@op2.check(padre, tipo)
 
-		if tipo != nil
+		if tipo != nil			# Error, no es del tipo esperado
 			if @op1.tipo != tipo || @op2.tipo != tipo
 				if @op1.tipo != tipo
 					puts "Error: Esperaba lado izquierdo de la expresion de tipo #{@op1.tipo} pero recibi una expresion de tipo #{tipo}"
 				else
 					puts "Error: Esperaba lado derecho de la expresion de tipo #{@op2.tipo} pero recibi una expresion de tipo #{tipo}"
-				end # Error, no es del tipo esperado
+				end 
 				exit
 			end
 		else
