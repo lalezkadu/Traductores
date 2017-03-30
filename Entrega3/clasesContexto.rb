@@ -678,7 +678,7 @@ class OpDivisionE
 
 		@tipo=@op1.tipo
 		if oper1 != 0
-			return oper1.to_f() / oper2.to_f()
+			return oper1.to_i() / oper2.to_i()
 		else
 			puts "Error: Division entre cero."
 			exit
@@ -711,7 +711,7 @@ class OpModE
 		@tipo=@op1.tipo
 
 		if oper1 != 0
-			return oper1.to_f() % oper2.to_f()
+			return oper1.to_i() % oper2.to_i()
 		else
 			puts "Error: Division entre cero."
 			exit
@@ -1016,16 +1016,22 @@ end
 
 class LiteralNumerico
 	def check(padre, tipo)
-		#if /^\d+$/.match?(@valor.token)
-		#	return @valor
-		#else
-		#	return @valor
-		#end
+	end
+
+	def get_valor()
+		if /^\d+$/.match(@valor.token)				# Si no tiene decimales
+			return @valor.token.to_i
+		elsif /^\d*[.]?\d*$/.match(@valor.token)	# Si tiene decimales
+			return @valor.token.to_f
+		end
 	end
 end
 
 class LiteralBooleano
 	def check(padre, tipo)
+	end
+
+	def get_valor()
 		if @valor.token == "true"
 			return true
 		else

@@ -37,16 +37,17 @@ def main
 
 	begin
 		# Tokenizar entrada
-		lex =  LexerRtn.new(programa)
+		lex =  LexerRtn.new(programa)				# Entrega 1
 		if !(lex.error.empty?)
 			for tok in lex.error
 				tok.imprimir
 			end
 		else
 			begin
-				pars = ParserRtn.new(lex.parserTk)
+				pars = ParserRtn.new(lex.parserTk)	# Entrega 2
 				ast = pars.parse
-				ast.check()
+				ast.check()		  					# Entrega 3		
+				#ast.exec(ARG[0]) 					# Entrega 4
 				#puts ast.tabla
 				rescue ErrorSintactico => e
 					puts e
