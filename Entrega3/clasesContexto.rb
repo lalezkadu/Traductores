@@ -214,7 +214,6 @@ class Estructura	# Construyo primero la lista de funciones y luego cada uno de l
 		if @programa != nil
 			@programa.check(@tabla)
 		end
-		puts @tabla
 	end
 end
 
@@ -246,7 +245,6 @@ class Funcion
 			@tabla.add('return', nil)
 		end
 
-		puts @tabla
 		padre[@nombre.id.to_s()] = @tabla
 
 		if @parametros != nil
@@ -262,12 +260,12 @@ end
 
 class Parametros
 	def check(tabla,pos)
-		if !(tabla.check_var_exists(@id.id.to_s())) 
+		if !(tabla.check_var_exists(@id.id.to_s()))
 			tabla.add(pos.to_s, @tipo.tipo)
 			tabla.add(@id.id.to_s(), @tipo.tipo)
 			@id.tipo = @tipo
 		else
-			puts ErrorVariableNoDeclarada.new(@id).to_s() # ERROR ya existe la variable
+			puts ErrorDeclaracion.new(@id).to_s() # ERROR ya existe la variable
 			exit
 		end
 
@@ -300,7 +298,6 @@ class Bloque	## Este señor imprime Variables.
 		if @instrucciones != nil
 			@instrucciones.check(@tabla)
 		end
-		puts @tabla.to_s()
 	end
 end
 
@@ -462,6 +459,9 @@ end
 
 class ExpresionBinaria
 	def check(padre, tipo=nil)
+		@op1.check(padre, tipo)
+		@op2.check(padre, tipo)
+
 		if tipo != nil
 			if @op1.tipo != tipo || @op2.tipo != tipo
 				if @op1.tipo != tipo
@@ -478,8 +478,7 @@ class ExpresionBinaria
 			end
 		end
 
-		@op1.check(padre)
-		@op2.check(padre)
+		@tipo=@op1.tipo	
 		# Hay que chequear el tipo de dato 	
 	end
 end
@@ -531,6 +530,8 @@ class OpMultiplicacion
 			end
 		end
 
+		@tipo="number"
+
 		return oper1 * oper2
 	end
 end
@@ -556,7 +557,7 @@ class OpSuma
 			end
 		end
 
-		@tipo=@op1.tipo
+		@tipo="number"
 		return oper1 + oper2
 	end
 end
@@ -578,7 +579,7 @@ class OpResta
 			end
 		end
 
-		@tipo=@op1.tipo
+		@tipo="number"
 		return oper1 - oper2
 	end
 end
@@ -604,7 +605,7 @@ class OpDivision # La división entre cero ? o.O
 			end
 		end
 
-		@tipo=@op1.tipo
+		@tipo="number"
 		if oper1 != 0
 			return oper1 / oper2
 		else
@@ -636,7 +637,7 @@ class OpMod
 		end
 
 
-		@tipo=@op1.tipo
+		@tipo="number"
 		if oper1 != 0
 			return oper1 % oper2
 		else
@@ -667,7 +668,7 @@ class OpDivisionE
 			end
 		end
 
-		@tipo=@op1.tipo
+		@tipo="number"
 		if oper1 != 0
 			return oper1.to_i() / oper2.to_i()
 		else
@@ -699,7 +700,7 @@ class OpModE
 			end
 		end
 
-		@tipo=@op1.tipo
+		@tipo="number"
 
 		if oper1 != 0
 			return oper1.to_i() % oper2.to_i()
@@ -989,7 +990,7 @@ end
 class ListaPaseParametros
 	def check(padre, pos, func)	# Padre tiene la lista de los parametros de la funcion en cuestión
 
-		@parametro.check( padre, padre.get_func_var_type(func, pos.to_s))
+		@parametro.check( padre, nil )
 
 		if !padre.check_func_var_type(func, @parametro.tipo, pos.to_s)
 			puts "Error: Esperaba un parametro de tipo #{padre.get_func_var_type(func, pos.to_s)} pero el tipo recibido es #{@parametro.tipo}" # Error en los tipos 
