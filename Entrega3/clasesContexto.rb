@@ -226,10 +226,11 @@ end
 
 class ListaFunciones
 	def check(padre)
+		@funcion.check(padre)
 		if @funciones != nil
-			@funciones.check(padre).merge!(padre.merge!(@funcion.check(padre))) 	# Si existe una lista de funciones continuo agregando
+			@funciones.check(padre)#.merge!(padre.merge!(@funcion.check(padre))) 	# Si existe una lista de funciones continuo agregando
 		else
-			padre.merge!(@funcion.check(padre)) # Sino, agrego la última función
+			#padre.merge!(@funcion.check(padre)) # Sino, agrego la última función
 		end
 
 		if @funciones != nil
@@ -1003,13 +1004,13 @@ class ListaPaseParametros
 		if !padre.check_func_var_type(func, @parametro.tipo, pos.to_s)
 			puts "Error: Esperaba un parametro de tipo #{padre.get_func_var_type(func, pos.to_s)} pero el tipo recibido es #{@parametro.tipo}" # Error en los tipos 
 			exit
-		elsif @lista == nil && padre.check_func_var_pos(func, (pos+1).to_s)
+		elsif @lista == nil && padre.check_func_var_pos(func, (pos.to_i+1).to_s)
 			puts "Error: Faltan argumentos." # Faltan argumentos
 			exit
 		end
 
 		if @lista != nil
-			@lista.check(padre,(pos+1).to_s)
+			@lista.check(padre,(pos+1).to_s, func)
 		end
 	end
 end
