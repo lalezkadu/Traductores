@@ -1016,7 +1016,7 @@ class ListaPaseParametros
 end
 
 class LiteralNumerico
-	def check(padre, tipo)
+	def check(padre,tipo=nil)
 	end
 
 	def get_valor()
@@ -1029,7 +1029,7 @@ class LiteralNumerico
 end
 
 class LiteralBooleano
-	def check(padre, tipo)
+	def check(padre,tipo=nil)
 	end
 
 	def get_valor()
