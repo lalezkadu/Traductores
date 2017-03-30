@@ -24,15 +24,28 @@ class SymTable
 	end
 
 	def check_var_exists(key)
-		if @padre == nil
+		if @padre == nil || (@tabla.has_key? key)
 			return (@tabla.has_key? key)
 		else
-			if @tabla.has_key? key || @padre.check_var_exists(key)
+			if ((@tabla.has_key? key) || (@padre.check_var_exists(key)))
 				return true
+			else
+				return false
 			end
 		end
+	end
 
-		return false
+	def get_var_type(key)
+		if self.check_var_exists(key)
+			if (@tabla.has_key? key)
+				return @tabla[key]
+			else
+				return @padre.get_var_type(key)
+			end
+		else
+			puts ErrorVariableNoDeclarada.new key
+			exit
+		end
 	end
 
 	def check_func_exists(key)
@@ -334,7 +347,7 @@ class Identificador
 				puts ErrorVariableNoDeclarada.new @id.to_s()
 				exit
 			end
-			@tipo = padre.tabla[@id.to_s()]
+			@tipo = padre.get_var_type(@id.to_s())
 		else
 			@tipo=tipo
 			padre.add(@id.to_s(), tipo)
@@ -376,7 +389,7 @@ end
 
 class RepeticionI
 	def check(padre)
-		@condicion.check(padre)
+		@condicion.check(padre, 'booleano')
 
 		if @instrucciones != nil
 			@instrucciones.check(padre)
@@ -390,7 +403,10 @@ class Repeat
 		@tabla = SymTable.new "Repeat", padre.funciones, padre
 
 		if @repeticiones != nil
-			@repeticiones.check(@tabla, 'number')	# Verifico que la expresión sea de tipo number
+			@repeticiones.check(@tabla, nil)	# Verifico que la expresión sea de tipo number
+			if @repeticiones.tipo != 'number'
+				puts "Error: Esperaba una expresión de tipo \'number\' y recibi una expresión de tipo \'#{@repeticiones.tipo}\'"
+			end
 		end
 
 		if @instrucciones != nil
