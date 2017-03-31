@@ -611,19 +611,16 @@ end
 
 class Salida 
 	def check(tabla)
-		#if not(@expresion.is_a? String)
-		#	@expresion.check(tabla, nil)
-		#end
 		if impresiones != nil
 			@impresiones.check(tabla)
 		end
 	end
 
 	def ejecutar(imagen)
-		if @salto == "SALTO"
+		if @salto == "SALTO"						# writeln
 			str = @impresiones.ejecutar(imagen)
 			puts str
-		else
+		else 										# write
 			str = @impresiones.ejecutar(imagen)
 			print str
 		end
@@ -643,7 +640,7 @@ class Escribir
 	def ejecutar(imagen)
 		str = ""
 		if impresiones != nil
-			str << @impresiones.to_s
+			str << @impresiones.get_valor.to_s
 		end
 		
 		if not(@expresion.is_a? String)
@@ -653,7 +650,13 @@ class Escribir
 	end
 
 	def get_valor()
-		return @impresiones.to_s
+		str = ""
+		
+		if impresiones != nil
+			str << @impresiones.get_valor.to_s
+		end
+		str << @expresion.get_valor.to_s
+		return str
 	end
 end
 
@@ -663,7 +666,7 @@ class Str
 	end
 
 	def get_valor()
-		return @str
+		return @str.token[1..(@str.token.length-2)] # Para quitar las comillas
 	end
 end
 

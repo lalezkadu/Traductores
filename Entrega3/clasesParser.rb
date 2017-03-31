@@ -267,8 +267,8 @@ class Identificador
 	end
 
 	def to_s()
-		s = @id.to_s() + "-" + @tipo.to_s()
-		return s + "\n"
+		s = @id.to_s()
+		return s
 	end
 end
 
@@ -490,7 +490,7 @@ class Escribir
 	def to_s()
 		s = ""
 		if impresiones != nil
-			s << @impresiones.to_s() + "-"
+			s << @impresiones.to_s()
 		end
 		s << @expresion.to_s()
 		return s
@@ -512,7 +512,7 @@ class Str
 	end
 
 	def to_s()
-		s = @str.to_s()
+		s = @str.token
 	end
 end
 
@@ -536,9 +536,10 @@ class ExpresionBinaria
 	end
 
 	def to_s()
-		s = @oper + "-"
-		s << @op1.to_s() + "-"
-		s << @op2.to_s()
+		s = self.get_valor().to_s 
+		#@oper + "-"
+		#s << @op1.to_s() + "-"
+		#s << @op2.to_s()
 		return s
 	end
 end
@@ -887,7 +888,7 @@ class Literal
 	end
 
 	def to_s()
-		return @tipo.to_s() + "-" + @valor.to_s() + "\n"
+		return @valor.to_s()
 	end
 end
 
