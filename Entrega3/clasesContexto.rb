@@ -259,10 +259,11 @@ class Estructura	# Construyo primero la lista de funciones y luego cada uno de l
 		end
 	end
 
-	def exec(nombre_imagen)
+	def ejecutar(nombre_imagen)
 		imagen = Imagen.new(nombre_imagen)
 		if @programa =! nil
-			@programa.exec(imagen)
+			puts @programa
+			@programa.ejecutar(imagen)
 		end
 		imagen.generarImagen
 	end
@@ -272,7 +273,7 @@ class ListaFunciones
 	def check(padre)
 		@funcion.check(padre)
 		if @funciones != nil
-			@funciones.check(padre) #.merge!(padre.merge!(@funcion.check(padre))) 	# Si existe una lista de funciones continuo agregando
+			@funciones.check(padre) # Si existe una lista de funciones continuo agregando
 		#else
 			#padre.merge!(@funcion.check(padre)) # Sino, agrego la última función
 		end
@@ -308,9 +309,9 @@ class Funcion
 
 	end
 
-	def exec(imagen)
+	def ejecutar(imagen)
 		if @instrucciones != nil
-			@instrucciones.exec(imagen)
+			@instrucciones.ejecutar(imagen)
 		end
 	end
 end
@@ -320,7 +321,7 @@ class Parametros
 		if !(tabla.check_var_exists(@id.id.to_s()))
 			tabla.add(pos.to_s, @tipo.tipo)
 			tabla.add(@id.id.to_s(), @tipo.tipo)
-			@id.tipo = @tipo
+			@id.tipo = @tipo.tipo
 		else
 			puts ErrorDeclaracion.new(@id).to_s() # ERROR ya existe la variable
 			exit
@@ -342,9 +343,9 @@ class Programa
 		end
 	end
 
-	def exec(imagen)
+	def ejecutar(imagen)
 		if @instrucciones != nil
-			@instrucciones.exec(imagen)
+			@instrucciones.ejecutar(imagen)
 		end
 	end
 end
@@ -360,6 +361,13 @@ class Bloque	## Este señor imprime Variables.
 
 		if @instrucciones != nil
 			@instrucciones.check(@tabla)
+		end
+	end
+
+	def ejecutar(imagen)
+		# Agregar valores a la tabla
+		if @instrucciones != nil
+			@instrucciones.ejecutar(imagen)
 		end
 	end
 end
@@ -406,7 +414,7 @@ class Identificador
 	end
 
 	def get_valor()
-		#return @id.token
+		return @id.to_s
 	end
 end
 
@@ -420,12 +428,12 @@ class Instrucciones
 		end
 	end
 
-	def exec(imagen)
+	def ejecutar(imagen)
 		if @instrucciones != nil
-			@instrucciones.exec(imagen)
+			@instrucciones.ejecutar(imagen)
 		end
 		if @instruccion != nil
-			@instruccion.exec(imagen)
+			@instruccion.ejecutar(imagen)
 		end
 	end
 end
@@ -435,8 +443,8 @@ class Return
 		@expresion.check(padre)
 	end
 
-	def exec(imagen)
-		return @expresion.exec(imagen)
+	def ejecutar(imagen)
+		return @expresion.ejecutar(imagen)
 	end
 end
 
@@ -458,14 +466,14 @@ class Condicional
 		end
 	end
 
-	def exec(imagen)
+	def ejecutar(imagen)
 		if @condicion.get_valor
 			if @instif != nil
-				@instif.exec(imagen)
+				@instif.ejecutar(imagen)
 			end
 		else
 			if @instelse != nil
-				@instelse.exec(imagen)
+				@instelse.ejecutar(imagen)
 			end
 		end
 	end
@@ -485,11 +493,11 @@ class RepeticionI
 		end
 	end
 
-	def exec(imagen)
+	def ejecutar(imagen)
 		condicion = @condicion.get_valor()
 		while condicion
 			if @instrucciones != nil
-				@instrucciones.exec(imagen)
+				@instrucciones.ejecutar(imagen)
 			end
 			condicion = @condicion.get_valor()
 		end
@@ -514,9 +522,18 @@ class Repeat
 		end
 	end
 
-	def exec(imagen)
+	def ejecutar(imagen)				# Falta la tabla
 		repeticiones = @repeticiones.get_valor()
-
+		if repeticiones > 0
+			for i in (1..repeticiones)
+				if @instrucciones != nil
+					@instrucciones.ejecutar(imagen)
+				end
+			end
+		else
+			puts "Error Dinamico: Rango invalido para iteracion repeat."
+			exit
+		end
 	end
 end
 
@@ -544,8 +561,8 @@ class For
 		@instrucciones.check(@tabla)
 	end
 
-	def exec(imagen)
-		#id = @id.get_valor()		# Falta declarar y asiganr valor de id para la tabla de valores de los hijos
+	def ejecutar(imagen)
+		id = @id.get_valor()		# Falta declarar y asiganr valor de id para la tabla de valores de los hijos
 		inicio = @inicio.get_valor()
 		fin = @fin.get_valor()
 		if @paso != nil
@@ -555,11 +572,11 @@ class For
 		if inicio <= fin
 			if paso == nil
 				for i in (inicio..fin)	# Falta declarar y asignar valor de i para la tabla de valores para los hijos
-					@instrucciones.exec(imagen)
+					@instrucciones.ejecutar(imagen)
 				end
 			else
 				for i in (inicio..fin).step(paso)	# Falta declarar y asignar valor de i para la tabla de valores para los hijos
-					@instrucciones.exec(imagen)
+					@instrucciones.ejecutar(imagen)
 				end
 			end
 		else
@@ -570,7 +587,6 @@ class For
 end
 
 class Entrada
-
 	def check(tabla)
 		@id.check(tabla)
 	end
@@ -597,7 +613,7 @@ class Escribir
 		end
 	end
 
-	def exec(imagen)
+	def ejecutar(imagen)
 		str = ""
 		if not(@expresion.is_a? String)
 			str << @expresion.get_valor.to_s
@@ -1207,7 +1223,7 @@ class LlamadaFuncion
 		@tipo = padre.get_func_var_type( @id.id.to_s(), 'return')
 	end
 
-	def exec(imagen)
+	def ejecutar(imagen)
 		if @id.id.to_s == "home"
 			imagen.home()
 		elsif @id.id.to_s == "setposition"
@@ -1217,6 +1233,7 @@ class LlamadaFuncion
 		elsif @id.id.to_s == "rotatel"
 			imagen.rotatel(@parametros.parametro.get_valor)
 		elsif @id.id.to_s == "forward"
+			puts "HERE"
 			imagen.forward(@parametros.parametro.get_valor)
 		elsif @id.id.to_s == "backward"
 			imagen.backward(@parametros.parametro.get_valor)

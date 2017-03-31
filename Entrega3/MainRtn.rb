@@ -47,7 +47,7 @@ def main
 				pars = ParserRtn.new(lex.parserTk)	# Entrega 2
 				ast = pars.parse
 				ast.check()		  					# Entrega 3		
-				#ast.exec(ARG[0]) 					# Entrega 4
+				#ast.ejecutar(ARGV[0]) 				# Entrega 4
 				rescue ErrorSintactico => e 
 					puts e
 					return
