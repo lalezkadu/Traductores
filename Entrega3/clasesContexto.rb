@@ -252,8 +252,7 @@ class Estructura	# Construyo primero la lista de funciones y luego cada uno de l
 			@funciones.check(@tablafunciones)
 		end
 
-		@tabla = SymTable.new "Estructura", @tablafunciones
-
+		@tabla = SymTable.new "Estructura", @tablafunciones 
 		if @programa != nil
 			@programa.check(@tabla)
 		end
@@ -261,8 +260,7 @@ class Estructura	# Construyo primero la lista de funciones y luego cada uno de l
 
 	def ejecutar(nombre_imagen)
 		imagen = Imagen.new(nombre_imagen)
-		if @programa =! nil
-			puts @programa
+		if @programa != nil
 			@programa.ejecutar(imagen)
 		end
 		imagen.generarImagen
@@ -713,7 +711,7 @@ class OpMultiplicacion
 	end
 
 	def get_valor()
-		return @op1*@op2
+		return @op1.get_valor * @op2.get_valor
 	end
 end
 
@@ -742,7 +740,7 @@ class OpSuma
 	end
 
 	def get_valor()
-		return @op1 + @op2
+		return @op1.get_valor + @op2.get_valor
 	end 
 end
 
@@ -1227,13 +1225,12 @@ class LlamadaFuncion
 		if @id.id.to_s == "home"
 			imagen.home()
 		elsif @id.id.to_s == "setposition"
-			imagen.setposition(@parametros.parametro.get_valor,@parametros.lista[0].get_valor)
+			imagen.setposition(@parametros.parametro.get_valor,@parametros.lista.get_valor)
 		elsif @id.id.to_s == "rotater"
 			imagen.rotater(@parametros.parametro.get_valor)
 		elsif @id.id.to_s == "rotatel"
 			imagen.rotatel(@parametros.parametro.get_valor)
 		elsif @id.id.to_s == "forward"
-			puts "HERE"
 			imagen.forward(@parametros.parametro.get_valor)
 		elsif @id.id.to_s == "backward"
 			imagen.backward(@parametros.parametro.get_valor)
@@ -1263,6 +1260,10 @@ class ListaPaseParametros
 		if @lista != nil
 			@lista.check(padre,(pos+1).to_s, func)
 		end
+	end
+
+	def get_valor()
+		return @parametro.get_valor
 	end
 end
 

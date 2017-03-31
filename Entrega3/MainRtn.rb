@@ -34,6 +34,7 @@ def main
 		  programa = programa + linea
 		end
 	end
+	nombre_imagen = ARGV[0].split(".rtn")[0]
 
 	begin
 		# Tokenizar entrada
@@ -47,7 +48,7 @@ def main
 				pars = ParserRtn.new(lex.parserTk)	# Entrega 2
 				ast = pars.parse
 				ast.check()		  					# Entrega 3		
-				#ast.ejecutar(ARGV[0]) 				# Entrega 4
+				ast.ejecutar(nombre_imagen) 		# Entrega 4
 				rescue ErrorSintactico => e 
 					puts e
 					return

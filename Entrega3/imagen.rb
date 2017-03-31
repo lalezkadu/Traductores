@@ -35,7 +35,7 @@ class Imagen
 		@plano = Array.new(@tam_ancho) { Array.new(@tam_alto) { 0 } }
 		self.home()
 		@plano[@y][@x] = 1
-		@grados = 0
+		@grados = 90
 		self.openeye()
 	end
 
