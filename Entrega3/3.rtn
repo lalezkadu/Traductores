@@ -1,21 +1,10 @@
-func my_forward()
+func incremental_forward(number steps, boolean holis)
 begin
-    forward(1);
-end;
-
-func max(number x, number y) -> number
-begin
-    if x < y then
-        return y;
-    else
-        return x;
+    for i from 1 to steps do
+        forward(i);
     end;
 end;
 
 program
-    with
-        number x = 37;
-    do
-        writeln "Un numero especial: ", max(9,x);
-    end;
+    forward(100);
 end;
