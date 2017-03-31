@@ -267,6 +267,7 @@ end
 # Pequeña prueba
 """
 x = Imagen.new()
+
 (1..100).each do |i|
 	x.forward(i*2)
 	x.rotater(90)

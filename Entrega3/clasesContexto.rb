@@ -442,7 +442,7 @@ class Return
 	end
 
 	def ejecutar(imagen)
-		return @expresion.ejecutar(imagen)
+		return @expresion.get_valor()
 	end
 end
 
@@ -588,15 +588,44 @@ class Entrada
 	def check(tabla)
 		@id.check(tabla)
 	end
+
+	def ejecutar(image)
+		e = $stdin.gets.chomp
+		if @id.tipo == "number"
+			if /^\d+$|^\d*[.]?\d*$/.match(e)
+				# Asignar valor en tabla
+			else
+				puts "Error Dinamico: El tipo de la entrada de la instruccion read es invalido, se esperaba un valor de tipo number."
+				exit
+			end
+		elsif @id.tipo == "boolean"
+			if /^".*"$/.match(e)
+				# Asignar valor en tabla
+			else
+				puts "Error Dinamico: El tipo de la entrada de la instruccion read es invalido, se esperaba un valor de tipo boolean."
+				exit
+			end
+		end	
+    end
 end
 
 class Salida 
 	def check(tabla)
-		if not(@expresion.is_a? String)
-			@expresion.check(tabla, nil)
-		end
+		#if not(@expresion.is_a? String)
+		#	@expresion.check(tabla, nil)
+		#end
 		if impresiones != nil
 			@impresiones.check(tabla)
+		end
+	end
+
+	def ejecutar(imagen)
+		if @salto == "SALTO"
+			str = @impresiones.ejecutar(imagen)
+			puts str
+		else
+			str = @impresiones.ejecutar(imagen)
+			print str
 		end
 	end
 end
@@ -613,24 +642,28 @@ class Escribir
 
 	def ejecutar(imagen)
 		str = ""
+		if impresiones != nil
+			str << @impresiones.to_s
+		end
+		
 		if not(@expresion.is_a? String)
 			str << @expresion.get_valor.to_s
 		end
+		return str
+	end
 
-		if impresiones != nil
-			str << @impresiones.get_valor.to_s
-		end
-		print str
+	def get_valor()
+		return @impresiones.to_s
 	end
 end
 
 class Str
 	def check(tabla)
-		return @str.to_s
+		#return @str.to_s
 	end
 
 	def get_valor()
-		return @str.to_s
+		return @str
 	end
 end
 

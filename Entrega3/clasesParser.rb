@@ -455,12 +455,12 @@ class Salida
 
 	# == Atributos
 	#
-	# expresion  : 	Expresion o string que se debe imprimir.
+	# sakto	     : 	Indica si es con salto de linea o no.
 	# impresiones:  Expresiones y/o strings que falta por imprimir.
-	attr_accessor :expresion, :impresiones
+	attr_accessor :salto, :impresiones
 
-	def initialize(impresiones, expresion)
-		@expresion = expresion
+	def initialize(impresiones, salto)
+		@salto = salto
         @impresiones = impresiones
     end
 
