@@ -30,8 +30,16 @@ class SymTable
 
 	end
 
-	def add_value(key, value)
+	def set_value(key, value)
 		@valores[key] = value
+	end
+
+	def get_valor(key)
+		if @valores.has_key? key
+			return @valores[key]
+		else
+			puts ErrorDeclaracion.new(key).to_s()
+		end
 	end
 
 	def check_var_exists(key)
@@ -798,6 +806,9 @@ class ExpresionBinaria
 		@tipo=@op1.tipo	
 		# Hay que chequear el tipo de dato 	
 	end
+
+	def ejecutar()
+	end
 end
 
 class Asignacion
@@ -806,6 +817,7 @@ class Asignacion
 		@op2.check(padre, tipo)
 
 		if tipo != nil
+			padre.set_value(@op1.id.to_s(), @op2.ejecutar())
 			if @op1.tipo != tipo || @op2.tipo != tipo
 				if @op1.tipo != tipo
 					puts "Error: Esperaba lado izquierdo de la expresion de tipo #{@op1.tipo} pero recibi una expresion de tipo #{tipo}"
@@ -1419,6 +1431,10 @@ class LiteralNumerico
 			return @valor.token.to_f
 		end
 	end
+
+	def ejecutar()
+		return self.get_valor()
+	end
 end
 
 class LiteralBooleano
@@ -1431,5 +1447,9 @@ class LiteralBooleano
 		else
 			return false
 		end
+	end
+
+	def ejecutar()
+		return self.get_valor()
 	end
 end
