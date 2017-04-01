@@ -829,9 +829,6 @@ class ExpresionBinaria
 		@tipo=@op1.tipo	
 		# Hay que chequear el tipo de dato 	
 	end
-
-	def ejecutar()
-	end
 end
 
 class Asignacion
@@ -839,8 +836,10 @@ class Asignacion
 		@op1.check(padre, tipo)
 		@op2.check(padre, tipo)
 
+		puts padre.valores
+
 		if tipo != nil
-			padre.set_value(@op1.id.to_s(), @op2.ejecutar())
+			padre.set_value(@op1.id.to_s(), @op2.get_valor(padre.tabla))
 			if @op1.tipo != tipo || @op2.tipo != tipo
 				if @op1.tipo != tipo
 					puts "Error: Esperaba lado izquierdo de la expresion de tipo #{@op1.tipo} pero recibi una expresion de tipo #{tipo}"
@@ -1331,8 +1330,9 @@ class OpOr
 	end
 end
 
-class OpMINUS
+class OpUMINUS
 	def check(padre,tipo=nil)
+		puts "??"
 		oper = @op.check(padre,tipo)
 		if tipo != nil
 			if @tipo != tipo
