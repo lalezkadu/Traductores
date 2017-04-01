@@ -5,7 +5,7 @@ require_relative 'imagen'
 # Clase de la tabla
 
 class SymTable
-	attr_accessor :tabla, :nombre, :padre, :funciones, :instrucciones, :valores
+	attr_accessor :tabla, :nombre, :padre, :funciones, :instrucciones, :valores, :declaraciones
 
 	def initialize(nombre, funciones, padre=nil, tabla=Hash.new, instrucciones=nil, valores=Hash.new)
 		@tabla = tabla
@@ -18,17 +18,12 @@ class SymTable
 		if @padre != nil
 			@valores = @valores.merge!(@padre.valores)
 		end
+
+		@declaraciones = Hash.new
 	end
 
 	def add_sym(key, value)
-
-		if self.check_var_exists(key)
-			puts ErrorDeclaracion.new(key).to_s()
-			exit
-		else
-			@tabla[key] = value
-		end
-
+		@tabla[key] = value
 	end
 
 	def set_value(key, value)
@@ -445,6 +440,8 @@ class Bloque	## Este señor imprime Variables.
 			@declaraciones.check(@tabla)	# Pasan la lista de variables
 		end
 
+		@tabla.declaraciones = Hash.new
+
 		if @instrucciones != nil
 			@instrucciones.check(@tabla)
 		end
@@ -453,7 +450,7 @@ class Bloque	## Este señor imprime Variables.
 	def ejecutar(imagen, tabla)
 		# Agregar valores a la tabla
 		if @declaraciones != nil
-			@declaraciones.ejecutar(imagen,tabla)
+			@declaraciones.ejecutar(imagen, tabla)
 		end
 
 		if @instrucciones != nil
@@ -493,6 +490,12 @@ end
 class ListaId
 	def check(padre, tipo)	# Padre referencia a las variables
 		@id.check(padre, tipo)
+		if padre.declaraciones.has_key? @id.to_s
+			puts ErrorDeclaracion.new(@id.to_s).to_s()
+			exit
+		else
+			padre.declaraciones[@id.to_s] = true
+		end
 
 		if @ids != nil
 			@ids.check(padre, tipo)
@@ -836,6 +839,13 @@ class Asignacion
 		@op1.check(padre, tipo)
 		@op2.check(padre, tipo)
 
+		if padre.declaraciones.has_key? @op1.id.to_s
+			puts ErrorDeclaracion.new(@op1.id.to_s).to_s
+			exit
+		else
+			padre.declaraciones[@op1.id.to_s] = true
+		end
+
 		if tipo != nil
 			padre.set_value(@op1.id.to_s(), @op2.get_valor(padre.tabla))
 			if @op1.tipo != tipo || @op2.tipo != tipo
@@ -848,7 +858,8 @@ class Asignacion
 			end
 		else
 			if @op1.tipo != @op2.tipo
-				puts ErrorTipos.new(@oper,@op1,@op2) # Error, los tipos no concuerdan
+				puts ErrorTiposif padre.declaraciones.has_key? @declaracion.op1.id.to_s
+				puts ErrorDeclaracion.new(@declaracion.op1.id.to_s).to_s()
 				exit
 			end
 		end
