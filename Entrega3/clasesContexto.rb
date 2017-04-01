@@ -5,7 +5,7 @@ require_relative 'imagen'
 # Clase de la tabla
 
 class SymTable
-	attr_accessor :tabla, :nombre, :padre, :funciones
+	attr_accessor :tabla, :nombre, :padre, :funciones, :instrucciones, :valores
 
 	def initialize(nombre, funciones, padre=nil, tabla=Hash.new)
 		@tabla = tabla
