@@ -84,7 +84,7 @@ class SymTable
 		if self.check_func_var_pos(key, pos)
 			return @funciones[key].tabla[pos]
 		else
-			puts "Error: Hay mas argumentos de los esperados en la funcion #{key.id}."
+			puts "Error: Hay mas argumentos de los esperados en la funcion #{key}."
 			exit
 		end
 	end
@@ -93,7 +93,7 @@ class SymTable
 		if self.check_func_var_pos(key, pos)
 			return @funciones[key].tabla[pos] == type
 		else
-			puts "Error: Hay mas argumentos de los esperados en la funcion #{key.id}."
+			puts "Error: Hay mas argumentos de los esperados en la funcion #{key}."
 			exit
 		end
 	end
@@ -258,37 +258,37 @@ class Estructura	# Construyo primero la lista de funciones y luego cada uno de l
 		func_closeeye = SymTable.new	nombre='closeeye', 
 										funciones=@tablafunciones, 
 										padre=nil,
-										tabla={ 'return'=>nil }	# Agregar las instrucciones necesarias....
+										tabla={ '0'=>'number', 'return'=>nil }	# Agregar las instrucciones necesarias....
 		
 		func_forward = SymTable.new nombre='forward', 
 									funciones=@tablafunciones, 
 									padre=nil,
-									tabla={ 'return'=>nil }	# Agregar las instrucciones necesarias....
+									tabla={ '0'=>'number', 'return'=>nil }	# Agregar las instrucciones necesarias....
 		
 		func_backward = SymTable.new	nombre='backward', 
 										funciones=@tablafunciones, 
 										padre=nil,
-										tabla={ 'return'=>nil }	# Agregar las instrucciones necesarias....
+										tabla={ '0'=>'number', 'return'=>nil }	# Agregar las instrucciones necesarias....
 		
 		func_rotatel = SymTable.new nombre='rotatel', 
 									funciones=@tablafunciones, 
 									padre=nil,
-									tabla={ 'return'=>nil } # Agregar las instrucciones necesarias....
+									tabla={ '0'=>'number', 'return'=>nil } # Agregar las instrucciones necesarias....
 		
 		func_rotater = SymTable.new nombre='rotater', 
 									funciones=@tablafunciones, 
 									padre=nil,
-									tabla={ 'return'=>nil }	# Agregar las instrucciones necesarias....
+									tabla={ '0'=>'number', 'return'=>nil }	# Agregar las instrucciones necesarias....
 		
 		func_setposition = SymTable.new nombre='setposition', 
 										funciones=@tablafunciones, 
 										padre=nil,
-										tabla={ 'return'=>nil }	# Agregar las instrucciones necesarias....
+										tabla={ '0'=>'number', '1'=>'number', 'return'=>nil }	# Agregar las instrucciones necesarias....
 		
 		func_arc = SymTable.new 	nombre='arc', 
 									funciones=@tablafunciones, 
 									padre=nil,
-									tabla={ 'return'=>nil }	# Agregar las instrucciones necesarias....
+									tabla={ '0'=>'number', '1'=>'number', 'return'=>nil }	# Agregar las instrucciones necesarias....
 
 		@tablafunciones.merge!({	'home'=>func_home,
 									'openeye'=>func_openeye,
