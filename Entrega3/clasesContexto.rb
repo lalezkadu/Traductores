@@ -454,6 +454,8 @@ class Bloque	## Este señor imprime Variables.
 
 	def ejecutar(imagen, tabla)
 		# Agregar valores a la tabla
+		valores_aux = tabla.valores.clone()
+		tabla.valores = valores_aux
 		if @declaraciones != nil
 			@declaraciones.ejecutar(imagen, tabla)
 		end
@@ -461,6 +463,7 @@ class Bloque	## Este señor imprime Variables.
 		if @instrucciones != nil
 			@instrucciones.ejecutar(imagen, tabla)
 		end
+		tabla.valores = valores_aux
 	end
 end
 
