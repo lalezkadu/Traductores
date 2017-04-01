@@ -292,7 +292,7 @@ class Estructura	# Construyo primero la lista de funciones y luego cada uno de l
 	def ejecutar(nombre_imagen)
 		imagen = Imagen.new(nombre_imagen)
 		if @programa != nil
-			@programa.ejecutar(imagen)
+			@programa.ejecutar(imagen,@tabla)
 		end
 		imagen.generarImagen
 	end
@@ -350,9 +350,9 @@ class Funcion
 
 	end
 
-	def ejecutar(imagen)
+	def ejecutar(imagen, tabla)
 		if @instrucciones != nil
-			@instrucciones.ejecutar(imagen)
+			@instrucciones.ejecutar(imagen, tabla)
 		end
 	end
 end
@@ -391,9 +391,9 @@ class Programa
 		end
 	end
 
-	def ejecutar(imagen)
+	def ejecutar(imagen, tabla)
 		if @instrucciones != nil
-			@instrucciones.ejecutar(imagen)
+			@instrucciones.ejecutar(imagen, tabla)
 		end
 	end
 end
@@ -415,10 +415,10 @@ class Bloque	## Este señor imprime Variables.
 		end
 	end
 
-	def ejecutar(imagen)
+	def ejecutar(imagen, tabla)
 		# Agregar valores a la tabla
 		if @instrucciones != nil
-			@instrucciones.ejecutar(imagen)
+			@instrucciones.ejecutar(imagen, tabla)
 		end
 	end
 end
@@ -432,8 +432,12 @@ class ListaDeclaracion
 		end
 	end
 
-	def ejecutar(imagen) 	# Falta tabla
-		nil
+	def ejecutar(imagen, tabla) 	# Falta tabla
+		@declaracion.ejecutar(imagen,tabla)
+
+		if @declaraciones != nil
+			@declaraciones.ejecutar(imagen,tabla)
+		end
 	end
 end
 
@@ -442,8 +446,8 @@ class Declaracion
 		@declaracion.check(padre,@tipo.to_s)
 	end
 
-	def ejecutar(imagen)	# Falta tabla
-		nil
+	def ejecutar(imagen, tabla)	# Falta tabla
+		@declaracion.ejecutar(imagen,tabla)
 	end
 end
 
@@ -454,6 +458,15 @@ class ListaId
 		if @ids != nil
 			@ids.check(padre, tipo)
 		end
+	end
+
+	def ejecutar(imagen, tabla)
+		if @id.tipo == "number"
+			tabla.valores[@id.to_s] = 0
+		elsif @id.tipo == "boolean"
+			tabla.valores[@id.to_s] = false
+		end
+		puts tabla.valores
 	end
 end
 
@@ -472,8 +485,8 @@ class Identificador
 		end
 	end
 
-	def get_valor() 		# Falta tabla
-		return @id.to_s
+	def get_valor(tabla) 		# Falta tabla
+		return tabla.valores[@id.to_s]
 	end
 end
 
@@ -487,12 +500,12 @@ class Instrucciones
 		end
 	end
 
-	def ejecutar(imagen)
+	def ejecutar(imagen,tabla)
 		if @instrucciones != nil
-			@instrucciones.ejecutar(imagen)
+			@instrucciones.ejecutar(imagen, tabla)
 		end
 		if @instruccion != nil
-			@instruccion.ejecutar(imagen)
+			@instruccion.ejecutar(imagen, tabla)
 		end
 	end
 end
@@ -502,8 +515,8 @@ class Return
 		@expresion.check(padre)
 	end
 
-	def ejecutar(imagen,funcion=nil)
-		return @expresion.get_valor()
+	def ejecutar(imagen, tabla)
+		return @expresion.get_valor(tabla)
 	end
 end
 
@@ -525,14 +538,14 @@ class Condicional
 		end
 	end
 
-	def ejecutar(imagen)
-		if @condicion.get_valor
+	def ejecutar(imagen, tabla)
+		if @condicion.get_valor(tabla)
 			if @instif != nil
-				@instif.ejecutar(imagen)
+				@instif.ejecutar(imagen, tabla)
 			end
 		else
 			if @instelse != nil
-				@instelse.ejecutar(imagen)
+				@instelse.ejecutar(imagen, tabla)
 			end
 		end
 	end
@@ -552,13 +565,13 @@ class RepeticionI
 		end
 	end
 
-	def ejecutar(imagen)
-		condicion = @condicion.get_valor()
+	def ejecutar(imagen, tabla)
+		condicion = @condicion.get_valor(tabla)
 		while condicion
 			if @instrucciones != nil
-				@instrucciones.ejecutar(imagen)
+				@instrucciones.ejecutar(imagen, tabla)
 			end
-			condicion = @condicion.get_valor()
+			condicion = @condicion.get_valor(tabla)
 		end
 	end
 end
@@ -584,12 +597,12 @@ class Repeat
 		end
 	end
 
-	def ejecutar(imagen)				# Falta la tabla
-		repeticiones = @repeticiones.get_valor()
+	def ejecutar(imagen, tabla)				# Falta la tabla
+		repeticiones = @repeticiones.get_valor(@tabla)
 		if repeticiones > 0
 			for i in (1..repeticiones)
 				if @instrucciones != nil
-					@instrucciones.ejecutar(imagen)
+					@instrucciones.ejecutar(imagen, @tabla)
 				end
 			end
 		else
@@ -626,25 +639,25 @@ class For
 		@instrucciones.check(@tabla)
 	end
 
-	def ejecutar(imagen)
+	def ejecutar(imagen, tabla)
 		id = @id.id.to_s()		# Falta declarar y asiganr valor de id para la tabla de valores de los hijos
-		inicio = @inicio.get_valor()
-		fin = @fin.get_valor()
+		inicio = @inicio.get_valor(tabla)
+		fin = @fin.get_valor(tabla)
 		if @paso != nil
-			paso = @paso.get_valor()
+			paso = @paso.get_valor(tabla)
 		end
 		i = inicio
 		if inicio <= fin
 			if paso == nil
 				for i in (inicio..fin)	# Falta declarar y asignar valor de i para la tabla de valores para los hijos
 					if @instrucciones != nil
-						@instrucciones.ejecutar(imagen)
+						@instrucciones.ejecutar(imagen, tabla)
 					end
 				end
 			else
 				for i in (inicio..fin).step(paso)	# Falta declarar y asignar valor de i para la tabla de valores para los hijos
 					if @instrucciones != nil
-						@instrucciones.ejecutar(imagen)
+						@instrucciones.ejecutar(imagen, tabla)
 					end
 				end
 			end
@@ -660,18 +673,18 @@ class Entrada
 		@id.check(tabla)
 	end
 
-	def ejecutar(image)
+	def ejecutar(image, tabla)
 		e = $stdin.gets.chomp
 		if @id.tipo == "number"
 			if /^\d+$|^\d*[.]?\d*$/.match(e)
-				# Asignar valor en tabla
+				tabla.valores[@id.id] = e
 			else
 				puts "Error Dinamico: El tipo de la entrada de la instruccion read es invalido, se esperaba un valor de tipo number."
 				exit
 			end
 		elsif @id.tipo == "boolean"
 			if /^".*"$/.match(e)
-				# Asignar valor en tabla
+				tabla.valores[@id.id] = e
 			else
 				puts "Error Dinamico: El tipo de la entrada de la instruccion read es invalido, se esperaba un valor de tipo boolean."
 				exit
@@ -687,12 +700,12 @@ class Salida
 		end
 	end
 
-	def ejecutar(imagen)
+	def ejecutar(imagen, tabla)
 		if @salto == "SALTO"						# writeln
-			str = @impresiones.ejecutar(imagen)
+			str = @impresiones.ejecutar(imagen, tabla)
 			puts str
 		else 										# write
-			str = @impresiones.ejecutar(imagen)
+			str = @impresiones.ejecutar(imagen, tabla)
 			print str
 		end
 	end
@@ -708,25 +721,25 @@ class Escribir
 		end
 	end
 
-	def ejecutar(imagen)
+	def ejecutar(imagen, tabla)
 		str = ""
 		if impresiones != nil
-			str << @impresiones.get_valor.to_s
+			str << @impresiones.get_valor(tabla).to_s
 		end
 		
 		if not(@expresion.is_a? String)
-			str << @expresion.get_valor.to_s
+			str << @expresion.get_valor(tabla).to_s
 		end
 		return str
 	end
 
-	def get_valor()
+	def get_valor(tabla)
 		str = ""
 		
 		if impresiones != nil
-			str << @impresiones.get_valor.to_s
+			str << @impresiones.get_valor(tabla).to_s
 		end
-		str << @expresion.get_valor.to_s
+		str << @expresion.get_valor(tabla).to_s
 		return str
 	end
 end
@@ -736,7 +749,7 @@ class Str
 		nil #return @str.to_s
 	end
 
-	def get_valor()
+	def get_valor(tabla)
 		return @str.token[1..(@str.token.length-2)] # Para quitar las comillas
 	end
 end
@@ -790,6 +803,10 @@ class Asignacion
 		# Hay que chequear el tipo de dato 	
 		@tipo=@op1.tipo
 	end
+
+	def ejecutar(imagen, tabla)
+		tabla.valores[@op1.id] = @op2.get_valor(tabla)
+	end
 end
 
 class OpMultiplicacion
@@ -817,8 +834,8 @@ class OpMultiplicacion
 		@tipo="number"
 	end
 
-	def get_valor()
-		return @op1.get_valor * @op2.get_valor
+	def get_valor(tabla)
+		return @op1.get_valor(tabla) * @op2.get_valor(tabla)
 	end
 end
 
@@ -846,8 +863,8 @@ class OpSuma
 		@tipo="number"
 	end
 
-	def get_valor()
-		return @op1.get_valor + @op2.get_valor
+	def get_valor(tabla)
+		return @op1.get_valor(tabla) + @op2.get_valor(tabla)
 	end 
 end
 
@@ -871,8 +888,8 @@ class OpResta
 		@tipo="number"
 	end
 
-	def get_valor()
-		return @op1.get_valor - @op2.get_valor
+	def get_valor(tabla)
+		return @op1.get_valor(tabla) - @op2.get_valor(tabla)
 	end
 end
 
@@ -900,10 +917,10 @@ class OpDivision
 		@tipo="number"
 	end
 
-	def get_valor()
-		oper2 = @op2.get_valor
+	def get_valor(tabla)
+		oper2 = @op2.get_valor(tabla)
 		if oper2 != 0
-			return @op1.get_valor / oper2
+			return @op1.get_valor(tabla) / oper2
 		else
 			puts "Error: Division entre cero."
 			exit
@@ -936,10 +953,10 @@ class OpMod
 		@tipo="number"
 	end
 
-	def get_valor()
-		oper2 = @op2.get_valor
+	def get_valor(tabla)
+		oper2 = @op2.get_valor(tabla)
 		if @op2 != 0
-			return @op1.get_valor % oper2
+			return @op1.get_valor(tabla) % oper2
 		else
 			puts "Error: Division entre cero."
 			exit
@@ -971,10 +988,10 @@ class OpDivisionE
 		@tipo="number"
 	end
 
-	def get_valor()
-		oper2 = @op2.get_valor.to_i
+	def get_valor(tabla)
+		oper2 = @op2.get_valor(tabla).to_i
 		if oper2 != 0
-			return @op1.get_valor.to_i / oper2
+			return @op1.get_valor(tabla).to_i / oper2
 		else
 			puts "Error: Division entre cero."
 			exit
@@ -1007,10 +1024,10 @@ class OpModE
 		@tipo="number"
 	end
 
-	def get_valor()
-		oper2 = @op2.get_valor.to_i
+	def get_valor(tabla)
+		oper2 = @op2.get_valor(tabla).to_i
 		if oper2 != 0
-			return @op1.get_valor.to_i % oper2
+			return @op1.get_valor(tabla).to_i % oper2
 		else
 			puts "Error: Division entre cero."
 			exit
@@ -1044,8 +1061,8 @@ class OpEquivalente
 		@tipo="boolean"
 	end
 
-	def get_valor()
-		return @op1.get_valor == @op2.get_valor
+	def get_valor(tabla)
+		return @op1.get_valor(tabla) == @op2.get_valor(tabla)
 	end
 end
 
@@ -1074,8 +1091,8 @@ class OpDesigual
 		@tipo="boolean"
 	end
 
-	def get_valor()
-		return @op1.get_valor != @op2.get_valor
+	def get_valor(tabla)
+		return @op1.get_valor(tabla) != @op2.get_valor(tabla)
 	end
 end
 
@@ -1104,8 +1121,8 @@ class OpMenor
 		@tipo="boolean"
 	end
 
-	def get_valor()
-		return @op1.get_valor < @op2.get_valor
+	def get_valor(tabla)
+		return @op1.get_valor(tabla) < @op2.get_valor(tabla)
 	end
 end
 
@@ -1134,8 +1151,8 @@ class OpMenorIgual
 		@tipo="boolean"
 	end
 
-	def get_valor()
-		return @op1.get_valor <= @op2.get_valor
+	def get_valor(tabla)
+		return @op1.get_valor(tabla) <= @op2.get_valor(tabla)
 	end
 end
 
@@ -1164,8 +1181,8 @@ class OpMayor
 		@tipo="boolean"
 	end
 
-	def get_valor()
-		return @op1.get_valor > @op2.get_valor
+	def get_valor(tabla)
+		return @op1.get_valor(tabla) > @op2.get_valor(tabla)
 	end
 end
 
@@ -1194,8 +1211,8 @@ class OpMayorIgual
 		@tipo="boolean"
 	end
 
-	def get_valor()
-		return @op1.get_valor >= @op2.get_valor
+	def get_valor(tabla)
+		return @op1.get_valor(tabla) >= @op2.get_valor(tabla)
 	end
 end
 
@@ -1224,8 +1241,8 @@ class OpAnd
 		@tipo="boolean"
 	end
 
-	def get_valor()
-		return @op1.get_valor && @op2.get_valor
+	def get_valor(tabla)
+		return @op1.get_valor(tabla) && @op2.get_valor(tabla)
 	end
 end
 
@@ -1254,8 +1271,8 @@ class OpOr
 		@tipo="boolean"
 	end
 
-	def get_valor()
-		return @op1.get_valor || @op2.get_valor
+	def get_valor(tabla)
+		return @op1.get_valor(tabla) || @op2.get_valor(tabla)
 	end
 end
 
@@ -1275,8 +1292,8 @@ class OpMINUS
 		end
 	end
 
-	def get_valor()
-		return -(@op.get_valor)
+	def get_valor(tabla)
+		return -(@op.get_valor(tabla))
 	end
 end
 
@@ -1296,8 +1313,8 @@ class OpNot
 		end
 	end
 
-	def get_valor()
-		return !(@op.get_valor)
+	def get_valor(tabla)
+		return !(@op.get_valor(tabla))
 	end
 end
 
@@ -1328,19 +1345,19 @@ class LlamadaFuncion
 		@tipo = padre.get_func_var_type( @id.id.to_s(), 'return')
 	end
 
-	def ejecutar(imagen)
+	def ejecutar(imagen, tabla)
 		if @id.id.to_s == "home"
 			imagen.home()
 		elsif @id.id.to_s == "setposition"
-			imagen.setposition(@parametros.parametro.get_valor,@parametros.lista.get_valor)
+			imagen.setposition(@parametros.parametro.get_valor(tabla),@parametros.lista.get_valor(tabla))
 		elsif @id.id.to_s == "rotater"
-			imagen.rotater(@parametros.parametro.get_valor)
+			imagen.rotater(@parametros.parametro.get_valor(tabla))
 		elsif @id.id.to_s == "rotatel"
-			imagen.rotatel(@parametros.parametro.get_valor)
+			imagen.rotatel(@parametros.parametro.get_valor(tabla))
 		elsif @id.id.to_s == "forward"
-			imagen.forward(@parametros.parametro.get_valor)
+			imagen.forward(@parametros.parametro.get_valor(tabla))
 		elsif @id.id.to_s == "backward"
-			imagen.backward(@parametros.parametro.get_valor)
+			imagen.backward(@parametros.parametro.get_valor(tabla))
 		elsif @id.id.to_s == "openeye"
 			imagen.openeye()
 		elsif @id.id.to_s == "closeeye"
@@ -1370,8 +1387,8 @@ class ListaPaseParametros
 		end
 	end
 
-	def get_valor()
-		return @parametro.get_valor
+	def get_valor(tabla)
+		return @parametro.get_valor(tabla)
 	end
 end
 
@@ -1379,7 +1396,7 @@ class LiteralNumerico
 	def check(padre,tipo=nil)
 	end
 
-	def get_valor()
+	def get_valor(tabla)
 		if /^\d+$/.match(@valor.token)				# Si no tiene decimales
 			return @valor.token.to_i
 		elsif /^\d*[.]?\d*$/.match(@valor.token)	# Si tiene decimales
@@ -1392,7 +1409,7 @@ class LiteralBooleano
 	def check(padre,tipo=nil)
 	end
 
-	def get_valor()
+	def get_valor(tabla)
 		if @valor == "true"
 			return true
 		else
