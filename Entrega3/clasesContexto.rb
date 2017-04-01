@@ -7,11 +7,13 @@ require_relative 'imagen'
 class SymTable
 	attr_accessor :tabla, :nombre, :padre, :funciones, :instrucciones, :valores
 
-	def initialize(nombre, funciones, padre=nil, tabla=Hash.new)
+	def initialize(nombre, funciones, padre=nil, tabla=Hash.new, instrucciones=nil, valores=Hash.new)
 		@tabla = tabla
 		@nombre = nombre
 		@padre = padre
 		@funciones = funciones
+		@instrucciones = instrucciones
+		@valores = valores
 	end
 
 	def add(key, value)
@@ -227,15 +229,41 @@ class Estructura	# Construyo primero la lista de funciones y luego cada uno de l
 
 		@tablafunciones = Hash.new
 
-		func_home = SymTable.new 'home', @tablafunciones, nil, { 'return'=>nil }
-		func_openeye = SymTable.new 'openeye', @tablafunciones, nil, { 'return'=>nil }
-		func_closeeye = SymTable.new 'closeeye', @tablafunciones, nil, { '0'=>'number', 'return'=>nil }
-		func_forward = SymTable.new 'forward', @tablafunciones, nil, { '0'=>'number', 'return'=>nil }
-		func_backward = SymTable.new 'backward', @tablafunciones, nil, { '0'=>'number', 'return'=>nil }
-		func_rotatel = SymTable.new 'rotatel', @tablafunciones, nil, { '0'=>'number', 'return'=>nil }
-		func_rotater = SymTable.new 'rotater', @tablafunciones, nil, { '0'=>'number', 'return'=>nil }
-		func_setposition = SymTable.new 'setposition', @tablafunciones, nil, { '0'=>'number', '1'=>'number', 'return'=>nil }
-		func_arc = SymTable.new 'arc', @tablafunciones, nil, { '0'=>'number', '1'=>'number', 'return'=>nil }
+		func_home = SymTable.new	nombre='home', 
+									funciones=@tablafunciones, 
+									tabla={ 'return'=>nil }	# Agregar las instrucciones necesarias....
+		
+		func_openeye = SymTable.new nombre='openeye', 
+									funciones=@tablafunciones, 
+									tabla={ 'return'=>nil }	# Agregar las instrucciones necesarias....
+		
+		func_closeeye = SymTable.new	nombre='closeeye', 
+										funciones=@tablafunciones, 
+										tabla={ 'return'=>nil }	# Agregar las instrucciones necesarias....
+		
+		func_forward = SymTable.new nombre='forward', 
+									funciones=@tablafunciones, 
+									tabla={ 'return'=>nil }	# Agregar las instrucciones necesarias....
+		
+		func_backward = SymTable.new	nombre='backward', 
+										funciones=@tablafunciones, 
+										tabla={ 'return'=>nil }	# Agregar las instrucciones necesarias....
+		
+		func_rotatel = SymTable.new nombre='rotatel', 
+									funciones=@tablafunciones, 
+									tabla={ 'return'=>nil }	# Agregar las instrucciones necesarias....
+		
+		func_rotater = SymTable.new nombre='rotater', 
+									funciones=@tablafunciones,  
+									tabla={ 'return'=>nil }	# Agregar las instrucciones necesarias....
+		
+		func_setposition = SymTable.new nombre='setposition', 
+										funciones=@tablafunciones,  
+										tabla={ 'return'=>nil }	# Agregar las instrucciones necesarias....
+		
+		func_arc = SymTable.new 	nombre='arc', 
+									funciones=@tablafunciones,  
+									tabla={ 'return'=>nil }	# Agregar las instrucciones necesarias....
 
 		@tablafunciones.merge!({	'home'=>func_home,
 									'openeye'=>func_openeye,
@@ -252,7 +280,10 @@ class Estructura	# Construyo primero la lista de funciones y luego cada uno de l
 			@funciones.check(@tablafunciones)
 		end
 
-		@tabla = SymTable.new "Estructura", @tablafunciones 
+		@tabla = SymTable.new 	nombre="Estructura", 
+								funciones=@tablafunciones,
+								:instrucciones=>@programa
+
 		if @programa != nil
 			@programa.check(@tabla)
 		end
@@ -272,8 +303,6 @@ class ListaFunciones
 		@funcion.check(padre)
 		if @funciones != nil
 			@funciones.check(padre) # Si existe una lista de funciones continuo agregando
-		#else
-			#padre.merge!(@funcion.check(padre)) # Sino, agrego la última función
 		end
 	end
 end
@@ -287,8 +316,11 @@ class Funcion
 		end
 
 		# Creo mi tabla de variables y me traigo las funciones declaradas
-		@tabla= SymTable.new @nombre.id.to_s(), padre # Las funciones son padre, porque está sobre el hash de las funciones
-		
+		@tabla= SymTable.new 	nombre=@nombre.id.to_s(), 
+								funciones=padre, 
+								:instrucciones=>@instrucciones # Las funciones son padre, porque está sobre el hash de las funciones
+							# Considerar si es mejor poner @instrucciones o self
+
 		if @tipo
 			@tabla.add('return', @tipo.tipo.to_s)
 		else
@@ -346,7 +378,10 @@ end
 class Programa
 	def check(padre)	# Padre tiene la tabla inicial
 		
-		@tabla= SymTable.new "Programa", padre.funciones, padre
+		@tabla= SymTable.new 	nombre="Programa", 
+								funciones=padre.funciones, 
+								:padre=>padre,
+								:instrucciones=>@instrucciones	# Considerar si es mejor poner a self o @instrucciones
 		
 		if @instrucciones != nil
 			@instrucciones.check(@tabla)
@@ -363,7 +398,10 @@ end
 class Bloque	## Este señor imprime Variables. 
 	def check(padre)
 
-		@tabla =SymTable.new "Bloque", padre.funciones, padre
+		@tabla =SymTable.new 	nombre="Bloque", 
+								funciones=padre.funciones, 
+								:padre=>padre,
+								:instrucciones=>@instrucciones	# Considerar si es mejor poner a self o @instrucciones
 
 		if @declaraciones != nil
 			@declaraciones.check(@tabla)	# Pasan la lista de variables
@@ -525,7 +563,10 @@ end
 class Repeat
 	def check(padre)
 
-		@tabla = SymTable.new "Repeat", padre.funciones, padre
+		@tabla = SymTable.new 	nombre="Repeat", 
+								funciones=padre.funciones, 
+								:padre=>padre,
+								:instrucciones=>@instrucciones	# Considerar si es mejor poner a self o @instrucciones
 
 		if @repeticiones != nil
 			@repeticiones.check(@tabla, nil)	# Verifico que la expresión sea de tipo number
@@ -558,7 +599,10 @@ end
 class For
 	def check(padre)
 
-		@tabla = SymTable.new "For", padre.funciones, padre
+		@tabla = SymTable.new 	nombre="For", 
+								funciones=padre.funciones, 
+								:padre=>padre, 
+								:instrucciones=>@instrucciones	# Considerar si es mejor poner a self o @instrucciones
 
 		@id.check(@tabla,'number')
 		@inicio.check(@tabla,nil)
