@@ -446,6 +446,10 @@ class Bloque	## Este señor imprime Variables.
 
 	def ejecutar(imagen, tabla)
 		# Agregar valores a la tabla
+		if @declaraciones != nil
+			@declaraciones.ejecutar(imagen,tabla)
+		end
+
 		if @instrucciones != nil
 			@instrucciones.ejecutar(imagen, tabla)
 		end
@@ -495,7 +499,10 @@ class ListaId
 		elsif @id.tipo == "boolean"
 			tabla.valores[@id.to_s] = false
 		end
-		puts tabla.valores
+		if @ids != nil
+			@ids.ejecutar(imagen,tabla)
+		end
+		#puts tabla.valores
 	end
 end
 
@@ -632,6 +639,7 @@ class Repeat
 		repeticiones = @repeticiones.get_valor(@tabla)
 		if repeticiones > 0
 			for i in (1..repeticiones)
+				tabla.valores[@repeticiones.id.to_s] = i
 				if @instrucciones != nil
 					@instrucciones.ejecutar(imagen, @tabla)
 				end
@@ -683,12 +691,14 @@ class For
 		if inicio <= fin
 			if paso == nil
 				for i in (inicio..fin)	# Falta declarar y asignar valor de i para la tabla de valores para los hijos
+					tabla.valores[id] = i
 					if @instrucciones != nil
 						@instrucciones.ejecutar(imagen, tabla)
 					end
 				end
 			else
 				for i in (inicio..fin).step(paso)	# Falta declarar y asignar valor de i para la tabla de valores para los hijos
+					tabla.valores[id] = i
 					if @instrucciones != nil
 						@instrucciones.ejecutar(imagen, tabla)
 					end
@@ -838,7 +848,7 @@ class Asignacion
 	end
 
 	def ejecutar(imagen, tabla)
-		tabla.valores[@op1.id] = @op2.get_valor(tabla)
+		tabla.valores[@op1.id.to_s] = @op2.get_valor(tabla)
 	end
 end
 

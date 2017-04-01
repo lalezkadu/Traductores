@@ -1,7 +1,8 @@
 program
     with
-        number hola = 2;
+        number hola, chao;
+        boolean roro = true;
     do
-        writeln "prueba 4.rtn";
+        writeln hola, roro;
     end;
 end;
