@@ -641,9 +641,10 @@ class Repeat
 
 	def ejecutar(imagen, tabla)				# Falta la tabla
 		repeticiones = @repeticiones.get_valor(@tabla)
+		tabla.valores[@repeticiones.id.to_s] = repeticiones	# Declaracion de la variable del repeat
 		if repeticiones > 0
+			i = 1
 			for i in (1..repeticiones)
-				tabla.valores[@repeticiones.id.to_s] = i
 				if @instrucciones != nil
 					@instrucciones.ejecutar(imagen, @tabla)
 				end

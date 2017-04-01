@@ -3,15 +3,19 @@ program
         number hola, chao;
         boolean roro = true;
         boolean tata;
-        number prueba = 999;
+        number prueba = 9;
     do
-        writeln hola, roro, tata, prueba;
+        #writeln hola, roro, tata, prueba;
         chao = -1 * prueba;
-        writeln chao;
+        #writeln chao;
         for i from 1 to 8 by 2 do
             forward(i * 10);
             rotatel(45);
             writeln i;
+        end;
+
+        repeat prueba times
+            backward(prueba);
         end;
     end;
 end;
