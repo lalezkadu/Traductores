@@ -3,6 +3,7 @@ program
     	number x = 5;
         number y = 37;
         boolean rompedor = false;
+        number i, j, k, l;
     do
 	    with
         	number no = 0;
