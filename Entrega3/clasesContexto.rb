@@ -1460,7 +1460,7 @@ class LiteralNumerico
 	end
 
 	def ejecutar()
-		return self.get_valor()
+		return self.get_valor(nil)
 	end
 end
 
@@ -1477,6 +1477,6 @@ class LiteralBooleano
 	end
 
 	def ejecutar()
-		return self.get_valor()
+		return self.get_valor(nil)
 	end
 end
