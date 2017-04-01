@@ -301,8 +301,20 @@ class Funcion
 			@parametros.check(@tabla,0)	# Obtenemos las variables
 		end
 
+		retorna = false
 		if @instrucciones != nil 			# Agregar a tabla
 			@instrucciones.check(@tabla)	# Para futuras instrucciones desarrollamos la función
+			if @instrucciones.instruccion.class.to_s == "Return" 	# Verificar que el tipo de retorno es correcto
+				if @tipo != nil
+					if @instrucciones.instruccion.expresion.tipo.to_s != @tipo.tipo.to_s
+						puts "Error: El tipo del valor de retorno de la funcion #{@nombre.id} es de tipo #{@instrucciones.instruccion.expresion.tipo} pero debe ser de tipo #{@tipo.tipo}."
+						exit
+					end
+				else
+					puts "Error: La funcion #{@nombre.id} no debe retornar valores."
+					exit
+				end
+			end
 		end
 
 	end
