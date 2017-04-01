@@ -23,7 +23,12 @@ class SymTable
 	end
 
 	def add_sym(key, value)
-		@tabla[key] = value
+		if self.check_var_exists key
+			puts ErrorDeclaracion.new(key)
+			exit
+		else
+			@tabla[key] = value
+		end
 	end
 
 	def set_value(key, value)
@@ -526,7 +531,7 @@ class Identificador
 			@tipo = padre.get_var_type(@id.to_s())
 		else
 			@tipo=tipo
-			padre.add_sym(@id.to_s(), tipo)
+			padre.tabla[@id.to_s()] = tipo
 		end
 	end
 
