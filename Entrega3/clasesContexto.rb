@@ -333,7 +333,6 @@ class Funcion
 			@parametros.check(@tabla,0)	# Obtenemos las variables
 		end
 
-		retorna = false
 		if @instrucciones != nil 			# Agregar a tabla
 			@instrucciones.check(@tabla)	# Para futuras instrucciones desarrollamos la función
 			if @instrucciones.instruccion.instance_of? Return 	# Verificar que el tipo de retorno es correcto
@@ -385,6 +384,10 @@ class Programa
 		
 		if @instrucciones != nil
 			@instrucciones.check(@tabla)
+			if @instrucciones.instruccion.instance_of? Return
+				puts "Error: Solo se puede usar la instruccion return en funciones."
+				exit
+			end
 		end
 	end
 
@@ -499,7 +502,7 @@ class Return
 		@expresion.check(padre)
 	end
 
-	def ejecutar(imagen)
+	def ejecutar(imagen,funcion=nil)
 		return @expresion.get_valor()
 	end
 end
@@ -634,11 +637,15 @@ class For
 		if inicio <= fin
 			if paso == nil
 				for i in (inicio..fin)	# Falta declarar y asignar valor de i para la tabla de valores para los hijos
-					@instrucciones.ejecutar(imagen)
+					if @instrucciones != nil
+						@instrucciones.ejecutar(imagen)
+					end
 				end
 			else
 				for i in (inicio..fin).step(paso)	# Falta declarar y asignar valor de i para la tabla de valores para los hijos
-					@instrucciones.ejecutar(imagen)
+					if @instrucciones != nil
+						@instrucciones.ejecutar(imagen)
+					end
 				end
 			end
 		else
