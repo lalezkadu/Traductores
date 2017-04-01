@@ -249,13 +249,6 @@ class Estructura	# Construyo primero la lista de funciones y luego cada uno de l
 									funciones=@tablafunciones, 
 									padre=nil,
 									tabla={ 'return'=>nil }	# Agregar las instrucciones necesarias....
-
-									nombre, 
-									funciones, 
-									padre=nil, 
-									tabla=Hash.new, 
-									instrucciones=nil, 
-									valores=Hash.new
 		
 		func_openeye = SymTable.new nombre='openeye', 
 									funciones=@tablafunciones, 
@@ -1335,7 +1328,6 @@ end
 
 class OpUMINUS
 	def check(padre,tipo=nil)
-		puts "??"
 		oper = @op.check(padre,tipo)
 		if tipo != nil
 			if @tipo != tipo
