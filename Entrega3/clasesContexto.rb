@@ -57,7 +57,7 @@ class SymTable
 		if self.check_func_exists(key)
 			return @funciones[key].tabla.has_key? pos
 		else
-			puts "Error: Función no declarada." # Error, función no declarada
+			puts "Error: Función #{key.id} no declarada." # Error, función no declarada
 			exit
 		end
 	end
@@ -66,7 +66,7 @@ class SymTable
 		if self.check_func_var_pos(key, pos)
 			return @funciones[key].tabla[pos]
 		else
-			puts "Error: Hay mas argumentos de los esperados."
+			puts "Error: Hay mas argumentos de los esperados en la funcion #{key.id}."
 			exit
 		end
 	end
@@ -75,7 +75,7 @@ class SymTable
 		if self.check_func_var_pos(key, pos)
 			return @funciones[key].tabla[pos] == type
 		else
-			puts "Error: Hay mas argumentos de los esperados."
+			puts "Error: Hay mas argumentos de los esperados en la funcion #{key.id}."
 			exit
 		end
 	end
@@ -301,7 +301,7 @@ class Funcion
 			@parametros.check(@tabla,0)	# Obtenemos las variables
 		end
 
-		if @instrucciones != nil
+		if @instrucciones != nil 			# Agregar a tabla
 			@instrucciones.check(@tabla)	# Para futuras instrucciones desarrollamos la función
 		end
 
@@ -378,11 +378,19 @@ class ListaDeclaracion
 			@declaraciones.check(padre)
 		end
 	end
+
+	def ejecutar(imagen) 	# Falta tabla
+		nil
+	end
 end
 
 class Declaracion
 	def check(padre)	# Padre está referenciando a las variables
 		@declaracion.check(padre,@tipo.to_s)
+	end
+
+	def ejecutar(imagen)	# Falta tabla
+		nil
 	end
 end
 
@@ -411,7 +419,7 @@ class Identificador
 		end
 	end
 
-	def get_valor()
+	def get_valor() 		# Falta tabla
 		return @id.to_s
 	end
 end
@@ -560,7 +568,7 @@ class For
 	end
 
 	def ejecutar(imagen)
-		id = @id.get_valor()		# Falta declarar y asiganr valor de id para la tabla de valores de los hijos
+		id = @id.id.to_s()		# Falta declarar y asiganr valor de id para la tabla de valores de los hijos
 		inicio = @inicio.get_valor()
 		fin = @fin.get_valor()
 		if @paso != nil
@@ -662,7 +670,7 @@ end
 
 class Str
 	def check(tabla)
-		#return @str.to_s
+		nil #return @str.to_s
 	end
 
 	def get_valor()
@@ -696,7 +704,7 @@ class ExpresionBinaria
 	end
 end
 
-class Asignacion # Probablemente eliminada
+class Asignacion
 	def check(padre, tipo=nil)
 		@op1.check(padre, tipo)
 		@op2.check(padre, tipo)
@@ -805,7 +813,7 @@ class OpResta
 	end
 end
 
-class OpDivision # La división entre cero ? o.O
+class OpDivision 
 	def check(padre,tipo=nil)
 		if tipo != nil
 			oper1 = @op1.check(padre,tipo)
@@ -1249,7 +1257,7 @@ class LlamadaFuncion
 			@parametros.check(padre, 0, @id.id.to_s())
 		else
 			if padre.check_func_var_pos(@id.id.to_s(), 0.to_s)
-				puts "Error: Faltan argumentos en la llamada de funcion de #{@id.id}." # Faltan argumentos
+				puts "Error: Faltan argumentos en la llamada de la funcion de #{@id.id}." # Faltan argumentos
 				exit
 			end
 		end
@@ -1275,6 +1283,7 @@ class LlamadaFuncion
 		elsif @id.id.to_s == "closeeye"
 			imagen.closeeye()
 		else
+			# para preguntar por el return algo.class.to_s == la clase que quiero
 			# COMO LLAMAR A LA FUNCION :C
 		end	
 	end
@@ -1321,7 +1330,7 @@ class LiteralBooleano
 	end
 
 	def get_valor()
-		if @valor.token == "true"
+		if @valor == "true"
 			return true
 		else
 			return false

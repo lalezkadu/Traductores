@@ -1,10 +1,16 @@
-func incremental_forward(number steps, boolean holis)
+func incremental_forward(number steps, boolean holis) -> number
 begin
     for i from 1 to steps do
         forward(i);
     end;
+    return 9;
 end;
 
 program
     forward(100);
+    if (0 == 1) then
+        writeln "YES";
+    else
+        writeln "NO";
+    end;
 end;
