@@ -16,14 +16,14 @@ class SymTable
 		
 		@valores = valores
 		if @padre != nil
-			@valores = @valores.merge!(@padre.valores)
+			@valores = Hash.new @padre.valores.merge(@valores)
 		end
 
 		@parametros=Hash.new
 	end
 
 	def add_sym(key, value)
-		if self.check_var_exists key
+		if self.tabla.has_key? key
 			puts ErrorDeclaracion.new(key)
 			exit
 		else
@@ -461,8 +461,6 @@ class Bloque	## Este señor imprime Variables.
 			@declaraciones.check(@tabla)	# Pasan la lista de variables
 		end
 
-		@tabla.declaraciones = Hash.new
-
 		if @instrucciones != nil
 			@instrucciones.check(@tabla)
 		end
@@ -514,13 +512,6 @@ end
 class ListaId
 	def check(padre, tipo)	# Padre referencia a las variables
 		@id.check(padre, tipo)
-		if padre.declaraciones.has_key? @id.to_s
-			puts ErrorDeclaracion.new(@id.to_s).to_s()
-			exit
-		else
-			padre.declaraciones[@id.to_s] = true
-		end
-
 		if @ids != nil
 			@ids.check(padre, tipo)
 		end
@@ -575,6 +566,7 @@ class Instrucciones
 		if @instruccion != nil
 			@instruccion.ejecutar(imagen, tabla)
 		end
+		puts tabla
 	end
 end
 
@@ -860,13 +852,6 @@ class Asignacion
 	def check(padre, tipo=nil)
 		@op1.check(padre, tipo)
 		@op2.check(padre, tipo)
-
-		if padre.declaraciones.has_key? @op1.id.to_s
-			puts ErrorDeclaracion.new(@op1.id.to_s).to_s
-			exit
-		else
-			padre.declaraciones[@op1.id.to_s] = true
-		end
 
 		if tipo != nil
 			padre.set_valor(@op1.id.to_s(), @op2.get_valor(padre.tabla))
