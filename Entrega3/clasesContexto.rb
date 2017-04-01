@@ -30,8 +30,16 @@ class SymTable
 
 	end
 
-	def add_value(key, value)
+	def set_value(key, value)
 		@valores[key] = value
+	end
+
+	def get_valor(key)
+		if @valores.has_key? key
+			return @valores[key]
+		else
+			puts ErrorDeclaracion.new(key).to_s()
+		end
 	end
 
 	def check_var_exists(key)
@@ -240,14 +248,7 @@ class Estructura	# Construyo primero la lista de funciones y luego cada uno de l
 		func_home = SymTable.new	nombre='home', 
 									funciones=@tablafunciones, 
 									padre=nil,
-									tabla={  'return'=>nil }	# Agregar las instrucciones necesarias....
-
-									nombre, 
-									funciones, 
-									padre=nil, 
-									tabla=Hash.new, 
-									instrucciones=nil, 
-									valores=Hash.new
+									tabla={ 'return'=>nil }	# Agregar las instrucciones necesarias....
 		
 		func_openeye = SymTable.new nombre='openeye', 
 									funciones=@tablafunciones, 
@@ -343,7 +344,10 @@ class Funcion
 		# Creo mi tabla de variables y me traigo las funciones declaradas
 		@tabla= SymTable.new 	nombre=@nombre.id.to_s(), 
 								funciones=padre, 
-								:instrucciones=>@instrucciones # Las funciones son padre, porque está sobre el hash de las funciones
+								padre=padre, 
+								tabla=Hash.new, 
+								instrucciones=@instrucciones, 
+								valores=Hash.new # Las funciones son padre, porque está sobre el hash de las funciones
 							# Considerar si es mejor poner @instrucciones o self
 
 		if @tipo
@@ -829,7 +833,10 @@ class Asignacion
 		@op1.check(padre, tipo)
 		@op2.check(padre, tipo)
 
+		puts padre.valores
+
 		if tipo != nil
+			padre.set_value(@op1.id.to_s(), @op2.get_valor(padre.tabla))
 			if @op1.tipo != tipo || @op2.tipo != tipo
 				if @op1.tipo != tipo
 					puts "Error: Esperaba lado izquierdo de la expresion de tipo #{@op1.tipo} pero recibi una expresion de tipo #{tipo}"
@@ -1453,6 +1460,10 @@ class LiteralNumerico
 			return @valor.token.to_f
 		end
 	end
+
+	def ejecutar()
+		return self.get_valor(nil)
+	end
 end
 
 class LiteralBooleano
@@ -1465,5 +1476,9 @@ class LiteralBooleano
 		else
 			return false
 		end
+	end
+
+	def ejecutar()
+		return self.get_valor(nil)
 	end
 end

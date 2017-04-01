@@ -6,7 +6,7 @@ program
         number i, j, k, l;
     do
 	    with
-        	number no = 0;
+        	number no = 0 + 4 * -1;
     	do
             with
                 boolean aja = true;
