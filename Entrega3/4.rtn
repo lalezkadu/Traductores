@@ -7,9 +7,14 @@ program
     do
 	    with
         	number no = 0 + 4 * -1;
+            #number no = 0;
+            number i, l, j;
     	do
+            i = 27;
+            writeln i;
             with
                 boolean aja = true;
+                number i = 99;
             do
                 if (rompedor == true) then
                     x = y + x;
@@ -17,8 +22,47 @@ program
                     repeat x times
                         x = 28;
                     end; 
+                    writeln aja, "aja antes";
+                    with
+                        number numero = 3;
+                        boolean aja  = false;
+                    do
+                        write aja, "aja despues";
+                        for f from 5 to 9 by 2 do
+                            i = ((y / x) + 6) * x;
+                        end;
+                        writeln i, " i dentro";
+                    end;
+                    writeln i, " i fuera";
+                end;
+                writeln i;
+            end;
+            writeln i;
+    	end;
+        with 
+            boolean p;
+            number m;
+        do
+            for h from 1 to 8 do
+                write "";
+            end;
+            writeln "";
+            repeat x times
+                i = 9;
+            end;
+            while not(rompedor) do
+                if (rompedor == false) then
+                    rompedor = true;
                 end;
             end;
-    	end;
+            repeat x times
+                i = 8;
+            end;
+        end;
+    end;
+    with
+        number qlq = 99;
+    do
+        writeln "qlq";
     end;
 end;

@@ -23,13 +23,12 @@ class SymTable
 	end
 
 	def add_sym(key, value)
-
-		if self.check_var_exists(key)
-			puts ErrorDeclaracion.new(key).to_s()
+		if self.check_var_exists key
+			puts ErrorDeclaracion.new(key)
+			exit
 		else
 			@tabla[key] = value
 		end
-
 	end
 
 	def add_param(key, value)
@@ -51,6 +50,7 @@ class SymTable
 			return @valores[key]
 		else
 			puts ErrorDeclaracion.new(key).to_s()
+			exit
 		end
 	end
 
@@ -172,7 +172,7 @@ class ErrorTipos < ErrorContexto
 	end
 
 	def to_s
-		"Error: En la expresion de tipo #{@op}: Se intento operar un operando izquierdo del tipo #{@op1} con un operando derecho del tipo #{@op2}."
+		"Error: En la expresion de tipo #{@op}: Se intento operar un operando izquierdo del tipo #{@op1.tipo} con un operando derecho del tipo #{@op2.tipo}."
 	end
 end
 
@@ -461,6 +461,8 @@ class Bloque	## Este señor imprime Variables.
 			@declaraciones.check(@tabla)	# Pasan la lista de variables
 		end
 
+		@tabla.declaraciones = Hash.new
+
 		if @instrucciones != nil
 			@instrucciones.check(@tabla)
 		end
@@ -468,13 +470,16 @@ class Bloque	## Este señor imprime Variables.
 
 	def ejecutar(imagen, tabla)
 		# Agregar valores a la tabla
+		valores_aux = tabla.valores.clone()
+		tabla.valores = valores_aux
 		if @declaraciones != nil
-			@declaraciones.ejecutar(imagen,tabla)
+			@declaraciones.ejecutar(imagen, tabla)
 		end
 
 		if @instrucciones != nil
 			@instrucciones.ejecutar(imagen, tabla)
 		end
+		tabla.valores = valores_aux
 	end
 end
 
@@ -509,6 +514,12 @@ end
 class ListaId
 	def check(padre, tipo)	# Padre referencia a las variables
 		@id.check(padre, tipo)
+		if padre.declaraciones.has_key? @id.to_s
+			puts ErrorDeclaracion.new(@id.to_s).to_s()
+			exit
+		else
+			padre.declaraciones[@id.to_s] = true
+		end
 
 		if @ids != nil
 			@ids.check(padre, tipo)
@@ -538,7 +549,7 @@ class Identificador
 			@tipo = padre.get_var_type(@id.to_s())
 		else
 			@tipo=tipo
-			padre.add_sym(@id.to_s(), tipo)
+			padre.tabla[@id.to_s()] = tipo
 		end
 	end
 
@@ -659,8 +670,8 @@ class Repeat
 	def ejecutar(imagen, tabla)				# Falta la tabla
 		repeticiones = @repeticiones.get_valor(tabla)
 		if repeticiones > 0
+			i = 1
 			for i in (1..repeticiones)
-				tabla.valores[@repeticiones.id.to_s] = i
 				if @instrucciones != nil
 					@instrucciones.ejecutar(imagen, tabla)
 				end
@@ -709,6 +720,7 @@ class For
 			paso = @paso.get_valor(tabla)
 		end
 		i = inicio
+		tabla.valores[id] = i
 		if inicio <= fin
 			if paso == nil
 				for i in (inicio..fin)	# Falta declarar y asignar valor de i para la tabla de valores para los hijos
@@ -849,7 +861,12 @@ class Asignacion
 		@op1.check(padre, tipo)
 		@op2.check(padre, tipo)
 
-		puts padre.valores
+		if padre.declaraciones.has_key? @op1.id.to_s
+			puts ErrorDeclaracion.new(@op1.id.to_s).to_s
+			exit
+		else
+			padre.declaraciones[@op1.id.to_s] = true
+		end
 
 		if tipo != nil
 			padre.set_valor(@op1.id.to_s(), @op2.get_valor(padre.tabla))
@@ -863,7 +880,8 @@ class Asignacion
 			end
 		else
 			if @op1.tipo != @op2.tipo
-				puts ErrorTipos.new(@oper,@op1,@op2) # Error, los tipos no concuerdan
+				puts ErrorTiposif padre.declaraciones.has_key? @declaracion.op1.id.to_s
+				puts ErrorDeclaracion.new(@declaracion.op1.id.to_s).to_s()
 				exit
 			end
 		end
@@ -1357,6 +1375,8 @@ class OpUMINUS
 				exit
 			end
 		end
+
+		@tipo = "number"
 	end
 
 	def get_valor(tabla)
@@ -1378,6 +1398,8 @@ class OpNot
 				exit
 			end
 		end
+
+		@tipo = "boolean"
 	end
 
 	def get_valor(tabla)
@@ -1487,7 +1509,9 @@ class LiteralNumerico
 	end
 
 	def get_valor(tabla)
-		if /^\d+$/.match(@valor.token)				# Si no tiene decimales
+		if @valor.instance_of? Fixnum
+			return @valor
+		elsif /^\d+$/.match(@valor.token)				# Si no tiene decimales
 			return @valor.token.to_i
 		elsif /^\d*[.]?\d*$/.match(@valor.token)	# Si tiene decimales
 			return @valor.token.to_f

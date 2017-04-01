@@ -5,11 +5,13 @@ end;
 
 program
     with
-        number x = 37;
+        number x = 5;
         boolean rompedor = false;
+        number i;
     do
         writeln "Un numero especial: ", x;
-        for i from 1 to 10 by 3 do
+        repeat x times
+            rompedor = false;
 	        rotater(15);
 	        with
         		number y = 0;
@@ -21,9 +23,8 @@ program
                         if (aja) then
                             x = plus(9,9) + x;
                         else
-                            repeat x times
-                                y = 28;
-                            end; 
+                            writeln "If false";
+                            rompedor = aja; 
                         end;
                     end;
     			end;
