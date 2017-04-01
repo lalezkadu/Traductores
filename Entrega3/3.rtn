@@ -1,4 +1,12 @@
-func incremental_forward(number steps, boolean holis)
+func incremental_forward(number steps, boolean holis) -> number
 begin
-    return 9;
+    if true then
+        return 9;
+    else
+        writeln "hola";
+    end;
+end;
+
+program
+    #return 8;
 end;
