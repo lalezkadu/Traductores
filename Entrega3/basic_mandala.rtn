@@ -1,0 +1,18 @@
+func circle(number radio)
+begin
+    backward(360);
+    rotater(60);
+    forward(radio);
+end;
+
+program
+    with
+        number angle = 0;
+    do
+        while angle <= 360 do
+            rotater(angle);
+            circle(100);
+            angle = angle + 15;
+        end;
+    end;
+end;

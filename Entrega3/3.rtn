@@ -1,21 +1,23 @@
-program
-    with
-        number hola, chao;
-        boolean roro = true;
-        boolean tata;
-        number prueba = 9;
-    do
-        #writeln hola, roro, tata, prueba;
-        chao = -1 * prueba;
-        #writeln chao;
-        for i from 1 to 8 by 2 do
-            forward(i * 10);
-            rotatel(45);
-            writeln i;
-        end;
+func my_forward()
+begin
+    forward(1);
+end;
 
-        repeat prueba times
-            backward(prueba);
-        end;
+func max(number x, number y) -> number
+begin
+    if x < y then
+        return y;
+    else
+        return x;
+    end;
+end;
+
+program
+    my_forward();
+    with do end; # Dummy block
+    with
+        number x = 37;
+    do
+        writeln "Un numero especial: ", max(9,x);
     end;
 end;

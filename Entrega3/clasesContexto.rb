@@ -24,6 +24,7 @@ class SymTable
 
 		if self.check_var_exists(key)
 			puts ErrorDeclaracion.new(key).to_s()
+			exit
 		else
 			@tabla[key] = value
 		end
@@ -39,6 +40,7 @@ class SymTable
 			return @valores[key]
 		else
 			puts ErrorDeclaracion.new(key).to_s()
+			exit
 		end
 	end
 
@@ -157,7 +159,7 @@ class ErrorTipos < ErrorContexto
 	end
 
 	def to_s
-		"Error: En la expresion de tipo #{@op}: Se intento operar un operando izquierdo del tipo #{@op1} con un operando derecho del tipo #{@op2}."
+		"Error: En la expresion de tipo #{@op}: Se intento operar un operando izquierdo del tipo #{@op1.tipo} con un operando derecho del tipo #{@op2.tipo}."
 	end
 end
 
@@ -833,8 +835,6 @@ class Asignacion
 	def check(padre, tipo=nil)
 		@op1.check(padre, tipo)
 		@op2.check(padre, tipo)
-
-		puts padre.valores
 
 		if tipo != nil
 			padre.set_value(@op1.id.to_s(), @op2.get_valor(padre.tabla))

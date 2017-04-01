@@ -1,24 +1,27 @@
 program
     with
-        number x = 37;
+        number x = 5;
         boolean rompedor = false;
+        number i;
     do
         writeln "Un numero especial: ", x;
-        for i from 1 to 10 by 3 do
+        repeat x times
+            rompedor = false;
 	        rotater(15);
 	        with
         		number y = 0;
     		do
-    			while 9 do
+    			while not(rompedor) do
+                    y = true;
                     with
                         boolean aja = true;
                     do
-                        if (y) then
+                        if (y /= 0) then
+                            writeln "If true";
                             x = 9 * 9;
                         else
-                            repeat x times
-                                y = 28;
-                            end; 
+                            writeln "If false";
+                            rompedor = aja; 
                         end;
                     end;
     			end;
