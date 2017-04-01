@@ -240,7 +240,7 @@ class Estructura	# Construyo primero la lista de funciones y luego cada uno de l
 		func_home = SymTable.new	nombre='home', 
 									funciones=@tablafunciones, 
 									padre=nil,
-									tabla={ 'return'=>nil }	# Agregar las instrucciones necesarias....
+									tabla={  'return'=>nil }	# Agregar las instrucciones necesarias....
 
 									nombre, 
 									funciones, 
@@ -688,6 +688,7 @@ class For
 			paso = @paso.get_valor(tabla)
 		end
 		i = inicio
+		tabla.valores[id] = i
 		if inicio <= fin
 			if paso == nil
 				for i in (inicio..fin)	# Falta declarar y asignar valor de i para la tabla de valores para los hijos
@@ -1319,7 +1320,7 @@ class OpOr
 	end
 end
 
-class OpMINUS
+class OpUMINUS
 	def check(padre,tipo=nil)
 		oper = @op.check(padre,tipo)
 		if tipo != nil
@@ -1333,6 +1334,8 @@ class OpMINUS
 				exit
 			end
 		end
+
+		@tipo = "number"
 	end
 
 	def get_valor(tabla)
@@ -1354,6 +1357,8 @@ class OpNot
 				exit
 			end
 		end
+
+		@tipo = "boolean"
 	end
 
 	def get_valor(tabla)
@@ -1440,7 +1445,9 @@ class LiteralNumerico
 	end
 
 	def get_valor(tabla)
-		if /^\d+$/.match(@valor.token)				# Si no tiene decimales
+		if @valor.instance_of? Fixnum
+			return @valor
+		elsif /^\d+$/.match(@valor.token)				# Si no tiene decimales
 			return @valor.token.to_i
 		elsif /^\d*[.]?\d*$/.match(@valor.token)	# Si tiene decimales
 			return @valor.token.to_f

@@ -2,7 +2,16 @@ program
     with
         number hola, chao;
         boolean roro = true;
+        boolean tata;
+        number prueba = 999;
     do
-        writeln hola, roro;
+        writeln hola, roro, tata, prueba;
+        chao = -1 * prueba;
+        writeln chao;
+        for i from 1 to 8 by 2 do
+            forward(i * 10);
+            rotatel(45);
+            writeln i;
+        end;
     end;
 end;
