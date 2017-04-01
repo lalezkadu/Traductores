@@ -573,7 +573,7 @@ class Return
 	end
 
 	def ejecutar(imagen, tabla)
-		return @expresion.get_valor(tabla)
+		tabla.set_valor( "return", @expresion.get_valor(tabla) )
 	end
 end
 
@@ -1415,7 +1415,6 @@ class LlamadaFuncion
 	def ejecutar(imagen, tabla)
 		# Setea los valores de las variables y de los parametros correspondientes
 		tablaFuncion = tabla.funciones[@id.id.to_s]
-		puts tablaFuncion
 		@parametros.get_valor(tablaFuncion, 0)
 		
 		if @id.id.to_s == "home"
@@ -1428,30 +1427,32 @@ class LlamadaFuncion
 			imagen.closeeye()
 			@tipo = 'imagen'
 		elsif @id.id.to_s == "forward"
-			imagen.forward(tablaFuncion.get_valor(0))
+			imagen.forward(tablaFuncion.get_valor("0"))
 			@tipo = 'imagen'
 		elsif @id.id.to_s == "backward"
-			imagen.backward(tablaFuncion.get_valor(0))
+			imagen.backward(tablaFuncion.get_valor("0"))
 			@tipo = 'imagen'
 		elsif @id.id.to_s == "rotatel"
-			imagen.rotatel(tablaFuncion.get_valor(0))
+			imagen.rotatel(tablaFuncion.get_valor("0"))
 			@tipo = 'imagen'
 		elsif @id.id.to_s == "rotater"
-			imagen.rotater(tablaFuncion.get_valor(0))
+			imagen.rotater(tablaFuncion.get_valor("0"))
 			@tipo = 'imagen'
 		elsif @id.id.to_s == "setposition"
-			imagen.setposition( tablaFuncion.get_valor(0),tablaFuncion.get_valor(1))
+			imagen.setposition( tablaFuncion.get_valor("0"),tablaFuncion.get_valor(1))
 			@tipo = 'imagen'
 		else
 			# Antes debo agregar los valores para que la función se ejecute
 			tablaFuncion.set_param_valor()
 			tablaFuncion.instrucciones.ejecutar(imagen, tablaFuncion)
-			puts tablaFuncion
+			if tablaFuncion.get_var_type("return") != nil
+				return tablaFuncion.get_valor("return")
+			end
 		end	
 	end
 
 	def get_valor(tabla)
-
+		return self.ejecutar(nil, tabla)
 	end
 end
 
@@ -1474,7 +1475,7 @@ class ListaPaseParametros
 	end
 
 	def get_valor(tabla, pos)
-		tabla.set_valor( pos, @parametro.get_valor(tabla) )
+		tabla.set_valor( pos.to_s, @parametro.get_valor(tabla) )
 		if @lista != nil
 			@lista.get_valor( tabla, pos+1)
 		end

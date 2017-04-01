@@ -14,12 +14,12 @@ program
 	        with
         		number y = 0;
     		do
-    			while y < 10 do
+    			while x < 40 do
                     with
                         boolean aja = true;
                     do
-                        if not(aja) then
-                            x = plus(9,9);
+                        if (aja) then
+                            x = plus(9,9) + x;
                         else
                             repeat x times
                                 y = 28;
