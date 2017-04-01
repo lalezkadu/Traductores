@@ -351,7 +351,10 @@ class Funcion
 		# Creo mi tabla de variables y me traigo las funciones declaradas
 		@tabla= SymTable.new 	nombre=@nombre.id.to_s(), 
 								funciones=padre, 
-								:instrucciones=>@instrucciones # Las funciones son padre, porque está sobre el hash de las funciones
+								padre=padre, 
+								tabla=Hash.new, 
+								instrucciones=@instrucciones, 
+								valores=Hash.new # Las funciones son padre, porque está sobre el hash de las funciones
 							# Considerar si es mejor poner @instrucciones o self
 
 		if @tipo
