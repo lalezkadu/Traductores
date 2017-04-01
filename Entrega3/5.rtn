@@ -1,3 +1,8 @@
+func plus(number op1, number op2) -> number
+begin
+    return op1 + op2;
+end;
+
 program
     with
         number x = 37;
@@ -9,12 +14,12 @@ program
 	        with
         		number y = 0;
     		do
-    			while 9 do
+    			while y < 10 do
                     with
                         boolean aja = true;
                     do
-                        if (y) then
-                            x = 9 * 9;
+                        if not(aja) then
+                            x = plus(9,9);
                         else
                             repeat x times
                                 y = 28;
