@@ -1,10 +1,4 @@
 func incremental_forward(number steps, boolean holis)
 begin
-    for i from 1 to steps do
-        forward(i);
-    end;
-end;
-
-program
-    forward(100);
+    return 9;
 end;
