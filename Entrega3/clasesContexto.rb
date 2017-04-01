@@ -84,7 +84,7 @@ class SymTable
 		if self.check_func_var_pos(key, pos)
 			return @funciones[key].tabla[pos]
 		else
-			puts "Error: Hay mas argumentos de los esperados en la funcion #{key.id}."
+			puts "Error: Hay mas argumentos de los esperados en la funcion #{key}."
 			exit
 		end
 	end
@@ -93,7 +93,7 @@ class SymTable
 		if self.check_func_var_pos(key, pos)
 			return @funciones[key].tabla[pos] == type
 		else
-			puts "Error: Hay mas argumentos de los esperados en la funcion #{key.id}."
+			puts "Error: Hay mas argumentos de los esperados en la funcion #{key}."
 			exit
 		end
 	end
